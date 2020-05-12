@@ -2039,7 +2039,7 @@ public class PinotHelixResourceManager {
    */
   public PinotResourceManagerResponse dropInstance(String instanceName) {
     // Check if the instance is live
-    if (_helixDataAccessor.getProperty(_keyBuilder.liveInstance(instanceName)) != null) {
+    if (getLiveInstance(instanceName) != null) {
       return PinotResourceManagerResponse.failure("Instance " + instanceName + " is still live");
     }
 
@@ -2093,8 +2093,7 @@ public class PinotHelixResourceManager {
     String offlineState = SegmentOnlineOfflineStateModel.OFFLINE;
 
     while (System.currentTimeMillis() < deadline) {
-      PropertyKey liveInstanceKey = _keyBuilder.liveInstance(instanceName);
-      LiveInstance liveInstance = _helixDataAccessor.getProperty(liveInstanceKey);
+      LiveInstance liveInstance = getLiveInstance(instanceName);
       if (liveInstance == null) {
         if (!enableInstance) {
           // If we disable the instance, we actually don't care whether live instance being null. Thus, returning success should be good.
@@ -2143,6 +2142,10 @@ public class PinotHelixResourceManager {
     }
     return PinotResourceManagerResponse
         .failure("Instance " + (enableInstance ? "enable" : "disable") + " failed, timeout");
+  }
+
+  public LiveInstance getLiveInstance(String instanceName) {
+    return _helixDataAccessor.getProperty(_keyBuilder.liveInstance(instanceName));
   }
 
   public RebalanceResult rebalanceTable(String tableNameWithType, Configuration rebalanceConfig)
