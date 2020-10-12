@@ -23,4 +23,11 @@ package org.apache.pinot.spi.services;
  */
 public enum ServiceRole {
   CONTROLLER, BROKER, SERVER, MINION,
+  /**
+   * "Add Table" is a task, not a service, but the entrypoint {@code ServiceManager} can only manage
+   * {@link ServiceStartable}. When finalized "Add Table", may become a class of {@link #MINION}, or
+   * {@code ServiceManager} will be able to invoke tasks. Regardless, to add a table will need
+   * access to a Helix resource manager.
+   */
+  ADD_TABLE;
 }
