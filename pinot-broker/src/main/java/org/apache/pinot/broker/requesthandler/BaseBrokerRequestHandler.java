@@ -188,8 +188,8 @@ public abstract class BaseBrokerRequestHandler implements BrokerRequestHandler {
     } catch (Exception e) {
       LOGGER.info("Caught exception while compiling request {}: {}, {}", requestId, query, e.getMessage());
       _brokerMetrics.addMeteredGlobalValue(BrokerMeter.REQUEST_COMPILATION_EXCEPTIONS, 1);
-      requestStatistics.setErrorCode(QueryException.PQL_PARSING_ERROR_CODE);
-      return new BrokerResponseNative(QueryException.getException(QueryException.PQL_PARSING_ERROR, e));
+      requestStatistics.setErrorCode(QueryException.QUERY_PARSING_ERROR_CODE);
+      return new BrokerResponseNative(QueryException.getException(QueryException.QUERY_PARSING_ERROR, e));
     }
     setOptions(requestId, query, request, brokerRequest);
 
@@ -984,31 +984,56 @@ public abstract class BaseBrokerRequestHandler implements BrokerRequestHandler {
   private void fixColumnName(String rawTableName, Expression expression, @Nullable Map<String, String> columnNameMap) {
     ExpressionType expressionType = expression.getType();
     if (expressionType == ExpressionType.IDENTIFIER) {
-      Identifier identifier = expression.getIdentifier();
-      identifier.setName(getActualColumnName(rawTableName, identifier.getName(), columnNameMap));
+      if (!isStarIdentifier(expression)) {
+        Identifier identifier = expression.getIdentifier();
+        identifier.setName(getActualColumnName(rawTableName, identifier.getName(), columnNameMap));
+      }
     } else if (expressionType == ExpressionType.FUNCTION) {
-      for (Expression operand : expression.getFunctionCall().getOperands()) {
-        fixColumnName(rawTableName, operand, columnNameMap);
+      String operator = expression.getFunctionCall().getOperator();
+      List<Expression> expressions = expression.getFunctionCall().getOperands();
+      if ("AS".equals(operator)) {
+        fixColumnName(rawTableName, expressions.get(0), columnNameMap);
+      } else if (!isCountStarFromExpression(expression)) {
+        for (Expression operand : expression.getFunctionCall().getOperands()) {
+          fixColumnName(rawTableName, operand, columnNameMap);
+        }
       }
     }
   }
 
-  private String getActualColumnName(String rawTableName, String columnName,
-      @Nullable Map<String, String> columnNameMap) {
+  private boolean isCountStarFromExpression(Expression expression) {
+    String operator = expression.getFunctionCall().getOperator();
+    List<Expression> expressions = expression.getFunctionCall().getOperands();
+    return "COUNT".equals(operator) && expressions.size() == 1 && isStarIdentifier(expressions.get(0));
+  }
+
+  private boolean isStarIdentifier(Expression expression) {
+    return "*".equals(expression.getIdentifier().getName());
+  }
+
+  private String getActualColumnName(String rawTableName, String columnName, Map<String, String> columnNameMap) {
     // Check if column is in the format of [table_name].[column_name]
     String[] splits = StringUtils.split(columnName, ".", 2);
     if (_tableCache.isCaseInsensitive()) {
       if (splits.length == 2 && rawTableName.equalsIgnoreCase(splits[0])) {
         columnName = splits[1];
       }
-      if (columnNameMap != null) {
-        return columnNameMap.getOrDefault(columnName, columnName);
+      if (columnNameMap == null) {
+        return columnName;
+      }
+      String actualColumnName = columnNameMap.get(columnName.toLowerCase());
+      if (actualColumnName != null) {
+        return actualColumnName;
       } else {
+        _brokerMetrics.addMeteredTableValue(rawTableName, BrokerMeter.QUERY_COLUMN_NAME_MISMATCH, 1L);
         return columnName;
       }
     } else {
       if (splits.length == 2 && rawTableName.equals(splits[0])) {
         columnName = splits[1];
+      }
+      if (columnNameMap != null && !columnNameMap.containsKey(columnName)) {
+        _brokerMetrics.addMeteredTableValue(rawTableName, BrokerMeter.QUERY_COLUMN_NAME_MISMATCH, 1L);
       }
       return columnName;
     }
