@@ -27,15 +27,20 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import org.apache.commons.lang.StringUtils;
 import org.apache.helix.task.TaskState;
+import org.apache.pinot.common.lineage.LineageEntry;
+import org.apache.pinot.common.lineage.LineageEntryState;
+import org.apache.pinot.common.lineage.SegmentLineage;
 import org.apache.pinot.common.metadata.segment.OfflineSegmentZKMetadata;
 import org.apache.pinot.common.utils.CommonConstants;
 import org.apache.pinot.controller.helix.core.minion.PinotHelixTaskResourceManager;
 import org.apache.pinot.controller.helix.core.minion.PinotTaskManager;
 import org.apache.pinot.core.common.MinionConstants;
 import org.apache.pinot.core.common.MinionConstants.ConvertToRawIndexTask;
+import org.apache.pinot.core.common.MinionConstants.MergeRollupTask;
 import org.apache.pinot.core.indexsegment.generator.SegmentVersion;
 import org.apache.pinot.core.segment.index.metadata.SegmentMetadata;
 import org.apache.pinot.core.segment.index.metadata.SegmentMetadataImpl;
+import org.apache.pinot.spi.config.table.TableConfig;
 import org.apache.pinot.spi.config.table.TableTaskConfig;
 import org.apache.pinot.spi.utils.builder.TableNameBuilder;
 import org.apache.pinot.util.TestUtils;
@@ -49,7 +54,7 @@ import org.testng.annotations.Test;
  * Integration test that extends HybridClusterIntegrationTest and add Minions into the cluster to convert 3 metric
  * columns' index into raw index for OFFLINE segments.
  */
-public class ConvertToRawIndexMinionClusterIntegrationTest extends HybridClusterIntegrationTest {
+public class MinionTasksIntegrationTest extends HybridClusterIntegrationTest {
   private static final String COLUMNS_TO_CONVERT = "ActualElapsedTime,ArrDelay,DepDelay,CRSDepTime";
 
   private PinotHelixTaskResourceManager _helixTaskResourceManager;
@@ -67,14 +72,6 @@ public class ConvertToRawIndexMinionClusterIntegrationTest extends HybridCluster
     return SegmentVersion.v1.name();
   }
 
-  @Override
-  protected TableTaskConfig getTaskConfig() {
-    Map<String, String> convertToRawIndexTaskConfigs = new HashMap<>();
-    convertToRawIndexTaskConfigs.put(MinionConstants.TABLE_MAX_NUM_TASKS_KEY, "5");
-    convertToRawIndexTaskConfigs.put(ConvertToRawIndexTask.COLUMNS_TO_CONVERT_KEY, COLUMNS_TO_CONVERT);
-    return new TableTaskConfig(Collections.singletonMap(ConvertToRawIndexTask.TASK_TYPE, convertToRawIndexTaskConfigs));
-  }
-
   @BeforeClass
   public void setUp()
       throws Exception {
@@ -86,10 +83,20 @@ public class ConvertToRawIndexMinionClusterIntegrationTest extends HybridCluster
     _taskManager = _controllerStarter.getTaskManager();
   }
 
-  @Test
+  @Test(priority = 1)
   public void testConvertToRawIndexTask()
       throws Exception {
     String offlineTableName = TableNameBuilder.OFFLINE.tableNameWithType(getTableName());
+
+    // Configure ConvertToRawIndexTask
+    TableConfig tableConfig = getOfflineTableConfig();
+    Map<String, Map<String, String>> taskConfigs = new HashMap<>();
+    Map<String, String> convertToRawIndexTaskConfigs = new HashMap<>();
+    convertToRawIndexTaskConfigs.put(MinionConstants.TABLE_MAX_NUM_TASKS_KEY, "5");
+    convertToRawIndexTaskConfigs.put(ConvertToRawIndexTask.COLUMNS_TO_CONVERT_KEY, COLUMNS_TO_CONVERT);
+    taskConfigs.put(ConvertToRawIndexTask.TASK_TYPE, convertToRawIndexTaskConfigs);
+    tableConfig.setTaskConfig(new TableTaskConfig(taskConfigs));
+    updateTableConfig(tableConfig);
 
     File testDataDir = new File(CommonConstants.Server.DEFAULT_INSTANCE_DATA_DIR + "-0", offlineTableName);
     if (!testDataDir.isDirectory()) {
@@ -115,9 +122,6 @@ public class ConvertToRawIndexMinionClusterIntegrationTest extends HybridCluster
 
     // Should generate one more ConvertToRawIndexTask task with 3 child tasks
     Assert.assertTrue(_taskManager.scheduleTasks().containsKey(ConvertToRawIndexTask.TASK_TYPE));
-
-    // Should not generate more tasks
-    Assert.assertFalse(_taskManager.scheduleTasks().containsKey(ConvertToRawIndexTask.TASK_TYPE));
 
     // Wait at most 600 seconds for all tasks COMPLETED and new segments refreshed
     TestUtils.waitForCondition(input -> {
@@ -170,7 +174,7 @@ public class ConvertToRawIndexMinionClusterIntegrationTest extends HybridCluster
     }, 600_000L, "Failed to get all tasks COMPLETED and new segments refreshed");
   }
 
-  @Test
+  @Test(priority = 1)
   public void testPinotHelixResourceManagerAPIs() {
     // Instance APIs
     Assert.assertEquals(_helixResourceManager.getAllInstances().size(), 5);
@@ -192,6 +196,116 @@ public class ConvertToRawIndexMinionClusterIntegrationTest extends HybridCluster
     // Tenant APIs
     Assert.assertEquals(_helixResourceManager.getAllBrokerTenantNames(), Collections.singleton("TestTenant"));
     Assert.assertEquals(_helixResourceManager.getAllServerTenantNames(), Collections.singleton("TestTenant"));
+  }
+
+  @Test(priority = 2)
+  public void testMergeRollup()
+      throws Exception {
+    String offlineTableName = TableNameBuilder.OFFLINE.tableNameWithType(getTableName());
+
+    // Configure MergeRollupTask
+    TableConfig tableConfig = getOfflineTableConfig();
+    Map<String, Map<String, String>> taskConfigs = new HashMap<>();
+    Map<String, String> mergeRollupConfigs = new HashMap<>();
+    mergeRollupConfigs.put(MinionConstants.TABLE_MAX_NUM_TASKS_KEY, "5");
+    mergeRollupConfigs.put(MergeRollupTask.MAX_NUM_SEGMENTS_PER_TASK_KEY, "3");
+    taskConfigs.put(MergeRollupTask.TASK_TYPE, mergeRollupConfigs);
+    tableConfig.setTaskConfig(new TableTaskConfig(taskConfigs));
+    updateTableConfig(tableConfig);
+
+    // Schedule merge task
+    Assert.assertTrue(_taskManager.scheduleTasks().containsKey(MinionConstants.MergeRollupTask.TASK_TYPE));
+    Assert.assertTrue(_helixTaskResourceManager.getTaskQueues()
+        .contains(PinotHelixTaskResourceManager.getHelixJobQueueName(MinionConstants.MergeRollupTask.TASK_TYPE)));
+
+    // Wait at most 600 seconds for all tasks COMPLETED
+    waitForMergeTaskToComplete(offlineTableName);
+
+    // Check with the queries
+    super.testHardcodedSqlQueries();
+    super.testHardcodedQueries();
+  }
+
+  private void waitForMergeTaskToComplete(String offlineTableName) {
+    TestUtils.waitForCondition(input -> {
+      // Check task state
+      for (TaskState taskState : _helixTaskResourceManager.getTaskStates(MinionConstants.MergeRollupTask.TASK_TYPE)
+          .values()) {
+        if (taskState != TaskState.COMPLETED) {
+          return false;
+        }
+      }
+
+      // Check segment ZK metadata
+      SegmentLineage segmentLineage = _taskManager.getClusterInfoAccessor().getSegmentLineage(offlineTableName);
+      for (String entryId : segmentLineage.getLineageEntryIds()) {
+        LineageEntry lineageEntry = segmentLineage.getLineageEntry(entryId);
+        if (lineageEntry.getState() != LineageEntryState.COMPLETED) {
+          return false;
+        }
+      }
+      return true;
+    }, 600_000L, "Failed to get all tasks COMPLETED and new segments refreshed");
+  }
+
+  @Test(enabled = false)
+  public void testSegmentListApi() {
+  }
+
+  @Test(enabled = false)
+  public void testBrokerDebugOutput() {
+  }
+
+  @Test(enabled = false)
+  public void testBrokerDebugRoutingTableSQL() {
+  }
+
+  @Test(enabled = false)
+  public void testBrokerResponseMetadata() {
+  }
+
+  @Test(enabled = false)
+  public void testDictionaryBasedQueries() {
+  }
+
+  @Test(enabled = false)
+  public void testGeneratedQueriesWithMultiValues() {
+  }
+
+  @Test(enabled = false)
+  public void testGeneratedQueriesWithoutMultiValues() {
+  }
+
+  @Test(enabled = false)
+  public void testHardcodedQueries() {
+  }
+
+  @Test(enabled = false)
+  public void testHardcodedSqlQueries() {
+  }
+
+  @Test(enabled = false)
+  public void testInstanceShutdown() {
+  }
+
+  @Test(enabled = false)
+  public void testQueriesFromQueryFile() {
+  }
+
+  @Test(enabled = false)
+  public void testQueryExceptions() {
+  }
+
+  @Test(enabled = false)
+  public void testReload() {
+  }
+
+  @Test(enabled = false)
+  public void testSqlQueriesFromQueryFile() {
+  }
+
+  @Test(enabled = false)
+  public void testVirtualColumnQueries() {
   }
 
   @AfterClass

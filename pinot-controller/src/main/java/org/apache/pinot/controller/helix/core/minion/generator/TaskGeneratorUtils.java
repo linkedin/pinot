@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nonnull;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.helix.task.TaskState;
 import org.apache.pinot.common.data.Segment;
 import org.apache.pinot.controller.helix.core.minion.ClusterInfoAccessor;
@@ -43,8 +43,7 @@ public class TaskGeneratorUtils {
    * @param clusterInfoAccessor Cluster info accessor
    * @return Set of running segments
    */
-  public static Set<Segment> getRunningSegments(@Nonnull String taskType,
-      @Nonnull ClusterInfoAccessor clusterInfoAccessor) {
+  public static Set<Segment> getRunningSegments(String taskType, ClusterInfoAccessor clusterInfoAccessor) {
     Set<Segment> runningSegments = new HashSet<>();
     Map<String, TaskState> taskStates = clusterInfoAccessor.getTaskStates(taskType);
     for (Map.Entry<String, TaskState> entry : taskStates.entrySet()) {
@@ -103,5 +102,41 @@ public class TaskGeneratorUtils {
     long scheduleTimeMs =
         Long.parseLong(taskName.substring(taskName.lastIndexOf(PinotHelixTaskResourceManager.TASK_NAME_SEPARATOR) + 1));
     return System.currentTimeMillis() - scheduleTimeMs > ONE_DAY_IN_MILLIS;
+  }
+
+  /**
+   * Get all the segments that are scheduled for all existing tables.
+   *
+   * @param taskType Task type
+   * @param clusterInfoAccessor Cluster info accessor
+   * @return a map of table name as a key and the list of scheduled segments as the value.
+   */
+  public static Map<String, Set<String>> getScheduledSegmentsMap(String taskType,
+      ClusterInfoAccessor clusterInfoAccessor) {
+    Map<String, Set<String>> scheduledSegments = new HashMap<>();
+    Map<String, TaskState> taskStates = clusterInfoAccessor.getTaskStates(taskType);
+    for (Map.Entry<String, TaskState> entry : taskStates.entrySet()) {
+      // Skip COMPLETED tasks
+      if (entry.getValue() == TaskState.COMPLETED) {
+        continue;
+      }
+
+      // Skip tasks scheduled for more than one day
+      String taskName = entry.getKey();
+      if (isTaskOlderThanOneDay(taskName)) {
+        continue;
+      }
+
+      for (PinotTaskConfig pinotTaskConfig : clusterInfoAccessor.getTaskConfigs(entry.getKey())) {
+        Map<String, String> configs = pinotTaskConfig.getConfigs();
+        Set<String> scheduledSegmentsForTable =
+            scheduledSegments.computeIfAbsent(configs.get(MinionConstants.TABLE_NAME_KEY), k -> new HashSet<>());
+        String segmentNameStr = configs.get(MinionConstants.SEGMENT_NAME_KEY);
+        for (String segmentName : StringUtils.split(segmentNameStr, ',')) {
+          scheduledSegmentsForTable.add(segmentName.trim());
+        }
+      }
+    }
+    return scheduledSegments;
   }
 }
