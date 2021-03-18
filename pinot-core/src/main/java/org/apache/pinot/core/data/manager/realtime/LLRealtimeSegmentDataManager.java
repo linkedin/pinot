@@ -48,6 +48,7 @@ import org.apache.pinot.common.protocols.SegmentCompletionProtocol;
 import org.apache.pinot.common.utils.CommonConstants.Segment.Realtime.CompletionMode;
 import org.apache.pinot.common.utils.LLCSegmentName;
 import org.apache.pinot.common.utils.TarGzCompressionUtils;
+import org.apache.pinot.core.data.manager.realtime.RealtimeConsumptionRateManager.ConsumptionRateLimiter;
 import org.apache.pinot.core.data.partition.PartitionFunctionFactory;
 import org.apache.pinot.core.data.recordtransformer.CompositeTransformer;
 import org.apache.pinot.core.data.recordtransformer.RecordTransformer;
@@ -279,6 +280,8 @@ public class LLRealtimeSegmentDataManager extends RealtimeSegmentDataManager {
   private final boolean _nullHandlingEnabled;
   private final SegmentCommitterFactory _segmentCommitterFactory;
 
+  private final ConsumptionRateLimiter _rateLimiter;
+
   // TODO each time this method is called, we print reason for stop. Good to print only once.
   private boolean endCriteriaReached() {
     Preconditions.checkState(_state.shouldConsume(), "Incorrect state %s", _state);
@@ -460,6 +463,8 @@ public class LLRealtimeSegmentDataManager extends RealtimeSegmentDataManager {
                 _segmentMaxRowCount);
         throw new RuntimeException("Realtime segment full");
       }
+
+      _rateLimiter.throttle();
 
       // Index each message
       reuse.clear();
@@ -1138,6 +1143,9 @@ public class LLRealtimeSegmentDataManager extends RealtimeSegmentDataManager {
     _memoryManager = getMemoryManager(realtimeTableDataManager.getConsumerDir(), _segmentNameStr,
         indexLoadingConfig.isRealtimeOffHeapAllocation(), indexLoadingConfig.isDirectRealtimeOffHeapAllocation(),
         serverMetrics);
+
+    _rateLimiter = RealtimeConsumptionRateManager.getInstance()
+        .createRateLimiterForMultiPartitionTopic(_partitionLevelStreamConfig);
 
     List<String> sortedColumns = indexLoadingConfig.getSortedColumns();
     if (sortedColumns.isEmpty()) {
