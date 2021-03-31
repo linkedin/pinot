@@ -23,13 +23,13 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.pinot.core.data.readers.IntermediateSegmentRecordReader;
@@ -61,13 +61,11 @@ import org.apache.pinot.spi.data.IngestionSchemaValidator;
 import org.apache.pinot.spi.data.Schema;
 import org.apache.pinot.spi.data.SchemaValidatorFactory;
 import org.apache.pinot.spi.data.readers.FileFormat;
-import org.apache.pinot.spi.data.readers.GenericRow;
 import org.apache.pinot.spi.data.readers.RecordReader;
 import org.apache.pinot.spi.data.readers.RecordReaderFactory;
 import org.apache.pinot.spi.utils.ByteArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Implementation of an index segment creator.
@@ -88,9 +86,6 @@ public class SegmentIndexCreationDriverImpl implements SegmentIndexCreationDrive
   private int totalDocs = 0;
   private File tempIndexDir;
   private String segmentName;
-  private long totalRecordReadTime = 0;
-  private long totalIndexTime = 0;
-  private long totalStatsCollectorTime = 0;
 
   @Override
   public void init(SegmentGeneratorConfig config)
@@ -203,38 +198,13 @@ public class SegmentIndexCreationDriverImpl implements SegmentIndexCreationDrive
       // Build the index
       recordReader.rewind();
       LOGGER.info("Start building IndexCreator!");
-      GenericRow reuse = new GenericRow();
-      while (recordReader.hasNext()) {
-        long recordReadStartTime = System.currentTimeMillis();
-        long recordReadStopTime;
-        long indexStopTime;
-        reuse.clear();
-        GenericRow decodedRow = recordReader.next(reuse);
-        if (decodedRow.getValue(GenericRow.MULTIPLE_RECORDS_KEY) != null) {
-          recordReadStopTime = System.currentTimeMillis();
-          totalRecordReadTime += (recordReadStopTime - recordReadStartTime);
-          for (Object singleRow : (Collection) decodedRow.getValue(GenericRow.MULTIPLE_RECORDS_KEY)) {
-            recordReadStartTime = System.currentTimeMillis();
-            GenericRow transformedRow = _recordTransformer.transform((GenericRow) singleRow);
-            recordReadStopTime = System.currentTimeMillis();
-            totalRecordReadTime += (recordReadStopTime - recordReadStartTime);
-            if (transformedRow != null && IngestionUtils.shouldIngestRow(transformedRow)) {
-              indexCreator.indexRow(transformedRow);
-              indexStopTime = System.currentTimeMillis();
-              totalIndexTime += (indexStopTime - recordReadStopTime);
-            }
-          }
-        } else {
-          GenericRow transformedRow = _recordTransformer.transform(decodedRow);
-          recordReadStopTime = System.currentTimeMillis();
-          totalRecordReadTime += (recordReadStopTime - recordReadStartTime);
-          if (transformedRow != null && IngestionUtils.shouldIngestRow(transformedRow)) {
-            indexCreator.indexRow(transformedRow);
-            indexStopTime = System.currentTimeMillis();
-            totalIndexTime += (indexStopTime - recordReadStopTime);
-          }
-        }
-      }
+
+      CountDownLatch startupLatch = new CountDownLatch(1);
+
+      SegmentIndexRingBufferConsumer consumer = new SegmentIndexRingBufferConsumer(_recordTransformer, indexCreator, startupLatch);
+      ParallelRowProcessor parallelRowProcessor = new ParallelRowProcessor(recordReader, consumer);
+
+      parallelRowProcessor.run(startupLatch);
     } catch (Exception e) {
       indexCreator.close();
       throw e;
@@ -314,10 +284,6 @@ public class SegmentIndexCreationDriverImpl implements SegmentIndexCreationDrive
 
     // Persist creation metadata to disk
     persistCreationMeta(segmentOutputDir, crc, creationTime);
-
-    LOGGER.info("Driver, record read time : {}", totalRecordReadTime);
-    LOGGER.info("Driver, stats collector time : {}", totalStatsCollectorTime);
-    LOGGER.info("Driver, indexing time : {}", totalIndexTime);
   }
 
   private void buildStarTreeV2IfNecessary(File indexDir)
