@@ -22,6 +22,7 @@ import com.google.common.annotations.VisibleForTesting;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.concurrent.ThreadSafe;
+import jdk.nashorn.internal.ir.debug.ObjectSizeCalculator;
 import org.apache.pinot.common.metrics.ServerGauge;
 import org.apache.pinot.common.metrics.ServerMetrics;
 import org.apache.pinot.common.utils.LLCSegmentName;
@@ -135,6 +136,8 @@ public class PartitionUpsertMetadataManager {
     // Update metrics
     _serverMetrics.setValueOfPartitionGauge(_tableNameWithType, _partitionId, ServerGauge.UPSERT_PRIMARY_KEYS_COUNT,
         _primaryKeyToRecordLocationMap.size());
+    _serverMetrics.setValueOfPartitionGauge(_tableNameWithType, _partitionId, ServerGauge.UPSERT_METADATA_MEMORY_USED,
+        ObjectSizeCalculator.getObjectSize(_primaryKeyToRecordLocationMap));
     return validDocIds;
   }
 
@@ -164,6 +167,8 @@ public class PartitionUpsertMetadataManager {
     // Update metrics
     _serverMetrics.setValueOfPartitionGauge(_tableNameWithType, _partitionId, ServerGauge.UPSERT_PRIMARY_KEYS_COUNT,
         _primaryKeyToRecordLocationMap.size());
+    _serverMetrics.setValueOfPartitionGauge(_tableNameWithType, _partitionId, ServerGauge.UPSERT_METADATA_MEMORY_USED,
+        ObjectSizeCalculator.getObjectSize(_primaryKeyToRecordLocationMap));
   }
 
   /**
@@ -185,6 +190,8 @@ public class PartitionUpsertMetadataManager {
     // Update metrics
     _serverMetrics.setValueOfPartitionGauge(_tableNameWithType, _partitionId, ServerGauge.UPSERT_PRIMARY_KEYS_COUNT,
         _primaryKeyToRecordLocationMap.size());
+    _serverMetrics.setValueOfPartitionGauge(_tableNameWithType, _partitionId, ServerGauge.UPSERT_METADATA_MEMORY_USED,
+        ObjectSizeCalculator.getObjectSize(_primaryKeyToRecordLocationMap));
   }
 
   public static final class RecordInfo {

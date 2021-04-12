@@ -44,6 +44,7 @@ public enum ServerGauge implements AbstractMetrics.Gauge {
   RESIZE_TIME_MS("milliseconds", false),
   EXECUTION_THREAD_CPU_TIME_NS("nanoseconds", false),
   // Upsert metrics
+  UPSERT_METADATA_MEMORY_USED("bytes", false),
   UPSERT_PRIMARY_KEYS_COUNT("upsertPrimaryKeysCount", false);
 
   private final String gaugeName;
