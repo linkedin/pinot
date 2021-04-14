@@ -72,6 +72,8 @@ public class StartServiceManagerCommand extends AbstractBaseAdminCommand impleme
   private String[] _bootstrapConfigPaths;
   @Option(name = "-bootstrapServices", handler = StringArrayOptionHandler.class, required = false, usage = "A list of Pinot service roles to start with default config. E.g. CONTROLLER/BROKER/SERVER", forbids = {"-bootstrapConfigPaths"})
   private String[] _bootstrapServices = BOOTSTRAP_SERVICES;
+  @Option(name = "-healthCheckServices", handler = StringArrayOptionHandler.class, required = false, usage = "A list of Pinot service roles to be included in health check. E.g. CONTROLLER/BROKER/SERVER")
+  private String[] _healthCheckServices = BOOTSTRAP_SERVICES;
 
   private PinotServiceManager _pinotServiceManager;
 
@@ -117,6 +119,15 @@ public class StartServiceManagerCommand extends AbstractBaseAdminCommand impleme
 
   public StartServiceManagerCommand setBootstrapServices(String[] bootstrapServices) {
     _bootstrapServices = bootstrapServices;
+    return this;
+  }
+
+  public String[] getHealthCheckServices() {
+    return _healthCheckServices;
+  }
+
+  public StartServiceManagerCommand setHealthCheckServices(String[] healthCheckServices) {
+    _healthCheckServices = healthCheckServices;
     return this;
   }
 
@@ -194,7 +205,7 @@ public class StartServiceManagerCommand extends AbstractBaseAdminCommand impleme
   }
 
   private String startServiceManager() {
-    _pinotServiceManager = new PinotServiceManager(_zkAddress, _clusterName, _port);
+    _pinotServiceManager = new PinotServiceManager(_zkAddress, _clusterName, _port, _healthCheckServices);
     _pinotServiceManager.start();
     return _pinotServiceManager.getInstanceId();
   }

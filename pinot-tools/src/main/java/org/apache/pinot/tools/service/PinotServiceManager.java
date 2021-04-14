@@ -20,10 +20,14 @@ package org.apache.pinot.tools.service;
 
 import static org.apache.pinot.tools.utils.PinotConfigUtils.getAvailablePort;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import java.util.stream.Collectors;
 import org.apache.pinot.broker.broker.helix.HelixBrokerStarter;
 import org.apache.pinot.common.utils.NetUtil;
 import org.apache.pinot.common.utils.ServiceStatus;
@@ -55,18 +59,19 @@ public class PinotServiceManager {
   private final String _clusterName;
   private final int _port;
   private final String _instanceId;
+  private final Set<String> _healthCheckServices;
   private PinotServiceManagerAdminApiApplication _pinotServiceManagerAdminApplication;
   private boolean _isStarted = false;
 
   public PinotServiceManager(String zkAddress, String clusterName) {
-    this(zkAddress, clusterName, 0);
+    this(zkAddress, clusterName, 0, null);
   }
 
-  public PinotServiceManager(String zkAddress, String clusterName, int port) {
-    this(zkAddress, clusterName, null, port);
+  public PinotServiceManager(String zkAddress, String clusterName, int port, String[] healthCheckServices) {
+    this(zkAddress, clusterName, null, port, healthCheckServices);
   }
 
-  public PinotServiceManager(String zkAddress, String clusterName, String hostname, int port) {
+  public PinotServiceManager(String zkAddress, String clusterName, String hostname, int port, String[] healthCheckServices) {
     _zkAddress = zkAddress;
     _clusterName = clusterName;
     if (port == 0) {
@@ -77,10 +82,15 @@ public class PinotServiceManager {
       hostname = NetUtil.getHostnameOrAddress();
     }
     _instanceId = String.format("ServiceManager_%s_%d", hostname, port);
+    if (healthCheckServices == null) {
+      _healthCheckServices = Collections.emptySet();
+    } else {
+      _healthCheckServices = Arrays.asList(healthCheckServices).stream().map(s -> s.toUpperCase()).collect(Collectors.toSet());
+    }
   }
 
   public static void main(String[] args) {
-    PinotServiceManager pinotServiceManager = new PinotServiceManager("localhost:2181", "pinot-demo", 8085);
+    PinotServiceManager pinotServiceManager = new PinotServiceManager("localhost:2181", "pinot-demo", 8085, null);
     pinotServiceManager.start();
   }
 
@@ -242,5 +252,9 @@ public class PinotServiceManager {
 
   public boolean stopPinotInstanceById(String instanceName) {
     return stopPinotInstance(_runningInstanceMap.get(instanceName));
+  }
+
+  public Set<String> getHealthCheckServices() {
+    return _healthCheckServices;
   }
 }
