@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * This class models the aggregation and aggregationGroupBy sections of query response.
  */
-@JsonPropertyOrder({"groupByResult", "function", "groupByColumns"})
+@JsonPropertyOrder({ "groupByResult", "function", "groupByColumns" })
 public class AggregationResult {
 
   private Serializable _value;

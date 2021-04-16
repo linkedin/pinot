@@ -28,12 +28,12 @@ public class PrimaryKeyTest {
 
   @Test
   public void testPrimaryKeyComparison() {
-    PrimaryKey left = new PrimaryKey(new Object[]{"111", 2});
-    PrimaryKey right = new PrimaryKey(new Object[]{"111", 2});
+    PrimaryKey left = new PrimaryKey(new Object[] { "111", 2 });
+    PrimaryKey right = new PrimaryKey(new Object[] { "111", 2 });
     assertEquals(left, right);
     assertEquals(left.hashCode(), right.hashCode());
 
-    right = new PrimaryKey(new Object[]{"222", 2});
+    right = new PrimaryKey(new Object[] { "222", 2 });
     assertNotEquals(left, right);
     assertNotEquals(left.hashCode(), right.hashCode());
   }

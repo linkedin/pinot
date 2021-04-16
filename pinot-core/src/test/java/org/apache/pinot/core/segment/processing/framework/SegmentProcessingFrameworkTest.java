@@ -70,28 +70,28 @@ public class SegmentProcessingFrameworkTest {
   private Schema _pinotSchema;
   private Schema _pinotSchemaMV;
   private TableConfig _tableConfig;
-  private final List<Object[]> _rawDataMultipleDays = Lists
-      .newArrayList(new Object[]{"abc", 1000, 1597719600000L}, new Object[]{"pqr", 2000, 1597773600000L},
-          new Object[]{"abc", 1000, 1597777200000L}, new Object[]{"abc", 4000, 1597795200000L},
-          new Object[]{"abc", 3000, 1597802400000L}, new Object[]{"pqr", 1000, 1597838400000L},
-          new Object[]{"xyz", 4000, 1597856400000L}, new Object[]{"pqr", 1000, 1597878000000L},
-          new Object[]{"abc", 7000, 1597881600000L}, new Object[]{"xyz", 6000, 1597892400000L});
+  private final List<Object[]> _rawDataMultipleDays =
+      Lists.newArrayList(new Object[] { "abc", 1000, 1597719600000L }, new Object[] { "pqr", 2000, 1597773600000L },
+          new Object[] { "abc", 1000, 1597777200000L }, new Object[] { "abc", 4000, 1597795200000L },
+          new Object[] { "abc", 3000, 1597802400000L }, new Object[] { "pqr", 1000, 1597838400000L },
+          new Object[] { "xyz", 4000, 1597856400000L }, new Object[] { "pqr", 1000, 1597878000000L },
+          new Object[] { "abc", 7000, 1597881600000L }, new Object[] { "xyz", 6000, 1597892400000L });
 
-  private final List<Object[]> _rawDataSingleDay = Lists
-      .newArrayList(new Object[]{"abc", 1000, 1597795200000L}, new Object[]{"pqr", 2000, 1597795200000L},
-          new Object[]{"abc", 1000, 1597795200000L}, new Object[]{"abc", 4000, 1597795200000L},
-          new Object[]{"abc", 3000, 1597795200000L}, new Object[]{"pqr", 1000, 1597795200000L},
-          new Object[]{"xyz", 4000, 1597795200000L}, new Object[]{"pqr", 1000, 1597795200000L},
-          new Object[]{"abc", 7000, 1597795200000L}, new Object[]{"xyz", 6000, 1597795200000L});
+  private final List<Object[]> _rawDataSingleDay =
+      Lists.newArrayList(new Object[] { "abc", 1000, 1597795200000L }, new Object[] { "pqr", 2000, 1597795200000L },
+          new Object[] { "abc", 1000, 1597795200000L }, new Object[] { "abc", 4000, 1597795200000L },
+          new Object[] { "abc", 3000, 1597795200000L }, new Object[] { "pqr", 1000, 1597795200000L },
+          new Object[] { "xyz", 4000, 1597795200000L }, new Object[] { "pqr", 1000, 1597795200000L },
+          new Object[] { "abc", 7000, 1597795200000L }, new Object[] { "xyz", 6000, 1597795200000L });
 
-  private final List<Object[]> _multiValue = Lists
-      .newArrayList(new Object[]{new String[]{"a", "b"}, 1000, 1597795200000L},
-          new Object[]{new String[]{"a"}, 1000, 1597795200000L}, new Object[]{new String[]{"a"}, 1000, 1597795200000L},
-          new Object[]{new String[]{"a", "b"}, 1000, 1597795200000L});
+  private final List<Object[]> _multiValue =
+      Lists.newArrayList(new Object[] { new String[] { "a", "b" }, 1000, 1597795200000L },
+          new Object[] { new String[] { "a" }, 1000, 1597795200000L },
+          new Object[] { new String[] { "a" }, 1000, 1597795200000L },
+          new Object[] { new String[] { "a", "b" }, 1000, 1597795200000L });
 
   @BeforeClass
-  public void setup()
-      throws Exception {
+  public void setup() throws Exception {
     _tableConfig =
         new TableConfigBuilder(TableType.OFFLINE).setTableName("myTable").setTimeColumnName("timeValue").build();
     _pinotSchema = new Schema.SchemaBuilder().setSchemaName("mySchema")
@@ -178,8 +178,7 @@ public class SegmentProcessingFrameworkTest {
   }
 
   @Test
-  public void testBadInputFolders()
-      throws Exception {
+  public void testBadInputFolders() throws Exception {
     SegmentProcessorConfig config;
 
     try {
@@ -256,8 +255,7 @@ public class SegmentProcessingFrameworkTest {
   }
 
   @Test
-  public void testSingleDaySingleSegment()
-      throws Exception {
+  public void testSingleDaySingleSegment() throws Exception {
 
     SegmentProcessorConfig config =
         new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema).build();
@@ -276,10 +274,11 @@ public class SegmentProcessingFrameworkTest {
     assertEquals(segmentMetadata.getTotalDocs(), 10);
 
     // partitioning
-    config = new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
-        .setPartitionerConfigs(Lists.newArrayList(
-            new PartitionerConfig.Builder().setPartitionerType(PartitionerFactory.PartitionerType.ROUND_ROBIN)
-                .setNumPartitions(3).build())).build();
+    config =
+        new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
+            .setPartitionerConfigs(Lists.newArrayList(new PartitionerConfig.Builder()
+                .setPartitionerType(PartitionerFactory.PartitionerType.ROUND_ROBIN).setNumPartitions(3).build()))
+            .build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
     framework = new SegmentProcessorFramework(_singleDaySingleSegment, config, outputSegmentDir);
@@ -295,10 +294,12 @@ public class SegmentProcessingFrameworkTest {
     assertEquals(totalDocs, 10);
 
     // record filtering
-    config = new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
-        .setRecordFilterConfig(
-            new RecordFilterConfig.Builder().setRecordFilterType(RecordFilterFactory.RecordFilterType.FILTER_FUNCTION)
-                .setFilterFunction("Groovy({campaign == \"abc\"}, campaign)").build()).build();
+    config =
+        new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
+            .setRecordFilterConfig(new RecordFilterConfig.Builder()
+                .setRecordFilterType(RecordFilterFactory.RecordFilterType.FILTER_FUNCTION)
+                .setFilterFunction("Groovy({campaign == \"abc\"}, campaign)").build())
+            .build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
     framework = new SegmentProcessorFramework(_singleDaySingleSegment, config, outputSegmentDir);
@@ -309,10 +310,12 @@ public class SegmentProcessingFrameworkTest {
     assertEquals(segmentMetadata.getTotalDocs(), 5);
 
     // filtered everything
-    config = new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
-        .setRecordFilterConfig(
-            new RecordFilterConfig.Builder().setRecordFilterType(RecordFilterFactory.RecordFilterType.FILTER_FUNCTION)
-                .setFilterFunction("Groovy({clicks > 0}, clicks)").build()).build();
+    config =
+        new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
+            .setRecordFilterConfig(new RecordFilterConfig.Builder()
+                .setRecordFilterType(RecordFilterFactory.RecordFilterType.FILTER_FUNCTION)
+                .setFilterFunction("Groovy({clicks > 0}, clicks)").build())
+            .build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
     framework = new SegmentProcessorFramework(_singleDaySingleSegment, config, outputSegmentDir);
@@ -326,9 +329,11 @@ public class SegmentProcessingFrameworkTest {
     // record transformation
     Map<String, String> recordTransformationMap = new HashMap<>();
     recordTransformationMap.put("clicks", "times(clicks, 0)");
-    config = new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
-        .setRecordTransformerConfig(
-            new RecordTransformerConfig.Builder().setTransformFunctionsMap(recordTransformationMap).build()).build();
+    config =
+        new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
+            .setRecordTransformerConfig(
+                new RecordTransformerConfig.Builder().setTransformFunctionsMap(recordTransformationMap).build())
+            .build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
     framework = new SegmentProcessorFramework(_singleDaySingleSegment, config, outputSegmentDir);
@@ -340,8 +345,8 @@ public class SegmentProcessingFrameworkTest {
     assertEquals(segmentMetadata.getColumnMetadataFor("clicks").getCardinality(), 1);
 
     // collection
-    config = new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
-        .setCollectorConfig(
+    config =
+        new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema).setCollectorConfig(
             new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP).build()).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
@@ -372,8 +377,7 @@ public class SegmentProcessingFrameworkTest {
   }
 
   @Test
-  public void testMultipleDaysSingleSegment()
-      throws Exception {
+  public void testMultipleDaysSingleSegment() throws Exception {
     SegmentProcessorConfig config =
         new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema).build();
 
@@ -393,9 +397,9 @@ public class SegmentProcessingFrameworkTest {
 
     // date partition
     config = new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
-        .setPartitionerConfigs(Lists.newArrayList(
-            new PartitionerConfig.Builder().setPartitionerType(PartitionerFactory.PartitionerType.COLUMN_VALUE)
-                .setColumnName("timeValue").build())).build();
+        .setPartitionerConfigs(Lists.newArrayList(new PartitionerConfig.Builder()
+            .setPartitionerType(PartitionerFactory.PartitionerType.COLUMN_VALUE).setColumnName("timeValue").build()))
+        .build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
     framework = new SegmentProcessorFramework(_multipleDaysSingleSegment, config, outputSegmentDir);
@@ -409,8 +413,7 @@ public class SegmentProcessingFrameworkTest {
   }
 
   @Test
-  public void testSingleDayMultipleSegments()
-      throws Exception {
+  public void testSingleDayMultipleSegments() throws Exception {
     SegmentProcessorConfig config =
         new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema).build();
 
@@ -429,8 +432,8 @@ public class SegmentProcessingFrameworkTest {
     assertEquals(segmentMetadata.getTotalDocs(), 10);
 
     // collection
-    config = new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
-        .setCollectorConfig(
+    config =
+        new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema).setCollectorConfig(
             new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP).build()).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
@@ -444,8 +447,7 @@ public class SegmentProcessingFrameworkTest {
   }
 
   @Test
-  public void testMultipleDaysMultipleSegments()
-      throws Exception {
+  public void testMultipleDaysMultipleSegments() throws Exception {
     SegmentProcessorConfig config =
         new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema).build();
 
@@ -464,10 +466,12 @@ public class SegmentProcessingFrameworkTest {
     assertEquals(segmentMetadata.getTotalDocs(), 10);
 
     // date partition
-    config = new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
-        .setPartitionerConfigs(Lists.newArrayList(
-            new PartitionerConfig.Builder().setPartitionerType(PartitionerFactory.PartitionerType.TRANSFORM_FUNCTION)
-                .setTransformFunction("round(timeValue, 86400000)").build())).build();
+    config =
+        new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
+            .setPartitionerConfigs(Lists.newArrayList(new PartitionerConfig.Builder()
+                .setPartitionerType(PartitionerFactory.PartitionerType.TRANSFORM_FUNCTION)
+                .setTransformFunction("round(timeValue, 86400000)").build()))
+            .build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
     framework = new SegmentProcessorFramework(_multipleDaysSingleSegment, config, outputSegmentDir);
@@ -487,10 +491,11 @@ public class SegmentProcessingFrameworkTest {
     config = new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema)
         .setRecordTransformerConfig(
             new RecordTransformerConfig.Builder().setTransformFunctionsMap(recordTransformationMap).build())
-        .setPartitionerConfigs(Lists.newArrayList(
-            new PartitionerConfig.Builder().setPartitionerType(PartitionerFactory.PartitionerType.COLUMN_VALUE)
-                .setColumnName("timeValue").build())).setCollectorConfig(
-            new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP).build()).build();
+        .setPartitionerConfigs(Lists.newArrayList(new PartitionerConfig.Builder()
+            .setPartitionerType(PartitionerFactory.PartitionerType.COLUMN_VALUE).setColumnName("timeValue").build()))
+        .setCollectorConfig(
+            new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP).build())
+        .build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
     framework = new SegmentProcessorFramework(_multipleDaysSingleSegment, config, outputSegmentDir);
@@ -507,8 +512,7 @@ public class SegmentProcessingFrameworkTest {
   }
 
   @Test
-  public void testMultiValue()
-      throws Exception {
+  public void testMultiValue() throws Exception {
     // Multi-value
     File outputSegmentDir = new File(_baseDir, "output_directory_multivalue");
 
@@ -527,8 +531,7 @@ public class SegmentProcessingFrameworkTest {
   }
 
   @Test
-  public void testTarredSegments()
-      throws Exception {
+  public void testTarredSegments() throws Exception {
     SegmentProcessorConfig config =
         new SegmentProcessorConfig.Builder().setTableConfig(_tableConfig).setSchema(_pinotSchema).build();
     File outputSegmentDir = new File(_baseDir, "output_directory_tarred_seg");

@@ -117,8 +117,8 @@ public class FixedByteMVMutableForwardIndex implements MutableForwardIndex {
   private FixedByteSingleValueMultiColWriter _curHeaderWriter;
   private FixedByteSingleValueMultiColWriter _currentDataWriter;
   private int _currentCapacity = 0;
-  private int _prevRowStartIndex = 0;  // Offset in the data-buffer for the last row added.
-  private int _prevRowLength = 0;  // Number of values in the column for the last row added.
+  private int _prevRowStartIndex = 0; // Offset in the data-buffer for the last row added.
+  private int _prevRowLength = 0; // Number of values in the column for the last row added.
 
   public FixedByteMVMutableForwardIndex(int maxNumberOfMultiValuesPerRow, int avgMultiValueCount, int rowCountPerChunk,
       int columnSizeInBytes, PinotDataBufferMemoryManager memoryManager, String context) {
@@ -144,10 +144,10 @@ public class FixedByteMVMutableForwardIndex implements MutableForwardIndex {
     PinotDataBuffer headerBuffer = _memoryManager.allocate(_headerSize, _context);
     // dataBufferId, startIndex, length
     _curHeaderWriter =
-        new FixedByteSingleValueMultiColWriter(headerBuffer, 3, new int[]{SIZE_OF_INT, SIZE_OF_INT, SIZE_OF_INT});
+        new FixedByteSingleValueMultiColWriter(headerBuffer, 3, new int[] { SIZE_OF_INT, SIZE_OF_INT, SIZE_OF_INT });
     _headerWriters.add(_curHeaderWriter);
     _headerReaders.add(new FixedByteSingleValueMultiColReader(headerBuffer, _rowCountPerChunk,
-        new int[]{SIZE_OF_INT, SIZE_OF_INT, SIZE_OF_INT}));
+        new int[] { SIZE_OF_INT, SIZE_OF_INT, SIZE_OF_INT }));
   }
 
   /**
@@ -160,9 +160,10 @@ public class FixedByteMVMutableForwardIndex implements MutableForwardIndex {
       LOGGER.info("Allocating data buffer of size {} for column {}", size, _context);
       // NOTE: PinotDataBuffer is tracked in PinotDataBufferMemoryManager. No need to track and close inside the class.
       PinotDataBuffer dataBuffer = _memoryManager.allocate(size, _context);
-      _currentDataWriter = new FixedByteSingleValueMultiColWriter(dataBuffer, 1, new int[]{_columnSizeInBytes});
+      _currentDataWriter = new FixedByteSingleValueMultiColWriter(dataBuffer, 1, new int[] { _columnSizeInBytes });
       _dataWriters.add(_currentDataWriter);
-      _dataReaders.add(new FixedByteSingleValueMultiColReader(dataBuffer, rowCapacity, new int[]{_columnSizeInBytes}));
+      _dataReaders
+          .add(new FixedByteSingleValueMultiColReader(dataBuffer, rowCapacity, new int[] { _columnSizeInBytes }));
       //update the capacity
       _currentCapacity = rowCapacity;
     } catch (Exception e) {
@@ -332,8 +333,7 @@ public class FixedByteMVMutableForwardIndex implements MutableForwardIndex {
   }
 
   @Override
-  public void close()
-      throws IOException {
+  public void close() throws IOException {
     for (FixedByteSingleValueMultiColWriter writer : _headerWriters) {
       writer.close();
     }

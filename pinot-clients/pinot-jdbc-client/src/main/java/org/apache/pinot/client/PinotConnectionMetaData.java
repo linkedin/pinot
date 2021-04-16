@@ -58,32 +58,27 @@ public class PinotConnectionMetaData extends AbstractBaseConnectionMetaData {
   }
 
   @Override
-  public String getURL()
-      throws SQLException {
+  public String getURL() throws SQLException {
     return DriverUtils.getURIFromBrokers(_connection.getSession().getBrokerList());
   }
 
   @Override
-  public String getDatabaseProductName()
-      throws SQLException {
+  public String getDatabaseProductName() throws SQLException {
     return PRODUCT_NAME;
   }
 
   @Override
-  public String getDatabaseProductVersion()
-      throws SQLException {
+  public String getDatabaseProductVersion() throws SQLException {
     return PINOT_VERSION;
   }
 
   @Override
-  public String getDriverName()
-      throws SQLException {
+  public String getDriverName() throws SQLException {
     return DRIVER_NAME;
   }
 
   @Override
-  public String getDriverVersion()
-      throws SQLException {
+  public String getDriverVersion() throws SQLException {
     return DRIVER_VERSION;
   }
 
@@ -110,7 +105,7 @@ public class PinotConnectionMetaData extends AbstractBaseConnectionMetaData {
         LOGGER.warn("No tables found in database");
       }
       for (String table : tableResponse.getAllTables()) {
-        Object[] row = new Object[]{null, null, table, TABLE_TYPE, table, "", "", "", "", ""};
+        Object[] row = new Object[] { null, null, table, TABLE_TYPE, table, "", "", "", "", "" };
         pinotMeta.addRow(Arrays.asList(row));
       }
 
@@ -122,20 +117,17 @@ public class PinotConnectionMetaData extends AbstractBaseConnectionMetaData {
   }
 
   @Override
-  public ResultSet getSchemas()
-      throws SQLException {
+  public ResultSet getSchemas() throws SQLException {
     return PinotResultSet.empty();
   }
 
   @Override
-  public ResultSet getCatalogs()
-      throws SQLException {
+  public ResultSet getCatalogs() throws SQLException {
     return PinotResultSet.empty();
   }
 
   @Override
-  public ResultSet getTableTypes()
-      throws SQLException {
+  public ResultSet getTableTypes() throws SQLException {
     PinotMeta pinotMeta = new PinotMeta();
     pinotMeta.setColumnNames(TABLE_TYPES_COLUMNS);
     pinotMeta.setColumnDataTypes(TABLE_TYPES_COLUMNS_DTYPES);
@@ -184,13 +176,12 @@ public class PinotConnectionMetaData extends AbstractBaseConnectionMetaData {
     Integer columnsSQLDataType = DriverUtils.getSQLDataType(columnDataType);
 
     Object[] row =
-        new Object[]{null, null, tableName, columnName, columnsSQLDataType, columnDataType, -1, -1, -1, -1, 1, null, null, -1, -1, -1, ordinalPosition, "NO", null, null, null, -1, "NO", "NO"};
+        new Object[] { null, null, tableName, columnName, columnsSQLDataType, columnDataType, -1, -1, -1, -1, 1, null, null, -1, -1, -1, ordinalPosition, "NO", null, null, null, -1, "NO", "NO" };
     pinotMeta.addRow(Arrays.asList(row));
   }
 
   @Override
-  public Connection getConnection()
-      throws SQLException {
+  public Connection getConnection() throws SQLException {
     return _connection;
   }
 }

@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * TODO: Use CombineOperatorUtils.getNumThreadsForQuery() to get the parallelism of the query instead of using
  *   all threads
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class GroupByCombineOperator extends BaseCombineOperator {
   private static final Logger LOGGER = LoggerFactory.getLogger(GroupByCombineOperator.class);
   private static final String OPERATOR_NAME = "GroupByCombineOperator";
@@ -163,14 +163,13 @@ public class GroupByCombineOperator extends BaseCombineOperator {
    * </ul>
    */
   @Override
-  protected IntermediateResultsBlock mergeResults()
-      throws Exception {
+  protected IntermediateResultsBlock mergeResults() throws Exception {
     long timeoutMs = _endTimeMs - System.currentTimeMillis();
     boolean opCompleted = _operatorLatch.await(timeoutMs, TimeUnit.MILLISECONDS);
     if (!opCompleted) {
       // If this happens, the broker side should already timed out, just log the error and return
-      String errorMessage = String
-          .format("Timed out while combining group-by results after %dms, queryContext = %s", timeoutMs, _queryContext);
+      String errorMessage = String.format("Timed out while combining group-by results after %dms, queryContext = %s",
+          timeoutMs, _queryContext);
       LOGGER.error(errorMessage);
       return new IntermediateResultsBlock(new TimeoutException(errorMessage));
     }

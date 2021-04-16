@@ -67,16 +67,14 @@ public class PinotSegmentConverterTest {
       .addSingleValueDimension(BYTES_SV_COLUMN, DataType.BYTES).addMultiValueDimension(INT_MV_COLUMN, DataType.INT)
       .addMultiValueDimension(LONG_MV_COLUMN, DataType.LONG).addMultiValueDimension(FLOAT_MV_COLUMN, DataType.FLOAT)
       .addMultiValueDimension(DOUBLE_MV_COLUMN, DataType.DOUBLE)
-      .addMultiValueDimension(STRING_MV_COLUMN, DataType.STRING).
-          build();
+      .addMultiValueDimension(STRING_MV_COLUMN, DataType.STRING).build();
   private static final TableConfig TABLE_CONFIG =
       new TableConfigBuilder(TableType.OFFLINE).setTableName(RAW_TABLE_NAME).build();
 
   private String _segmentDir;
 
   @BeforeClass
-  public void setUp()
-      throws Exception {
+  public void setUp() throws Exception {
     FileUtils.deleteDirectory(TEMP_DIR);
 
     GenericRow record = new GenericRow();
@@ -85,12 +83,12 @@ public class PinotSegmentConverterTest {
     record.putValue(FLOAT_SV_COLUMN, 3.0f);
     record.putValue(DOUBLE_SV_COLUMN, 4.0);
     record.putValue(STRING_SV_COLUMN, "5");
-    record.putValue(BYTES_SV_COLUMN, new byte[]{6, 12, 34, 56});
-    record.putValue(INT_MV_COLUMN, new Object[]{7, 8});
-    record.putValue(LONG_MV_COLUMN, new Object[]{9L, 10L});
-    record.putValue(FLOAT_MV_COLUMN, new Object[]{11.0f, 12.0f});
-    record.putValue(DOUBLE_MV_COLUMN, new Object[]{13.0, 14.0});
-    record.putValue(STRING_MV_COLUMN, new Object[]{"15", "16"});
+    record.putValue(BYTES_SV_COLUMN, new byte[] { 6, 12, 34, 56 });
+    record.putValue(INT_MV_COLUMN, new Object[] { 7, 8 });
+    record.putValue(LONG_MV_COLUMN, new Object[] { 9L, 10L });
+    record.putValue(FLOAT_MV_COLUMN, new Object[] { 11.0f, 12.0f });
+    record.putValue(DOUBLE_MV_COLUMN, new Object[] { 13.0, 14.0 });
+    record.putValue(STRING_MV_COLUMN, new Object[] { "15", "16" });
 
     SegmentGeneratorConfig segmentGeneratorConfig = new SegmentGeneratorConfig(TABLE_CONFIG, SCHEMA);
     segmentGeneratorConfig.setTableName(RAW_TABLE_NAME);
@@ -105,8 +103,7 @@ public class PinotSegmentConverterTest {
   }
 
   @Test
-  public void testAvroConverter()
-      throws Exception {
+  public void testAvroConverter() throws Exception {
     File outputFile = new File(TEMP_DIR, "segment.avro");
     PinotSegmentToAvroConverter avroConverter = new PinotSegmentToAvroConverter(_segmentDir, outputFile.getPath());
     avroConverter.convert();
@@ -120,24 +117,22 @@ public class PinotSegmentConverterTest {
       assertEquals(record.getValue(FLOAT_SV_COLUMN), 3.0f);
       assertEquals(record.getValue(DOUBLE_SV_COLUMN), 4.0);
       assertEquals(record.getValue(STRING_SV_COLUMN), "5");
-      assertEquals(record.getValue(BYTES_SV_COLUMN), new byte[]{6, 12, 34, 56});
-      assertEquals(record.getValue(INT_MV_COLUMN), new Object[]{7, 8});
-      assertEquals(record.getValue(LONG_MV_COLUMN), new Object[]{9L, 10L});
-      assertEquals(record.getValue(FLOAT_MV_COLUMN), new Object[]{11.0f, 12.0f});
-      assertEquals(record.getValue(DOUBLE_MV_COLUMN), new Object[]{13.0, 14.0});
-      assertEquals(record.getValue(STRING_MV_COLUMN), new Object[]{"15", "16"});
+      assertEquals(record.getValue(BYTES_SV_COLUMN), new byte[] { 6, 12, 34, 56 });
+      assertEquals(record.getValue(INT_MV_COLUMN), new Object[] { 7, 8 });
+      assertEquals(record.getValue(LONG_MV_COLUMN), new Object[] { 9L, 10L });
+      assertEquals(record.getValue(FLOAT_MV_COLUMN), new Object[] { 11.0f, 12.0f });
+      assertEquals(record.getValue(DOUBLE_MV_COLUMN), new Object[] { 13.0, 14.0 });
+      assertEquals(record.getValue(STRING_MV_COLUMN), new Object[] { "15", "16" });
 
       assertFalse(recordReader.hasNext());
     }
   }
 
   @Test
-  public void testCsvConverter()
-      throws Exception {
+  public void testCsvConverter() throws Exception {
     File outputFile = new File(TEMP_DIR, "segment.csv");
-    PinotSegmentToCsvConverter csvConverter =
-        new PinotSegmentToCsvConverter(_segmentDir, outputFile.getPath(), CSVRecordReaderConfig.DEFAULT_DELIMITER,
-            CSVRecordReaderConfig.DEFAULT_MULTI_VALUE_DELIMITER, true);
+    PinotSegmentToCsvConverter csvConverter = new PinotSegmentToCsvConverter(_segmentDir, outputFile.getPath(),
+        CSVRecordReaderConfig.DEFAULT_DELIMITER, CSVRecordReaderConfig.DEFAULT_MULTI_VALUE_DELIMITER, true);
     csvConverter.convert();
 
     try (CSVRecordReader recordReader = new CSVRecordReader()) {
@@ -149,20 +144,19 @@ public class PinotSegmentConverterTest {
       assertEquals(record.getValue(FLOAT_SV_COLUMN), "3.0");
       assertEquals(record.getValue(DOUBLE_SV_COLUMN), "4.0");
       assertEquals(record.getValue(STRING_SV_COLUMN), "5");
-      assertEquals(record.getValue(BYTES_SV_COLUMN), BytesUtils.toHexString(new byte[]{6, 12, 34, 56}));
-      assertEquals(record.getValue(INT_MV_COLUMN), new Object[]{"7", "8"});
-      assertEquals(record.getValue(LONG_MV_COLUMN), new Object[]{"9", "10"});
-      assertEquals(record.getValue(FLOAT_MV_COLUMN), new Object[]{"11.0", "12.0"});
-      assertEquals(record.getValue(DOUBLE_MV_COLUMN), new Object[]{"13.0", "14.0"});
-      assertEquals(record.getValue(STRING_MV_COLUMN), new Object[]{"15", "16"});
+      assertEquals(record.getValue(BYTES_SV_COLUMN), BytesUtils.toHexString(new byte[] { 6, 12, 34, 56 }));
+      assertEquals(record.getValue(INT_MV_COLUMN), new Object[] { "7", "8" });
+      assertEquals(record.getValue(LONG_MV_COLUMN), new Object[] { "9", "10" });
+      assertEquals(record.getValue(FLOAT_MV_COLUMN), new Object[] { "11.0", "12.0" });
+      assertEquals(record.getValue(DOUBLE_MV_COLUMN), new Object[] { "13.0", "14.0" });
+      assertEquals(record.getValue(STRING_MV_COLUMN), new Object[] { "15", "16" });
 
       assertFalse(recordReader.hasNext());
     }
   }
 
   @Test
-  public void testJsonConverter()
-      throws Exception {
+  public void testJsonConverter() throws Exception {
     File outputFile = new File(TEMP_DIR, "segment.json");
     PinotSegmentToJsonConverter jsonConverter = new PinotSegmentToJsonConverter(_segmentDir, outputFile.getPath());
     jsonConverter.convert();
@@ -176,20 +170,19 @@ public class PinotSegmentConverterTest {
       assertEquals(record.getValue(FLOAT_SV_COLUMN), 3.0);
       assertEquals(record.getValue(DOUBLE_SV_COLUMN), 4.0);
       assertEquals(record.getValue(STRING_SV_COLUMN), "5");
-      assertEquals(record.getValue(BYTES_SV_COLUMN), BytesUtils.toHexString(new byte[]{6, 12, 34, 56}));
-      assertEquals(record.getValue(INT_MV_COLUMN), new Object[]{7, 8});
-      assertEquals(record.getValue(LONG_MV_COLUMN), new Object[]{9, 10});
-      assertEquals(record.getValue(FLOAT_MV_COLUMN), new Object[]{11.0, 12.0});
-      assertEquals(record.getValue(DOUBLE_MV_COLUMN), new Object[]{13.0, 14.0});
-      assertEquals(record.getValue(STRING_MV_COLUMN), new Object[]{"15", "16"});
+      assertEquals(record.getValue(BYTES_SV_COLUMN), BytesUtils.toHexString(new byte[] { 6, 12, 34, 56 }));
+      assertEquals(record.getValue(INT_MV_COLUMN), new Object[] { 7, 8 });
+      assertEquals(record.getValue(LONG_MV_COLUMN), new Object[] { 9, 10 });
+      assertEquals(record.getValue(FLOAT_MV_COLUMN), new Object[] { 11.0, 12.0 });
+      assertEquals(record.getValue(DOUBLE_MV_COLUMN), new Object[] { 13.0, 14.0 });
+      assertEquals(record.getValue(STRING_MV_COLUMN), new Object[] { "15", "16" });
 
       assertFalse(recordReader.hasNext());
     }
   }
 
   @AfterClass
-  public void tearDown()
-      throws IOException {
+  public void tearDown() throws IOException {
     FileUtils.deleteDirectory(TEMP_DIR);
   }
 }

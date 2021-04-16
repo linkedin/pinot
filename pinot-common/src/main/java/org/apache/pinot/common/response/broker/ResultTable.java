@@ -28,14 +28,13 @@ import org.apache.pinot.common.utils.DataSchema;
 /**
  * A tabular structure for representing result rows
  */
-@JsonPropertyOrder({"dataSchema", "rows"})
+@JsonPropertyOrder({ "dataSchema", "rows" })
 public class ResultTable {
   private final DataSchema _dataSchema;
   private final List<Object[]> _rows;
 
   @JsonCreator
-  public ResultTable(@JsonProperty("dataSchema") DataSchema dataSchema,
-      @JsonProperty("rows") List<Object[]> rows) {
+  public ResultTable(@JsonProperty("dataSchema") DataSchema dataSchema, @JsonProperty("rows") List<Object[]> rows) {
     _dataSchema = dataSchema;
     _rows = rows;
   }

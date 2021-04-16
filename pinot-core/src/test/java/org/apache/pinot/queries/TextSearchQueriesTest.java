@@ -97,8 +97,8 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
   private static final String SKILLS_TEXT_COL_MULTI_TERM_NAME = "SKILLS_TEXT_COL_1";
   private static final String SKILLS_TEXT_NO_RAW_NAME = "SKILLS_TEXT_COL_2";
   private static final String INT_COL_NAME = "INT_COL";
-  private static final List<String> RAW_TEXT_INDEX_COLUMNS = Arrays
-      .asList(QUERY_LOG_TEXT_COL_NAME, SKILLS_TEXT_COL_NAME, SKILLS_TEXT_COL_MULTI_TERM_NAME, SKILLS_TEXT_NO_RAW_NAME);
+  private static final List<String> RAW_TEXT_INDEX_COLUMNS = Arrays.asList(QUERY_LOG_TEXT_COL_NAME,
+      SKILLS_TEXT_COL_NAME, SKILLS_TEXT_COL_MULTI_TERM_NAME, SKILLS_TEXT_NO_RAW_NAME);
   private static final List<String> DICT_TEXT_INDEX_COLUMNS = Arrays.asList(SKILLS_TEXT_COL_DICT_NAME);
   private static final int INT_BASE_VALUE = 1000;
 
@@ -123,8 +123,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
   }
 
   @BeforeClass
-  public void setUp()
-      throws Exception {
+  public void setUp() throws Exception {
     FileUtils.deleteQuietly(INDEX_DIR);
 
     buildSegment();
@@ -151,8 +150,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     FileUtils.deleteQuietly(INDEX_DIR);
   }
 
-  private void buildSegment()
-      throws Exception {
+  private void buildSegment() throws Exception {
     List<GenericRow> rows = createTestData();
 
     List<FieldConfig> fieldConfigs = new ArrayList<>(RAW_TEXT_INDEX_COLUMNS.size() + DICT_TEXT_INDEX_COLUMNS.size());
@@ -191,8 +189,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     }
   }
 
-  private List<GenericRow> createTestData()
-      throws Exception {
+  private List<GenericRow> createTestData() throws Exception {
     List<GenericRow> rows = new ArrayList<>();
 
     // read the skills file
@@ -243,8 +240,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
    * Both selection and aggregation queries are used.
    */
   @Test
-  public void testTextSearch()
-      throws Exception {
+  public void testTextSearch() throws Exception {
     // TEST 1: phrase query
     // Search in QUERY_TEXT_COL to look for documents where each document MUST contain phrase "SELECT dimensionCol2"
     // as is. In other words, we are trying to find all "SELECT dimensionCol2" style queries. The expected result size
@@ -283,17 +279,17 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // as is. The expected result table is built by doing grep -n -i 'distributed systems' skills.txt
     List<Serializable[]> expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing"});
+        new Serializable[] { 1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing" });
     expected.add(
-        new Serializable[]{1009, "Distributed systems, database development, columnar query engine, database kernel, storage, indexing and transaction processing, building large scale systems"});
+        new Serializable[] { 1009, "Distributed systems, database development, columnar query engine, database kernel, storage, indexing and transaction processing, building large scale systems" });
     expected.add(
-        new Serializable[]{1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading"});
+        new Serializable[] { 1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading" });
     expected.add(
-        new Serializable[]{1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution"});
+        new Serializable[] { 1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"Distributed systems\"') LIMIT 50000";
@@ -307,9 +303,9 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // "query processing" as is. The expected result table is built by doing grep -n -i 'query processing' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"query processing\"') LIMIT 50000";
@@ -322,24 +318,24 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // Search in SKILLS_TEXT_COL column to look for documents where each document MUST contain the phrase "machine learning"
     // as is. The expected result table is built by doing grep -n -i 'machine learning' skills.txt
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1003, "Java, C++, worked on open source projects, coursera machine learning"});
-    expected.add(new Serializable[]{1004, "Machine learning, Tensor flow, Java, Stanford university,"});
+    expected.add(new Serializable[] { 1003, "Java, C++, worked on open source projects, coursera machine learning" });
+    expected.add(new Serializable[] { 1004, "Machine learning, Tensor flow, Java, Stanford university," });
     expected.add(
-        new Serializable[]{1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing"});
+        new Serializable[] { 1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing" });
     expected.add(
-        new Serializable[]{1006, "Java, Python, C++, Machine learning, building and deploying large scale production systems, concurrency, multi-threading, CPU processing"});
+        new Serializable[] { 1006, "Java, Python, C++, Machine learning, building and deploying large scale production systems, concurrency, multi-threading, CPU processing" });
     expected.add(
-        new Serializable[]{1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning"});
+        new Serializable[] { 1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning" });
     expected.add(
-        new Serializable[]{1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading"});
+        new Serializable[] { 1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading" });
     expected.add(
-        new Serializable[]{1011, "CUDA, GPU, Python, Machine learning, database kernel, storage, indexing and transaction processing, building large scale systems"});
+        new Serializable[] { 1011, "CUDA, GPU, Python, Machine learning, database kernel, storage, indexing and transaction processing, building large scale systems" });
     expected.add(
-        new Serializable[]{1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems"});
+        new Serializable[] { 1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems" });
     expected.add(
-        new Serializable[]{1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"Machine learning\"') LIMIT 50000";
@@ -353,11 +349,11 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // "machine learning" and "tensor flow" as is. The expected result table is built by doing
     // grep -n -i -E 'machine learning.*tensor flow|tensor flow.*machine learning' skills.txt
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1004, "Machine learning, Tensor flow, Java, Stanford university,"});
+    expected.add(new Serializable[] { 1004, "Machine learning, Tensor flow, Java, Stanford university," });
     expected.add(
-        new Serializable[]{1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning"});
+        new Serializable[] { 1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning" });
     expected.add(
-        new Serializable[]{1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems"});
+        new Serializable[] { 1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"Machine learning\" AND \"Tensor flow\"') LIMIT 50000";
@@ -371,27 +367,27 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // Search in SKILLS_TEXT_COL column to look for documents where each document MUST contain term 'Java'.
     // The expected result table is built by doing grep -n -i 'Java' skills.txt
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1000, "Accounts, Banking, Insurance, worked in NGO, Java"});
-    expected.add(new Serializable[]{1003, "Java, C++, worked on open source projects, coursera machine learning"});
-    expected.add(new Serializable[]{1004, "Machine learning, Tensor flow, Java, Stanford university,"});
+    expected.add(new Serializable[] { 1000, "Accounts, Banking, Insurance, worked in NGO, Java" });
+    expected.add(new Serializable[] { 1003, "Java, C++, worked on open source projects, coursera machine learning" });
+    expected.add(new Serializable[] { 1004, "Machine learning, Tensor flow, Java, Stanford university," });
     expected.add(
-        new Serializable[]{1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing"});
+        new Serializable[] { 1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing" });
     expected.add(
-        new Serializable[]{1006, "Java, Python, C++, Machine learning, building and deploying large scale production systems, concurrency, multi-threading, CPU processing"});
+        new Serializable[] { 1006, "Java, Python, C++, Machine learning, building and deploying large scale production systems, concurrency, multi-threading, CPU processing" });
     expected.add(
-        new Serializable[]{1008, "Amazon EC2, AWS, hadoop, big data, spark, building high performance scalable systems, building and deploying large scale production systems, concurrency, multi-threading, Java, C++, CPU processing"});
+        new Serializable[] { 1008, "Amazon EC2, AWS, hadoop, big data, spark, building high performance scalable systems, building and deploying large scale production systems, concurrency, multi-threading, Java, C++, CPU processing" });
     expected.add(
-        new Serializable[]{1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading"});
+        new Serializable[] { 1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading" });
     expected.add(
-        new Serializable[]{1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution"});
+        new Serializable[] { 1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution" });
     expected.add(
-        new Serializable[]{1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1018, "Realtime stream processing, publish subscribe, columnar processing for data warehouses, concurrency, Java, multi-threading, C++,"});
+        new Serializable[] { 1018, "Realtime stream processing, publish subscribe, columnar processing for data warehouses, concurrency, Java, multi-threading, C++," });
     expected.add(
-        new Serializable[]{1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
 
     query = "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, 'Java') LIMIT 50000";
     testTextSearchSelectQueryHelper(query, expected.size(), false, expected);
@@ -404,21 +400,21 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // terms 'Java' and 'C++'. The expected result table is built by doing
     // grep -E -n -i 'c\+\+.*java|java.*c\+\+' skills.txt
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1003, "Java, C++, worked on open source projects, coursera machine learning"});
+    expected.add(new Serializable[] { 1003, "Java, C++, worked on open source projects, coursera machine learning" });
     expected.add(
-        new Serializable[]{1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing"});
+        new Serializable[] { 1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing" });
     expected.add(
-        new Serializable[]{1006, "Java, Python, C++, Machine learning, building and deploying large scale production systems, concurrency, multi-threading, CPU processing"});
+        new Serializable[] { 1006, "Java, Python, C++, Machine learning, building and deploying large scale production systems, concurrency, multi-threading, CPU processing" });
     expected.add(
-        new Serializable[]{1008, "Amazon EC2, AWS, hadoop, big data, spark, building high performance scalable systems, building and deploying large scale production systems, concurrency, multi-threading, Java, C++, CPU processing"});
+        new Serializable[] { 1008, "Amazon EC2, AWS, hadoop, big data, spark, building high performance scalable systems, building and deploying large scale production systems, concurrency, multi-threading, Java, C++, CPU processing" });
     expected.add(
-        new Serializable[]{1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1018, "Realtime stream processing, publish subscribe, columnar processing for data warehouses, concurrency, Java, multi-threading, C++,"});
+        new Serializable[] { 1018, "Realtime stream processing, publish subscribe, columnar processing for data warehouses, concurrency, Java, multi-threading, C++," });
     expected.add(
-        new Serializable[]{1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, 'Java AND C++') LIMIT 50000";
@@ -437,13 +433,13 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // Hence term queries are very useful for such cases. The expected result table is built by doing
     // grep -n -i 'Java, C++' skills.txt
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1003, "Java, C++, worked on open source projects, coursera machine learning"});
+    expected.add(new Serializable[] { 1003, "Java, C++, worked on open source projects, coursera machine learning" });
     expected.add(
-        new Serializable[]{1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing"});
+        new Serializable[] { 1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing" });
     expected.add(
-        new Serializable[]{1008, "Amazon EC2, AWS, hadoop, big data, spark, building high performance scalable systems, building and deploying large scale production systems, concurrency, multi-threading, Java, C++, CPU processing"});
+        new Serializable[] { 1008, "Amazon EC2, AWS, hadoop, big data, spark, building high performance scalable systems, building and deploying large scale production systems, concurrency, multi-threading, Java, C++, CPU processing" });
     expected.add(
-        new Serializable[]{1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"Java C++\"') LIMIT 50000";
@@ -458,7 +454,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // grep -n -i -E 'machine learning.*gpu processing|gpu processing.*machine learning' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems"});
+        new Serializable[] { 1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"Machine learning\" AND \"gpu processing\"') LIMIT 50000";
@@ -475,9 +471,9 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // grep -n -i -E 'machine learning.*gpu|gpu.*machine learning' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1011, "CUDA, GPU, Python, Machine learning, database kernel, storage, indexing and transaction processing, building large scale systems"});
+        new Serializable[] { 1011, "CUDA, GPU, Python, Machine learning, database kernel, storage, indexing and transaction processing, building large scale systems" });
     expected.add(
-        new Serializable[]{1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems"});
+        new Serializable[] { 1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"Machine learning\" AND gpu') LIMIT 50000";
@@ -494,9 +490,9 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // grep -n -i -E 'machine learning.*gpu.*python|gpu.*machine learning.*python|gpu.*python.*machine learning' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1011, "CUDA, GPU, Python, Machine learning, database kernel, storage, indexing and transaction processing, building large scale systems"});
+        new Serializable[] { 1011, "CUDA, GPU, Python, Machine learning, database kernel, storage, indexing and transaction processing, building large scale systems" });
     expected.add(
-        new Serializable[]{1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems"});
+        new Serializable[] { 1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"Machine learning\" AND gpu AND python') LIMIT 50000";
@@ -511,17 +507,17 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // table is built by doing grep -n -i 'apache' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1013, "Kubernetes, cluster management, operating systems, concurrency, multi-threading, apache airflow, Apache Spark,"});
+        new Serializable[] { 1013, "Kubernetes, cluster management, operating systems, concurrency, multi-threading, apache airflow, Apache Spark," });
     expected.add(
-        new Serializable[]{1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
     expected.add(
-        new Serializable[]{1015, "Big data stream processing, Apache Flink, Apache Beam, database kernel, distributed query engines for analytics and data warehouses"});
+        new Serializable[] { 1015, "Big data stream processing, Apache Flink, Apache Beam, database kernel, distributed query engines for analytics and data warehouses" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
     query = "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, 'apache') LIMIT 50000";
     testTextSearchSelectQueryHelper(query, expected.size(), false, expected);
 
@@ -534,9 +530,9 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // grep -n -i -E 'distributed systems.*apache|apache.*distributed systems' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"distributed systems\" AND apache') LIMIT 50000";
@@ -551,17 +547,17 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // The expected result table is built by doing grep -n -i 'database' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning"});
+        new Serializable[] { 1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning" });
     expected.add(
-        new Serializable[]{1009, "Distributed systems, database development, columnar query engine, database kernel, storage, indexing and transaction processing, building large scale systems"});
+        new Serializable[] { 1009, "Distributed systems, database development, columnar query engine, database kernel, storage, indexing and transaction processing, building large scale systems" });
     expected.add(
-        new Serializable[]{1011, "CUDA, GPU, Python, Machine learning, database kernel, storage, indexing and transaction processing, building large scale systems"});
+        new Serializable[] { 1011, "CUDA, GPU, Python, Machine learning, database kernel, storage, indexing and transaction processing, building large scale systems" });
     expected.add(
-        new Serializable[]{1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution"});
+        new Serializable[] { 1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution" });
     expected.add(
-        new Serializable[]{1015, "Big data stream processing, Apache Flink, Apache Beam, database kernel, distributed query engines for analytics and data warehouses"});
+        new Serializable[] { 1015, "Big data stream processing, Apache Flink, Apache Beam, database kernel, distributed query engines for analytics and data warehouses" });
     expected.add(
-        new Serializable[]{1021, "Database engine, OLAP systems, OLTP transaction processing at large scale, concurrency, multi-threading, GO, building large scale systems"});
+        new Serializable[] { 1021, "Database engine, OLAP systems, OLTP transaction processing at large scale, concurrency, multi-threading, GO, building large scale systems" });
 
     query = "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, 'database') LIMIT 50000";
     testTextSearchSelectQueryHelper(query, expected.size(), false, expected);
@@ -574,9 +570,9 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // as is. The expected result table is built by doing grep -n -i 'database engine' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution"});
+        new Serializable[] { 1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution" });
     expected.add(
-        new Serializable[]{1021, "Database engine, OLAP systems, OLTP transaction processing at large scale, concurrency, multi-threading, GO, building large scale systems"});
+        new Serializable[] { 1021, "Database engine, OLAP systems, OLTP transaction processing at large scale, concurrency, multi-threading, GO, building large scale systems" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"database engine\"') LIMIT 50000";
@@ -594,9 +590,9 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // grep -n -i 'publish subscribe' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1018, "Realtime stream processing, publish subscribe, columnar processing for data warehouses, concurrency, Java, multi-threading, C++,"});
+        new Serializable[] { 1018, "Realtime stream processing, publish subscribe, columnar processing for data warehouses, concurrency, Java, multi-threading, C++," });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"publish subscribe\"') LIMIT 50000";
@@ -610,7 +606,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // "accounts banking insurance" as is. The expected result table is built by doing
     // grep -n -i 'accounts, banking, insurance' skills.txt
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1000, "Accounts, Banking, Insurance, worked in NGO, Java"});
+    expected.add(new Serializable[] { 1000, "Accounts, Banking, Insurance, worked in NGO, Java" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"accounts banking insurance\"') LIMIT 50000";
@@ -626,9 +622,9 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // the skills in any arbitrary order and so a boolean term query helps a lot in these cases. The expected result table
     // was built by doing grep -n -i 'accounts.*banking.*insurance' skills.txt
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1000, "Accounts, Banking, Insurance, worked in NGO, Java"});
-    expected.add(new Serializable[]{1001, "Accounts, Banking, Finance, Insurance"});
-    expected.add(new Serializable[]{1002, "Accounts, Finance, Banking, Insurance"});
+    expected.add(new Serializable[] { 1000, "Accounts, Banking, Insurance, worked in NGO, Java" });
+    expected.add(new Serializable[] { 1001, "Accounts, Banking, Finance, Insurance" });
+    expected.add(new Serializable[] { 1002, "Accounts, Finance, Banking, Insurance" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, 'accounts AND banking AND insurance') LIMIT 50000";
@@ -644,9 +640,9 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // grep -n -i -E 'distributed systems.*java.*c\+\+|java.*distributed systems.*c\+\+|distributed systems.*c\+\+.*java' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing"});
+        new Serializable[] { 1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"distributed systems\" AND Java AND C++') LIMIT 50000";
@@ -679,8 +675,8 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL_2 FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL_2, '\"distributed systems\" AND Java AND C++') LIMIT 50000";
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1005, "ILoveCoding"});
-    expected.add(new Serializable[]{1017, "ILoveCoding"});
+    expected.add(new Serializable[] { 1005, "ILoveCoding" });
+    expected.add(new Serializable[] { 1017, "ILoveCoding" });
     testTextSearchSelectQueryHelper(query, expected.size(), false, expected);
 
     // TEST 22: composite phrase and term query using boolean operator OR
@@ -688,33 +684,33 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // phrase "distributed systems" as is, term 'Java', term 'C++'. Note: OR operator is implicit when we don't specify
     // any operator. The expected result table was built by doing grep -n -i -E 'distributed systems|java|c\+\+' skills.txt
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1000, "Accounts, Banking, Insurance, worked in NGO, Java"});
-    expected.add(new Serializable[]{1003, "Java, C++, worked on open source projects, coursera machine learning"});
-    expected.add(new Serializable[]{1004, "Machine learning, Tensor flow, Java, Stanford university,"});
+    expected.add(new Serializable[] { 1000, "Accounts, Banking, Insurance, worked in NGO, Java" });
+    expected.add(new Serializable[] { 1003, "Java, C++, worked on open source projects, coursera machine learning" });
+    expected.add(new Serializable[] { 1004, "Machine learning, Tensor flow, Java, Stanford university," });
     expected.add(
-        new Serializable[]{1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing"});
+        new Serializable[] { 1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing" });
     expected.add(
-        new Serializable[]{1006, "Java, Python, C++, Machine learning, building and deploying large scale production systems, concurrency, multi-threading, CPU processing"});
+        new Serializable[] { 1006, "Java, Python, C++, Machine learning, building and deploying large scale production systems, concurrency, multi-threading, CPU processing" });
     expected.add(
-        new Serializable[]{1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning"});
+        new Serializable[] { 1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning" });
     expected.add(
-        new Serializable[]{1008, "Amazon EC2, AWS, hadoop, big data, spark, building high performance scalable systems, building and deploying large scale production systems, concurrency, multi-threading, Java, C++, CPU processing"});
+        new Serializable[] { 1008, "Amazon EC2, AWS, hadoop, big data, spark, building high performance scalable systems, building and deploying large scale production systems, concurrency, multi-threading, Java, C++, CPU processing" });
     expected.add(
-        new Serializable[]{1009, "Distributed systems, database development, columnar query engine, database kernel, storage, indexing and transaction processing, building large scale systems"});
+        new Serializable[] { 1009, "Distributed systems, database development, columnar query engine, database kernel, storage, indexing and transaction processing, building large scale systems" });
     expected.add(
-        new Serializable[]{1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading"});
+        new Serializable[] { 1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading" });
     expected.add(
-        new Serializable[]{1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution"});
+        new Serializable[] { 1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution" });
     expected.add(
-        new Serializable[]{1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1014, "Apache spark, Java, C++, query processing, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1018, "Realtime stream processing, publish subscribe, columnar processing for data warehouses, concurrency, Java, multi-threading, C++,"});
+        new Serializable[] { 1018, "Realtime stream processing, publish subscribe, columnar processing for data warehouses, concurrency, Java, multi-threading, C++," });
     expected.add(
-        new Serializable[]{1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"distributed systems\" Java C++') LIMIT 50000";
@@ -738,13 +734,13 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // grep -n -i -E 'distributed systems.*(java|c\+\+)' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing"});
+        new Serializable[] { 1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing" });
     expected.add(
-        new Serializable[]{1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading"});
+        new Serializable[] { 1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading" });
     expected.add(
-        new Serializable[]{1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution"});
+        new Serializable[] { 1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"distributed systems\" AND (Java C++)') LIMIT 50000";
@@ -763,9 +759,9 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     testTextSearchAggregationQueryHelper(query, expected.size());
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing"});
+        new Serializable[] { 1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL_1, '\"distributed systems\" AND (Java C++)') LIMIT 50000";
     testTextSearchSelectQueryHelper(query, expected.size(), false, expected);
@@ -778,13 +774,13 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // The expected result table was built by doing grep -n -i -E 'stream' skills.txt
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading"});
+        new Serializable[] { 1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading" });
     expected.add(
-        new Serializable[]{1015, "Big data stream processing, Apache Flink, Apache Beam, database kernel, distributed query engines for analytics and data warehouses"});
+        new Serializable[] { 1015, "Big data stream processing, Apache Flink, Apache Beam, database kernel, distributed query engines for analytics and data warehouses" });
     expected.add(
-        new Serializable[]{1018, "Realtime stream processing, publish subscribe, columnar processing for data warehouses, concurrency, Java, multi-threading, C++,"});
+        new Serializable[] { 1018, "Realtime stream processing, publish subscribe, columnar processing for data warehouses, concurrency, Java, multi-threading, C++," });
     expected.add(
-        new Serializable[]{1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow"});
+        new Serializable[] { 1019, "C++, Java, Python, realtime streaming systems, Machine learning, spark, Kubernetes, transaction processing, distributed storage, concurrency, multi-threading, apache airflow" });
 
     query = "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, 'stream*') LIMIT 50000";
     testTextSearchSelectQueryHelper(query, expected.size(), false, expected);
@@ -799,7 +795,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // of larger token depending on where the word boundary is. So we need to use Lucene regex query.
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1022, "GET /administrator/ HTTP/1.1 200 4263 - Mozilla/5.0 (Windows NT 6.0; rv:34.0) Gecko/20100101 Firefox/34.0 - NullPointerException"});
+        new Serializable[] { 1022, "GET /administrator/ HTTP/1.1 200 4263 - Mozilla/5.0 (Windows NT 6.0; rv:34.0) Gecko/20100101 Firefox/34.0 - NullPointerException" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '/.*exception/') LIMIT 50000";
@@ -814,18 +810,17 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
    * the execution of text match filters with other filters.
    */
   @Test
-  public void testTextSearchWithAdditionalFilter()
-      throws Exception {
+  public void testTextSearchWithAdditionalFilter() throws Exception {
     // TEST 1: combine an index based doc id iterator (text_match) with scan based doc id iterator (range >= ) using AND
     List<Serializable[]> expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading"});
+        new Serializable[] { 1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading" });
     expected.add(
-        new Serializable[]{1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution"});
+        new Serializable[] { 1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
 
     String query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE INT_COL >= 1010 AND TEXT_MATCH(SKILLS_TEXT_COL, '\"Distributed systems\"') LIMIT 50000";
@@ -844,11 +839,11 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // TEST 2: combine an index based doc id iterator (text_match) with scan based doc id iterator (range <= ) using AND
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing"});
+        new Serializable[] { 1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing" });
     expected.add(
-        new Serializable[]{1009, "Distributed systems, database development, columnar query engine, database kernel, storage, indexing and transaction processing, building large scale systems"});
+        new Serializable[] { 1009, "Distributed systems, database development, columnar query engine, database kernel, storage, indexing and transaction processing, building large scale systems" });
     expected.add(
-        new Serializable[]{1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading"});
+        new Serializable[] { 1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE INT_COL <= 1010 AND TEXT_MATCH(SKILLS_TEXT_COL, '\"Distributed systems\"') LIMIT 50000";
@@ -875,29 +870,29 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
 
     // TEST 4: combine an index based doc id iterator (text_match) with scan based doc id iterator (range <= ) using OR
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1000, "Accounts, Banking, Insurance, worked in NGO, Java"});
-    expected.add(new Serializable[]{1001, "Accounts, Banking, Finance, Insurance"});
-    expected.add(new Serializable[]{1002, "Accounts, Finance, Banking, Insurance"});
-    expected.add(new Serializable[]{1003, "Java, C++, worked on open source projects, coursera machine learning"});
-    expected.add(new Serializable[]{1004, "Machine learning, Tensor flow, Java, Stanford university,"});
+    expected.add(new Serializable[] { 1000, "Accounts, Banking, Insurance, worked in NGO, Java" });
+    expected.add(new Serializable[] { 1001, "Accounts, Banking, Finance, Insurance" });
+    expected.add(new Serializable[] { 1002, "Accounts, Finance, Banking, Insurance" });
+    expected.add(new Serializable[] { 1003, "Java, C++, worked on open source projects, coursera machine learning" });
+    expected.add(new Serializable[] { 1004, "Machine learning, Tensor flow, Java, Stanford university," });
     expected.add(
-        new Serializable[]{1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing"});
+        new Serializable[] { 1005, "Distributed systems, Java, C++, Go, distributed query engines for analytics and data warehouses, Machine learning, spark, Kubernetes, transaction processing" });
     expected.add(
-        new Serializable[]{1006, "Java, Python, C++, Machine learning, building and deploying large scale production systems, concurrency, multi-threading, CPU processing"});
+        new Serializable[] { 1006, "Java, Python, C++, Machine learning, building and deploying large scale production systems, concurrency, multi-threading, CPU processing" });
     expected.add(
-        new Serializable[]{1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning"});
+        new Serializable[] { 1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning" });
     expected.add(
-        new Serializable[]{1008, "Amazon EC2, AWS, hadoop, big data, spark, building high performance scalable systems, building and deploying large scale production systems, concurrency, multi-threading, Java, C++, CPU processing"});
+        new Serializable[] { 1008, "Amazon EC2, AWS, hadoop, big data, spark, building high performance scalable systems, building and deploying large scale production systems, concurrency, multi-threading, Java, C++, CPU processing" });
     expected.add(
-        new Serializable[]{1009, "Distributed systems, database development, columnar query engine, database kernel, storage, indexing and transaction processing, building large scale systems"});
+        new Serializable[] { 1009, "Distributed systems, database development, columnar query engine, database kernel, storage, indexing and transaction processing, building large scale systems" });
     expected.add(
-        new Serializable[]{1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading"});
+        new Serializable[] { 1010, "Distributed systems, Java, realtime streaming systems, Machine learning, spark, Kubernetes, distributed storage, concurrency, multi-threading" });
     expected.add(
-        new Serializable[]{1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution"});
+        new Serializable[] { 1012, "Distributed systems, Java, database engine, cluster management, docker image building and distribution" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE INT_COL <= 1010 OR TEXT_MATCH(SKILLS_TEXT_COL, '\"Distributed systems\"') LIMIT 50000";
@@ -916,7 +911,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // TEST 5: combine an index based doc id iterator (text_match) with sorted inverted index doc id iterator (equality) using AND
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
 
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE INT_COL = 1017 AND TEXT_MATCH(SKILLS_TEXT_COL, '\"Distributed systems\"') LIMIT 50000";
@@ -934,12 +929,12 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
 
     // TEST 6: combine an index based doc id iterator (text_match) with sorted inverted index doc id iterator (equality) using OR
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1005});
-    expected.add(new Serializable[]{1009});
-    expected.add(new Serializable[]{1010});
-    expected.add(new Serializable[]{1012});
-    expected.add(new Serializable[]{1017});
-    expected.add(new Serializable[]{1020});
+    expected.add(new Serializable[] { 1005 });
+    expected.add(new Serializable[] { 1009 });
+    expected.add(new Serializable[] { 1010 });
+    expected.add(new Serializable[] { 1012 });
+    expected.add(new Serializable[] { 1017 });
+    expected.add(new Serializable[] { 1020 });
 
     query =
         "SELECT INT_COL FROM MyTable WHERE INT_COL = 1017 OR TEXT_MATCH(SKILLS_TEXT_COL, '\"Distributed systems\"') LIMIT 50000";
@@ -957,12 +952,12 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
 
     // TEST 7: combine an index based doc id iterator (text_match) with another index based doc id iterator (text_match) using AND
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1005});
-    expected.add(new Serializable[]{1009});
-    expected.add(new Serializable[]{1010});
-    expected.add(new Serializable[]{1012});
-    expected.add(new Serializable[]{1017});
-    expected.add(new Serializable[]{1020});
+    expected.add(new Serializable[] { 1005 });
+    expected.add(new Serializable[] { 1009 });
+    expected.add(new Serializable[] { 1010 });
+    expected.add(new Serializable[] { 1012 });
+    expected.add(new Serializable[] { 1017 });
+    expected.add(new Serializable[] { 1020 });
 
     query =
         "SELECT INT_COL FROM MyTable WHERE TEXT_MATCH(QUERY_LOG_TEXT_COL, '\"SELECT count\"') AND TEXT_MATCH(SKILLS_TEXT_COL, '\"Distributed systems\"') LIMIT 50000";
@@ -973,16 +968,16 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
 
     // TEST 8: combine an index based doc id iterator (text_match) with another index based doc id iterator (text_match) using OR
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1005});
-    expected.add(new Serializable[]{1009});
-    expected.add(new Serializable[]{1010});
-    expected.add(new Serializable[]{1012});
-    expected.add(new Serializable[]{1013});
-    expected.add(new Serializable[]{1014});
-    expected.add(new Serializable[]{1015});
-    expected.add(new Serializable[]{1017});
-    expected.add(new Serializable[]{1019});
-    expected.add(new Serializable[]{1020});
+    expected.add(new Serializable[] { 1005 });
+    expected.add(new Serializable[] { 1009 });
+    expected.add(new Serializable[] { 1010 });
+    expected.add(new Serializable[] { 1012 });
+    expected.add(new Serializable[] { 1013 });
+    expected.add(new Serializable[] { 1014 });
+    expected.add(new Serializable[] { 1015 });
+    expected.add(new Serializable[] { 1017 });
+    expected.add(new Serializable[] { 1019 });
+    expected.add(new Serializable[] { 1020 });
 
     query =
         "SELECT INT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, 'apache') OR TEXT_MATCH(SKILLS_TEXT_COL, '\"Distributed systems\"') LIMIT 50000";
@@ -996,7 +991,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // so this query tests the exact match on the text column which will use the
     // native inverted index.
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1004});
+    expected.add(new Serializable[] { 1004 });
     query =
         "SELECT INT_COL FROM MyTable WHERE SKILLS_TEXT_COL_DICT = 'Machine learning, Tensor flow, Java, Stanford university,' LIMIT 50000";
     testTextSearchSelectQueryHelper(query, expected.size(), false, expected);
@@ -1010,16 +1005,16 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     // native inverted index along with text match on the text column which will
     // use the text index
     expected = new ArrayList<>();
-    expected.add(new Serializable[]{1003});
-    expected.add(new Serializable[]{1004});
-    expected.add(new Serializable[]{1005});
-    expected.add(new Serializable[]{1006});
-    expected.add(new Serializable[]{1007});
-    expected.add(new Serializable[]{1010});
-    expected.add(new Serializable[]{1011});
-    expected.add(new Serializable[]{1016});
-    expected.add(new Serializable[]{1019});
-    expected.add(new Serializable[]{1020});
+    expected.add(new Serializable[] { 1003 });
+    expected.add(new Serializable[] { 1004 });
+    expected.add(new Serializable[] { 1005 });
+    expected.add(new Serializable[] { 1006 });
+    expected.add(new Serializable[] { 1007 });
+    expected.add(new Serializable[] { 1010 });
+    expected.add(new Serializable[] { 1011 });
+    expected.add(new Serializable[] { 1016 });
+    expected.add(new Serializable[] { 1019 });
+    expected.add(new Serializable[] { 1020 });
 
     query =
         "SELECT INT_COL FROM MyTable WHERE SKILLS_TEXT_COL_DICT = 'Machine learning, Tensor flow, Java, Stanford university,' OR TEXT_MATCH(SKILLS_TEXT_COL_DICT, '\"machine learning\"') LIMIT 50000";
@@ -1035,8 +1030,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
    * for near realtime text search.
    */
   @Test
-  public void testLuceneRealtimeWithSearcherManager()
-      throws Exception {
+  public void testLuceneRealtimeWithSearcherManager() throws Exception {
     // create and open an index writer
     File indexFile = new File(INDEX_DIR.getPath() + "/realtime-test1.index");
     Directory indexDirectory = FSDirectory.open(indexFile.toPath());
@@ -1205,8 +1199,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
    * added to the index.
    */
   @Test
-  public void testLuceneRealtimeWithoutSearcherManager()
-      throws Exception {
+  public void testLuceneRealtimeWithoutSearcherManager() throws Exception {
     // create and open an index writer
     File indexFile = new File(INDEX_DIR.getPath() + "/realtime-test2.index");
     Directory indexDirectory = FSDirectory.open(indexFile.toPath());
@@ -1256,8 +1249,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
   }
 
   @Test
-  public void testMultiThreadedLuceneRealtime()
-      throws Exception {
+  public void testMultiThreadedLuceneRealtime() throws Exception {
     File indexFile = new File(INDEX_DIR.getPath() + "/realtime-test3.index");
     Directory indexDirectory = FSDirectory.open(indexFile.toPath());
     StandardAnalyzer standardAnalyzer = new StandardAnalyzer();
@@ -1380,8 +1372,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
    */
 
   private void testTextSearchSelectQueryHelper(String query, int expectedResultSize, boolean compareGrepOutput,
-      List<Serializable[]> expectedResults)
-      throws Exception {
+      List<Serializable[]> expectedResults) throws Exception {
     SelectionOnlyOperator operator = getOperatorForPqlQuery(query);
     IntermediateResultsBlock operatorResult = operator.nextBlock();
     List<Object[]> resultset = (List<Object[]>) operatorResult.getSelectionResult();
@@ -1405,8 +1396,7 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     }
   }
 
-  private void verifySearchOutputWithGrepResults(List<Object[]> actualResultSet)
-      throws Exception {
+  private void verifySearchOutputWithGrepResults(List<Object[]> actualResultSet) throws Exception {
     URL resourceUrl = getClass().getClassLoader().getResource("data/text_search_data/group_by_grep_results.out");
     File file = new File(resourceUrl.getFile());
     InputStream inputStream = new FileInputStream(file);
@@ -1442,26 +1432,26 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '\"Machine learning\" AND \"Tensor flow\"') LIMIT 50000";
     List<Serializable[]> expected = new ArrayList<>();
-    expected.add(new Serializable[]{1004, "Machine learning, Tensor flow, Java, Stanford university,"});
+    expected.add(new Serializable[] { 1004, "Machine learning, Tensor flow, Java, Stanford university," });
     expected.add(
-        new Serializable[]{1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning"});
+        new Serializable[] { 1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning" });
     expected.add(
-        new Serializable[]{1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems"});
-    expected.add(new Serializable[]{1004, "Machine learning, Tensor flow, Java, Stanford university,"});
+        new Serializable[] { 1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems" });
+    expected.add(new Serializable[] { 1004, "Machine learning, Tensor flow, Java, Stanford university," });
     expected.add(
-        new Serializable[]{1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning"});
+        new Serializable[] { 1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning" });
     expected.add(
-        new Serializable[]{1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems"});
-    expected.add(new Serializable[]{1004, "Machine learning, Tensor flow, Java, Stanford university,"});
+        new Serializable[] { 1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems" });
+    expected.add(new Serializable[] { 1004, "Machine learning, Tensor flow, Java, Stanford university," });
     expected.add(
-        new Serializable[]{1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning"});
+        new Serializable[] { 1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning" });
     expected.add(
-        new Serializable[]{1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems"});
-    expected.add(new Serializable[]{1004, "Machine learning, Tensor flow, Java, Stanford university,"});
+        new Serializable[] { 1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems" });
+    expected.add(new Serializable[] { 1004, "Machine learning, Tensor flow, Java, Stanford university," });
     expected.add(
-        new Serializable[]{1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning"});
+        new Serializable[] { 1007, "C++, Python, Tensor flow, database kernel, storage, indexing and transaction processing, building large scale systems, Machine learning" });
     expected.add(
-        new Serializable[]{1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems"});
+        new Serializable[] { 1016, "CUDA, GPU processing, Tensor flow, Pandas, Python, Jupyter notebook, spark, Machine learning, building high performance scalable systems" });
     testInterSegmentSelectionQueryHelper(query, expected);
     query =
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL_DICT, '\"Machine learning\" AND \"Tensor flow\"') LIMIT 50000";
@@ -1486,13 +1476,13 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '(\"distributed systems\" AND apache) AND (Java AND C++)') LIMIT 50000";
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     expected.add(
-        new Serializable[]{1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java"});
+        new Serializable[] { 1017, "Distributed systems, Apache Kafka, publish-subscribe, building and deploying large scale production systems, concurrency, multi-threading, C++, CPU processing, Java" });
     testInterSegmentSelectionQueryHelper(query, expected);
 
     query =
@@ -1510,13 +1500,13 @@ public class TextSearchQueriesTest extends BaseQueriesTest {
         "SELECT INT_COL, SKILLS_TEXT_COL FROM MyTable WHERE TEXT_MATCH(SKILLS_TEXT_COL, '(\"apache spark\" OR \"query processing\") AND \"machine learning\"') LIMIT 50000";
     expected = new ArrayList<>();
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
     expected.add(
-        new Serializable[]{1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution"});
+        new Serializable[] { 1020, "Databases, columnar query processing, Apache Arrow, distributed systems, Machine learning, cluster management, docker image building and distribution" });
     testInterSegmentSelectionQueryHelper(query, expected);
 
     query =

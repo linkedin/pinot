@@ -40,11 +40,11 @@ public class FlushThresholdUpdaterTest {
 
   // Segment sizes in MB for each 100_000 rows consumed
   private static final long[] EXPONENTIAL_GROWTH_SEGMENT_SIZES_MB =
-      {50, 60, 70, 83, 98, 120, 160, 200, 250, 310, 400, 500, 600, 700, 800, 950, 1130, 1400, 1700, 2000};
+      { 50, 60, 70, 83, 98, 120, 160, 200, 250, 310, 400, 500, 600, 700, 800, 950, 1130, 1400, 1700, 2000 };
   private static final long[] LOGARITHMIC_GROWTH_SEGMENT_SIZES_MB =
-      {70, 180, 290, 400, 500, 605, 690, 770, 820, 865, 895, 920, 940, 955, 970, 980, 1000, 1012, 1020, 1030};
+      { 70, 180, 290, 400, 500, 605, 690, 770, 820, 865, 895, 920, 940, 955, 970, 980, 1000, 1012, 1020, 1030 };
   private static final long[] STEPS_SEGMENT_SIZES_MB =
-      {100, 100, 200, 200, 300, 300, 400, 400, 500, 500, 600, 600, 700, 700, 800, 800, 900, 900, 1000, 1000};
+      { 100, 100, 200, 200, 300, 300, 400, 400, 500, 500, 600, 600, 700, 700, 800, 800, 900, 900, 1000, 1000 };
 
   /**
    * Tests that the flush threshold update manager returns the right updater given various scenarios of flush threshold
@@ -124,15 +124,15 @@ public class FlushThresholdUpdaterTest {
     long segmentSizeLowerLimit = (long) (desiredSegmentSizeBytes * 0.99);
     long segmentSizeHigherLimit = (long) (desiredSegmentSizeBytes * 1.01);
 
-    for (long[] segmentSizesMB : Arrays
-        .asList(EXPONENTIAL_GROWTH_SEGMENT_SIZES_MB, LOGARITHMIC_GROWTH_SEGMENT_SIZES_MB, STEPS_SEGMENT_SIZES_MB)) {
+    for (long[] segmentSizesMB : Arrays.asList(EXPONENTIAL_GROWTH_SEGMENT_SIZES_MB, LOGARITHMIC_GROWTH_SEGMENT_SIZES_MB,
+        STEPS_SEGMENT_SIZES_MB)) {
       SegmentSizeBasedFlushThresholdUpdater flushThresholdUpdater = new SegmentSizeBasedFlushThresholdUpdater();
 
       // Start consumption
       LLCRealtimeSegmentZKMetadata newSegmentZKMetadata = getNewSegmentZKMetadata(0);
       CommittingSegmentDescriptor committingSegmentDescriptor = getCommittingSegmentDescriptor(0L);
-      flushThresholdUpdater
-          .updateFlushThreshold(streamConfig, newSegmentZKMetadata, committingSegmentDescriptor, null, 1);
+      flushThresholdUpdater.updateFlushThreshold(streamConfig, newSegmentZKMetadata, committingSegmentDescriptor, null,
+          1);
       assertEquals(newSegmentZKMetadata.getSizeThresholdToFlushSegment(), streamConfig.getFlushAutotuneInitialRows());
 
       int numRuns = 500;
@@ -180,8 +180,8 @@ public class FlushThresholdUpdaterTest {
       segmentSizeMB = (double) segmentSizesMB[0] / 100_000 * numRowsConsumed;
     } else {
       int index = Integer.min(numRowsConsumed / 100_000, 19);
-      segmentSizeMB = segmentSizesMB[index] + (double) (segmentSizesMB[index] - segmentSizesMB[index - 1]) / 100_000 * (
-          numRowsConsumed - index * 100_000);
+      segmentSizeMB = segmentSizesMB[index] + (double) (segmentSizesMB[index] - segmentSizesMB[index - 1]) / 100_000
+          * (numRowsConsumed - index * 100_000);
     }
     return (long) (segmentSizeMB * 1024 * 1024);
   }
@@ -194,8 +194,8 @@ public class FlushThresholdUpdaterTest {
     // Start consumption
     LLCRealtimeSegmentZKMetadata newSegmentZKMetadata = getNewSegmentZKMetadata(0);
     CommittingSegmentDescriptor committingSegmentDescriptor = getCommittingSegmentDescriptor(0L);
-    flushThresholdUpdater
-        .updateFlushThreshold(streamConfig, newSegmentZKMetadata, committingSegmentDescriptor, null, 1);
+    flushThresholdUpdater.updateFlushThreshold(streamConfig, newSegmentZKMetadata, committingSegmentDescriptor, null,
+        1);
     int sizeThreshold = newSegmentZKMetadata.getSizeThresholdToFlushSegment();
 
     // First segment consumes rows less than the threshold
@@ -227,8 +227,8 @@ public class FlushThresholdUpdaterTest {
     // Start consumption
     LLCRealtimeSegmentZKMetadata newSegmentZKMetadata = getNewSegmentZKMetadata(0);
     CommittingSegmentDescriptor committingSegmentDescriptor = getCommittingSegmentDescriptor(0L);
-    flushThresholdUpdater
-        .updateFlushThreshold(streamConfig, newSegmentZKMetadata, committingSegmentDescriptor, null, 1);
+    flushThresholdUpdater.updateFlushThreshold(streamConfig, newSegmentZKMetadata, committingSegmentDescriptor, null,
+        1);
     int sizeThreshold = newSegmentZKMetadata.getSizeThresholdToFlushSegment();
 
     // First segment only consumed 15 rows, so next segment should have size threshold of 10_000
@@ -260,10 +260,10 @@ public class FlushThresholdUpdaterTest {
     LLCRealtimeSegmentZKMetadata newSegmentZKMetadataForPartition0 = getNewSegmentZKMetadata(0);
     LLCRealtimeSegmentZKMetadata newSegmentZKMetadataForPartition1 = getNewSegmentZKMetadata(1);
     CommittingSegmentDescriptor committingSegmentDescriptor = getCommittingSegmentDescriptor(0L);
-    flushThresholdUpdater
-        .updateFlushThreshold(streamConfig, newSegmentZKMetadataForPartition0, committingSegmentDescriptor, null, 1);
-    flushThresholdUpdater
-        .updateFlushThreshold(streamConfig, newSegmentZKMetadataForPartition1, committingSegmentDescriptor, null, 1);
+    flushThresholdUpdater.updateFlushThreshold(streamConfig, newSegmentZKMetadataForPartition0,
+        committingSegmentDescriptor, null, 1);
+    flushThresholdUpdater.updateFlushThreshold(streamConfig, newSegmentZKMetadataForPartition1,
+        committingSegmentDescriptor, null, 1);
     int sizeThresholdForPartition0 = newSegmentZKMetadataForPartition0.getSizeThresholdToFlushSegment();
     int sizeThresholdForPartition1 = newSegmentZKMetadataForPartition1.getSizeThresholdToFlushSegment();
     double sizeRatio = flushThresholdUpdater.getLatestSegmentRowsToSizeRatio();
@@ -273,12 +273,10 @@ public class FlushThresholdUpdaterTest {
 
     // First segment from partition 1 should change the size ratio
     committingSegmentDescriptor = getCommittingSegmentDescriptor(128_000_000L);
-    LLCRealtimeSegmentZKMetadata committingSegmentZKMetadata =
-        getCommittingSegmentZKMetadata(System.currentTimeMillis(), sizeThresholdForPartition1,
-            sizeThresholdForPartition1);
-    flushThresholdUpdater
-        .updateFlushThreshold(streamConfig, newSegmentZKMetadataForPartition1, committingSegmentDescriptor,
-            committingSegmentZKMetadata, 1);
+    LLCRealtimeSegmentZKMetadata committingSegmentZKMetadata = getCommittingSegmentZKMetadata(
+        System.currentTimeMillis(), sizeThresholdForPartition1, sizeThresholdForPartition1);
+    flushThresholdUpdater.updateFlushThreshold(streamConfig, newSegmentZKMetadataForPartition1,
+        committingSegmentDescriptor, committingSegmentZKMetadata, 1);
     sizeThresholdForPartition1 = newSegmentZKMetadataForPartition1.getSizeThresholdToFlushSegment();
     sizeRatio = flushThresholdUpdater.getLatestSegmentRowsToSizeRatio();
     assertTrue(sizeRatio > 0.0);
@@ -287,17 +285,15 @@ public class FlushThresholdUpdaterTest {
     committingSegmentDescriptor = getCommittingSegmentDescriptor(256_000_000L);
     committingSegmentZKMetadata = getCommittingSegmentZKMetadata(System.currentTimeMillis(), sizeThresholdForPartition1,
         sizeThresholdForPartition1);
-    flushThresholdUpdater
-        .updateFlushThreshold(streamConfig, newSegmentZKMetadataForPartition1, committingSegmentDescriptor,
-            committingSegmentZKMetadata, 1);
+    flushThresholdUpdater.updateFlushThreshold(streamConfig, newSegmentZKMetadataForPartition1,
+        committingSegmentDescriptor, committingSegmentZKMetadata, 1);
     assertEquals(flushThresholdUpdater.getLatestSegmentRowsToSizeRatio(), sizeRatio);
 
     // First segment update from partition 0 should change the size ratio
     committingSegmentZKMetadata = getCommittingSegmentZKMetadata(System.currentTimeMillis(), sizeThresholdForPartition0,
         sizeThresholdForPartition0);
-    flushThresholdUpdater
-        .updateFlushThreshold(streamConfig, newSegmentZKMetadataForPartition0, committingSegmentDescriptor,
-            committingSegmentZKMetadata, 1);
+    flushThresholdUpdater.updateFlushThreshold(streamConfig, newSegmentZKMetadataForPartition0,
+        committingSegmentDescriptor, committingSegmentZKMetadata, 1);
     assertNotEquals(flushThresholdUpdater.getLatestSegmentRowsToSizeRatio(), sizeRatio);
   }
 
@@ -315,8 +311,8 @@ public class FlushThresholdUpdaterTest {
     // Start consumption
     LLCRealtimeSegmentZKMetadata newSegmentZKMetadata = getNewSegmentZKMetadata(0);
     CommittingSegmentDescriptor committingSegmentDescriptor = getCommittingSegmentDescriptor(0L);
-    flushThresholdUpdater
-        .updateFlushThreshold(streamConfig, newSegmentZKMetadata, committingSegmentDescriptor, null, 1);
+    flushThresholdUpdater.updateFlushThreshold(streamConfig, newSegmentZKMetadata, committingSegmentDescriptor, null,
+        1);
     int sizeThreshold = newSegmentZKMetadata.getSizeThresholdToFlushSegment();
     assertEquals(sizeThreshold, flushAutotuneInitialRows);
 

@@ -33,30 +33,30 @@ public class PostAggregationFunctionTest {
   public void testPostAggregationFunction() {
     // Plus
     PostAggregationFunction function =
-        new PostAggregationFunction("plus", new ColumnDataType[]{ColumnDataType.INT, ColumnDataType.LONG});
+        new PostAggregationFunction("plus", new ColumnDataType[] { ColumnDataType.INT, ColumnDataType.LONG });
     assertEquals(function.getResultType(), ColumnDataType.DOUBLE);
-    assertEquals(function.invoke(new Object[]{1, 2L}), 3.0);
+    assertEquals(function.invoke(new Object[] { 1, 2L }), 3.0);
 
     // Minus
-    function = new PostAggregationFunction("MINUS", new ColumnDataType[]{ColumnDataType.FLOAT, ColumnDataType.DOUBLE});
+    function =
+        new PostAggregationFunction("MINUS", new ColumnDataType[] { ColumnDataType.FLOAT, ColumnDataType.DOUBLE });
     assertEquals(function.getResultType(), ColumnDataType.DOUBLE);
-    assertEquals(function.invoke(new Object[]{3f, 4.0}), -1.0);
+    assertEquals(function.invoke(new Object[] { 3f, 4.0 }), -1.0);
 
     // Times
-    function = new PostAggregationFunction("tImEs", new ColumnDataType[]{ColumnDataType.STRING, ColumnDataType.INT});
+    function = new PostAggregationFunction("tImEs", new ColumnDataType[] { ColumnDataType.STRING, ColumnDataType.INT });
     assertEquals(function.getResultType(), ColumnDataType.DOUBLE);
-    assertEquals(function.invoke(new Object[]{"5", 6}), 30.0);
+    assertEquals(function.invoke(new Object[] { "5", 6 }), 30.0);
 
     // Reverse
-    function = new PostAggregationFunction("reverse", new ColumnDataType[]{ColumnDataType.LONG});
+    function = new PostAggregationFunction("reverse", new ColumnDataType[] { ColumnDataType.LONG });
     assertEquals(function.getResultType(), ColumnDataType.STRING);
-    assertEquals(function.invoke(new Object[]{"1234567890"}), "0987654321");
+    assertEquals(function.invoke(new Object[] { "1234567890" }), "0987654321");
 
     // ST_AsText
-    function = new PostAggregationFunction("ST_AsText", new ColumnDataType[]{ColumnDataType.BYTES});
+    function = new PostAggregationFunction("ST_AsText", new ColumnDataType[] { ColumnDataType.BYTES });
     assertEquals(function.getResultType(), ColumnDataType.STRING);
-    assertEquals(function.invoke(
-        new Object[]{GeometrySerializer.serialize(GeometryUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(10, 20)))}),
-        "POINT (10 20)");
+    assertEquals(function.invoke(new Object[] { GeometrySerializer
+        .serialize(GeometryUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(10, 20))) }), "POINT (10 20)");
   }
 }

@@ -63,16 +63,14 @@ public class ZkStarter {
     }
 
     @Override
-    public void runFromConfig(final ServerConfig config)
-        throws IOException, AdminServer.AdminServerException {
+    public void runFromConfig(final ServerConfig config) throws IOException, AdminServer.AdminServerException {
       ServerConfig newServerConfig = new ServerConfig() {
 
         public void parse(String[] args) {
           config.parse(args);
         }
 
-        public void parse(String path)
-            throws QuorumPeerConfig.ConfigException {
+        public void parse(String path) throws QuorumPeerConfig.ConfigException {
           config.parse(path);
         }
 
@@ -151,7 +149,7 @@ public class ZkStarter {
     // Start the local ZK server
     try {
       final PublicZooKeeperServerMain zookeeperServerMain = new PublicZooKeeperServerMain();
-      final String[] args = new String[]{Integer.toString(port), dataDirPath};
+      final String[] args = new String[] { Integer.toString(port), dataDirPath };
       new Thread() {
         @Override
         public void run() {

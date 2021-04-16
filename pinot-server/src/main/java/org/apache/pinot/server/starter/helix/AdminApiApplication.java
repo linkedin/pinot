@@ -70,8 +70,7 @@ public class AdminApiApplication extends ResourceConfig {
     register(new ContainerResponseFilter() {
       @Override
       public void filter(ContainerRequestContext containerRequestContext,
-          ContainerResponseContext containerResponseContext)
-          throws IOException {
+          ContainerResponseContext containerResponseContext) throws IOException {
         containerResponseContext.getHeaders().add("Access-Control-Allow-Origin", "*");
       }
     });
@@ -97,7 +96,7 @@ public class AdminApiApplication extends ResourceConfig {
     beanConfig.setDescription("APIs for accessing Pinot server information");
     beanConfig.setContact("https://github.com/apache/incubator-pinot");
     beanConfig.setVersion("1.0");
-    beanConfig.setSchemes(new String[]{CommonConstants.HTTP_PROTOCOL, CommonConstants.HTTPS_PROTOCOL});
+    beanConfig.setSchemes(new String[] { CommonConstants.HTTP_PROTOCOL, CommonConstants.HTTPS_PROTOCOL });
     beanConfig.setBasePath("/");
     beanConfig.setResourcePackage(RESOURCE_PACKAGE);
     beanConfig.setScan(true);
@@ -115,7 +114,7 @@ public class AdminApiApplication extends ResourceConfig {
 
     URL swaggerDistLocation =
         AdminApiApplication.class.getClassLoader().getResource("META-INF/resources/webjars/swagger-ui/3.18.2/");
-    CLStaticHttpHandler swaggerDist = new CLStaticHttpHandler(new URLClassLoader(new URL[]{swaggerDistLocation}));
+    CLStaticHttpHandler swaggerDist = new CLStaticHttpHandler(new URLClassLoader(new URL[] { swaggerDistLocation }));
     httpServer.getServerConfiguration().addHttpHandler(swaggerDist, "/swaggerui-dist/");
   }
 

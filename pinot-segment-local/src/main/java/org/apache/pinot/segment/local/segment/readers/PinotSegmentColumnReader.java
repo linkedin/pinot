@@ -28,7 +28,7 @@ import org.apache.pinot.segment.spi.index.reader.ForwardIndexReader;
 import org.apache.pinot.segment.spi.index.reader.ForwardIndexReaderContext;
 
 
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class PinotSegmentColumnReader implements Closeable {
   private final ForwardIndexReader _reader;
   private final ForwardIndexReaderContext _readerContext;
@@ -103,8 +103,7 @@ public class PinotSegmentColumnReader implements Closeable {
   }
 
   @Override
-  public void close()
-      throws IOException {
+  public void close() throws IOException {
     if (_readerContext != null) {
       _readerContext.close();
     }

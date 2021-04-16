@@ -35,7 +35,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class AggregationGroupByTrimmingServiceTest {
   private static final long RANDOM_SEED = System.currentTimeMillis();
   private static final Random RANDOM = new Random(RANDOM_SEED);
@@ -84,7 +84,7 @@ public class AggregationGroupByTrimmingServiceTest {
       for (int j = 0; j <= i; j += NUM_GROUPS / MAX_SIZE_OF_SET) {
         set.add(j);
       }
-      intermediateResultsMap.put(_groups.get(i), new Object[]{(double) i, set});
+      intermediateResultsMap.put(_groups.get(i), new Object[] { (double) i, set });
     }
     List<Map<String, Object>> trimmedIntermediateResultMaps =
         _trimmingService.trimIntermediateResultsMap(intermediateResultsMap);
@@ -105,7 +105,7 @@ public class AggregationGroupByTrimmingServiceTest {
       finalDistinctCountResultMap.put(entry.getKey(), ((IntOpenHashSet) entry.getValue()).size());
     }
     List[] groupByResultLists =
-        _trimmingService.trimFinalResults(new Map[]{trimmedSumResultMap, finalDistinctCountResultMap});
+        _trimmingService.trimFinalResults(new Map[] { trimmedSumResultMap, finalDistinctCountResultMap });
     List<GroupByResult> sumGroupByResultList = groupByResultLists[0];
     List<GroupByResult> distinctCountGroupByResultList = groupByResultLists[1];
     for (int i = 0; i < GROUP_BY_TOP_N; i++) {
@@ -119,9 +119,8 @@ public class AggregationGroupByTrimmingServiceTest {
       // For distinctCount, because multiple groups have same value, so there is no guarantee on the order of groups,
       // just check the value
       GroupByResult distinctCountGroupByResult = distinctCountGroupByResultList.get(i);
-      Assert
-          .assertEquals(distinctCountGroupByResult.getValue(), expectedGroupIndex / (NUM_GROUPS / MAX_SIZE_OF_SET) + 1,
-              ERROR_MESSAGE);
+      Assert.assertEquals(distinctCountGroupByResult.getValue(),
+          expectedGroupIndex / (NUM_GROUPS / MAX_SIZE_OF_SET) + 1, ERROR_MESSAGE);
     }
   }
 

@@ -68,8 +68,7 @@ public class LocalPinotFSTest {
   }
 
   @Test
-  public void testFS()
-      throws Exception {
+  public void testFS() throws Exception {
     LocalPinotFS localPinotFS = new LocalPinotFS();
     URI testFileUri = testFile.toURI();
     // Check whether a directory exists
@@ -105,9 +104,9 @@ public class LocalPinotFSTest {
     // Assert that recursive list files and nonrecursive list files are as expected
     Assert.assertTrue(testDirFile.createNewFile(), "Could not create file " + testDir.getAbsolutePath());
     Assert.assertEquals(localPinotFS.listFiles(newAbsoluteTempDirPath.toURI(), false),
-        new String[]{testDir.getAbsolutePath()});
+        new String[] { testDir.getAbsolutePath() });
     Assert.assertEquals(localPinotFS.listFiles(newAbsoluteTempDirPath.toURI(), true),
-        new String[]{testDir.getAbsolutePath(), testDirFile.getAbsolutePath()});
+        new String[] { testDir.getAbsolutePath(), testDirFile.getAbsolutePath() });
 
     // Create another parent dir so we can test recursive move
     File newAbsoluteTempDirPath3 = new File(_absoluteTmpDirPath, "absoluteThree");
@@ -169,8 +168,7 @@ public class LocalPinotFSTest {
     Assert.assertTrue(srcFile.createNewFile());
     dstFile = new File(_nonExistentTmpFolder.getPath() + "/srcFile");
     Assert.assertFalse(dstFile.exists());
-    Assert.assertTrue(localPinotFS
-        .move(_absoluteTmpDirPath.toURI(), _nonExistentTmpFolder.toURI(), true)); // overwrite flag has no impact
+    Assert.assertTrue(localPinotFS.move(_absoluteTmpDirPath.toURI(), _nonExistentTmpFolder.toURI(), true)); // overwrite flag has no impact
     Assert.assertTrue(dstFile.exists());
 
     localPinotFS.delete(secondTestFileUri, true);

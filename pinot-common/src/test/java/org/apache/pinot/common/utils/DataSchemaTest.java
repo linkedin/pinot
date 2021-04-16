@@ -28,14 +28,14 @@ import static org.apache.pinot.common.utils.DataSchema.ColumnDataType.*;
 
 public class DataSchemaTest {
   private static final String[] COLUMN_NAMES =
-      {"int", "long", "float", "double", "string", "object", "int_array", "long_array", "float_array", "double_array", "string_array"};
+      { "int", "long", "float", "double", "string", "object", "int_array", "long_array", "float_array", "double_array", "string_array" };
   private static final int NUM_COLUMNS = COLUMN_NAMES.length;
   private static final DataSchema.ColumnDataType[] COLUMN_DATA_TYPES =
-      {INT, LONG, FLOAT, DOUBLE, STRING, OBJECT, INT_ARRAY, LONG_ARRAY, FLOAT_ARRAY, DOUBLE_ARRAY, STRING_ARRAY};
+      { INT, LONG, FLOAT, DOUBLE, STRING, OBJECT, INT_ARRAY, LONG_ARRAY, FLOAT_ARRAY, DOUBLE_ARRAY, STRING_ARRAY };
   private static final DataSchema.ColumnDataType[] COMPATIBLE_COLUMN_DATA_TYPES =
-      {LONG, FLOAT, DOUBLE, INT, STRING, OBJECT, LONG_ARRAY, FLOAT_ARRAY, DOUBLE_ARRAY, INT_ARRAY, STRING_ARRAY};
+      { LONG, FLOAT, DOUBLE, INT, STRING, OBJECT, LONG_ARRAY, FLOAT_ARRAY, DOUBLE_ARRAY, INT_ARRAY, STRING_ARRAY };
   private static final DataSchema.ColumnDataType[] UPGRADED_COLUMN_DATA_TYPES =
-      {LONG, DOUBLE, DOUBLE, DOUBLE, STRING, OBJECT, LONG_ARRAY, DOUBLE_ARRAY, DOUBLE_ARRAY, DOUBLE_ARRAY, STRING_ARRAY};
+      { LONG, DOUBLE, DOUBLE, DOUBLE, STRING, OBJECT, LONG_ARRAY, DOUBLE_ARRAY, DOUBLE_ARRAY, DOUBLE_ARRAY, STRING_ARRAY };
 
   @Test
   public void testGetters() {
@@ -56,8 +56,7 @@ public class DataSchemaTest {
   }
 
   @Test
-  public void testSerDe()
-      throws Exception {
+  public void testSerDe() throws Exception {
     DataSchema dataSchema = new DataSchema(COLUMN_NAMES, COLUMN_DATA_TYPES);
     DataSchema dataSchemaAfterSerDe = DataSchema.fromBytes(dataSchema.toBytes());
     Assert.assertEquals(dataSchema, dataSchemaAfterSerDe);
@@ -89,7 +88,7 @@ public class DataSchemaTest {
 
   @Test
   public void testColumnDataType() {
-    for (DataSchema.ColumnDataType columnDataType : new DataSchema.ColumnDataType[]{INT, LONG}) {
+    for (DataSchema.ColumnDataType columnDataType : new DataSchema.ColumnDataType[] { INT, LONG }) {
       Assert.assertTrue(columnDataType.isNumber());
       Assert.assertTrue(columnDataType.isWholeNumber());
       Assert.assertFalse(columnDataType.isArray());
@@ -101,7 +100,7 @@ public class DataSchemaTest {
       Assert.assertFalse(columnDataType.isCompatible(STRING_ARRAY));
     }
 
-    for (DataSchema.ColumnDataType columnDataType : new DataSchema.ColumnDataType[]{FLOAT, DOUBLE}) {
+    for (DataSchema.ColumnDataType columnDataType : new DataSchema.ColumnDataType[] { FLOAT, DOUBLE }) {
       Assert.assertTrue(columnDataType.isNumber());
       Assert.assertFalse(columnDataType.isWholeNumber());
       Assert.assertFalse(columnDataType.isArray());
@@ -134,7 +133,7 @@ public class DataSchemaTest {
     Assert.assertFalse(OBJECT.isCompatible(STRING_ARRAY));
     Assert.assertTrue(OBJECT.isCompatible(OBJECT));
 
-    for (DataSchema.ColumnDataType columnDataType : new DataSchema.ColumnDataType[]{INT_ARRAY, LONG_ARRAY}) {
+    for (DataSchema.ColumnDataType columnDataType : new DataSchema.ColumnDataType[] { INT_ARRAY, LONG_ARRAY }) {
       Assert.assertFalse(columnDataType.isNumber());
       Assert.assertFalse(columnDataType.isWholeNumber());
       Assert.assertTrue(columnDataType.isArray());
@@ -146,7 +145,7 @@ public class DataSchemaTest {
       Assert.assertFalse(columnDataType.isCompatible(STRING_ARRAY));
     }
 
-    for (DataSchema.ColumnDataType columnDataType : new DataSchema.ColumnDataType[]{FLOAT_ARRAY, DOUBLE_ARRAY}) {
+    for (DataSchema.ColumnDataType columnDataType : new DataSchema.ColumnDataType[] { FLOAT_ARRAY, DOUBLE_ARRAY }) {
       Assert.assertFalse(columnDataType.isNumber());
       Assert.assertFalse(columnDataType.isWholeNumber());
       Assert.assertTrue(columnDataType.isArray());

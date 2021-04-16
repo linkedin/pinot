@@ -23,6 +23,7 @@ import org.apache.pinot.tools.Command;
 import org.apache.pinot.tools.GitHubEventsQuickstart;
 import org.kohsuke.args4j.Option;
 
+
 /**
  * Command to run GitHubEventsQuickStart
  */
@@ -31,7 +32,7 @@ public class GitHubEventsQuickStartCommand extends AbstractBaseAdminCommand impl
   @Option(name = "-personalAccessToken", required = true, metaVar = "<String>", usage = "GitHub personal access token.")
   private String _personalAccessToken;
 
-  @Option(name = "-help", help = true, aliases = {"-h", "--h", "--help"}, usage = "Print this message.")
+  @Option(name = "-help", help = true, aliases = { "-h", "--h", "--help" }, usage = "Print this message.")
   private boolean _help = false;
 
   public void setPersonalAccessToken(String personalAccessToken) {
@@ -63,8 +64,7 @@ public class GitHubEventsQuickStartCommand extends AbstractBaseAdminCommand impl
   }
 
   @Override
-  public boolean execute()
-      throws Exception {
+  public boolean execute() throws Exception {
     PluginManager.get().init();
     new GitHubEventsQuickstart().execute(_personalAccessToken);
     return true;

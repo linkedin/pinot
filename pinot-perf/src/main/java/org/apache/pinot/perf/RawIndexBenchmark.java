@@ -59,7 +59,7 @@ import org.kohsuke.args4j.Option;
  * It can take an existing segment with two columns to compare. It can also create a segment on the fly with a
  * given input file containing strings (one string per line).
  */
-@SuppressWarnings({"FieldCanBeLocal", "unused"})
+@SuppressWarnings({ "FieldCanBeLocal", "unused" })
 public class RawIndexBenchmark {
   private static final String SEGMENT_DIR_NAME = System.getProperty("java.io.tmpdir") + File.separator + "rawIndexPerf";
   private static final String SEGMENT_NAME = "perfTestSegment";
@@ -70,7 +70,7 @@ public class RawIndexBenchmark {
   private static final int DEFAULT_NUM_LOOKUP = 100_000;
   private static final int DEFAULT_NUM_CONSECUTIVE_LOOKUP = 50;
 
-  @Option(name = "-segmentDir", required = false, forbids = {"-dataFile"}, usage = "Untarred segment")
+  @Option(name = "-segmentDir", required = false, forbids = { "-dataFile" }, usage = "Untarred segment")
   private String _segmentDir = null;
 
   @Option(name = "-fwdIndexColumn", required = false, usage = "Name of column with dictionary encoded index")
@@ -79,7 +79,8 @@ public class RawIndexBenchmark {
   @Option(name = "-rawIndexColumn", required = false, usage = "Name of column with raw index (no-dictionary")
   private String _rawIndexColumn = DEFAULT_RAW_INDEX_COLUMN;
 
-  @Option(name = "-dataFile", required = false, forbids = {"-segmentDir"}, usage = "File containing input data (one string per line)")
+  @Option(name = "-dataFile", required = false, forbids = { "-segmentDir" },
+      usage = "File containing input data (one string per line)")
   private String _dataFile = null;
 
   @Option(name = "-loadMode", required = false, usage = "Load mode for data (mmap|heap")
@@ -91,13 +92,12 @@ public class RawIndexBenchmark {
   @Option(name = "-numConsecutiveLookups", required = false, usage = "Number of consecutive docIds to lookup")
   private int _numConsecutiveLookups = DEFAULT_NUM_CONSECUTIVE_LOOKUP;
 
-  @Option(name = "-help", required = false, help = true, aliases = {"-h"}, usage = "print this message")
+  @Option(name = "-help", required = false, help = true, aliases = { "-h" }, usage = "print this message")
   private boolean _help = false;
 
   private int _numRows = 0;
 
-  public void run()
-      throws Exception {
+  public void run() throws Exception {
     if (_segmentDir == null && _dataFile == null) {
       System.out.println("Error: One of 'segmentDir' or 'dataFile' must be specified");
       return;
@@ -121,8 +121,7 @@ public class RawIndexBenchmark {
    *
    * @throws Exception
    */
-  private File buildSegment()
-      throws Exception {
+  private File buildSegment() throws Exception {
     Schema schema = new Schema();
 
     for (int i = 0; i < NUM_COLUMNS; i++) {
@@ -292,8 +291,7 @@ public class RawIndexBenchmark {
    * @param args Command line arguments.
    * @throws Exception
    */
-  public static void main(String[] args)
-      throws Exception {
+  public static void main(String[] args) throws Exception {
     RawIndexBenchmark benchmark = new RawIndexBenchmark();
     CmdLineParser parser = new CmdLineParser(benchmark);
     parser.parseArgument(args);

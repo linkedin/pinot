@@ -53,8 +53,7 @@ public class FixedIntArrayIdMapTest {
   }
 
   @AfterClass
-  public void tearDown()
-      throws IOException {
+  public void tearDown() throws IOException {
     _idMap.close();
     _memoryManager.close();
   }
@@ -74,7 +73,7 @@ public class FixedIntArrayIdMapTest {
     int numValues = expectedMap.size();
 
     // Test invalid Value
-    Assert.assertEquals(_idMap.getId(new FixedIntArray(new int[]{})), IdMap.INVALID_ID);
+    Assert.assertEquals(_idMap.getId(new FixedIntArray(new int[] {})), IdMap.INVALID_ID);
 
     Assert.assertEquals(_idMap.size(), numValues);
     testValues(expectedMap);

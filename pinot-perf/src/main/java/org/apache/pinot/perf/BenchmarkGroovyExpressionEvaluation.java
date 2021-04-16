@@ -43,7 +43,7 @@ import org.openjdk.jmh.runner.options.TimeValue;
 
 
 @State(Scope.Benchmark)
-@Fork(value = 1, jvmArgs = {"-server", "-Xmx8G", "-XX:MaxDirectMemorySize=16G"})
+@Fork(value = 1, jvmArgs = { "-server", "-Xmx8G", "-XX:MaxDirectMemorySize=16G" })
 public class BenchmarkGroovyExpressionEvaluation {
 
   private final GroovyClassLoader _groovyClassLoader = new GroovyClassLoader();
@@ -62,8 +62,7 @@ public class BenchmarkGroovyExpressionEvaluation {
   private Script _maxGCLScript;
 
   @Setup
-  public void setup()
-      throws IllegalAccessException, InstantiationException {
+  public void setup() throws IllegalAccessException, InstantiationException {
     _concatScriptText = "firstName + ' ' + lastName";
     _concatBinding = new Binding();
     _concatScript = new GroovyShell(_concatBinding).parse(_concatScriptText);
@@ -180,8 +179,7 @@ public class BenchmarkGroovyExpressionEvaluation {
     return _maxGCLScript.run();
   }
 
-  public static void main(String[] args)
-      throws Exception {
+  public static void main(String[] args) throws Exception {
     ChainedOptionsBuilder opt = new OptionsBuilder().include(BenchmarkGroovyExpressionEvaluation.class.getSimpleName())
         .warmupTime(TimeValue.seconds(10)).warmupIterations(1).measurementTime(TimeValue.seconds(30))
         .measurementIterations(3).forks(1);

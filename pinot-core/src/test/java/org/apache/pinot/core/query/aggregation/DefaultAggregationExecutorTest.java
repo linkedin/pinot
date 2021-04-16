@@ -73,7 +73,7 @@ public class DefaultAggregationExecutorTest {
   private static final String SEGMENT_NAME = "TestAggregation";
 
   private static final String METRIC_PREFIX = "metric_";
-  private static final String[] AGGREGATION_FUNCTIONS = {"sum", "max", "min"};
+  private static final String[] AGGREGATION_FUNCTIONS = { "sum", "max", "min" };
 
   private static final int NUM_METRIC_COLUMNS = AGGREGATION_FUNCTIONS.length;
   private static final double MAX_VALUE = Integer.MAX_VALUE;
@@ -93,8 +93,7 @@ public class DefaultAggregationExecutorTest {
    * @throws Exception
    */
   @BeforeClass
-  public void setUp()
-      throws Exception {
+  public void setUp() throws Exception {
     _random = new Random(System.currentTimeMillis());
 
     int numColumns = AGGREGATION_FUNCTIONS.length;
@@ -140,9 +139,8 @@ public class DefaultAggregationExecutorTest {
     for (int i = 0; i < result.size(); i++) {
       double actual = (double) result.get(i);
       double expected = computeAggregation(AGGREGATION_FUNCTIONS[i], _inputData[i]);
-      Assert.assertEquals(actual, expected,
-          "Aggregation mis-match for function " + AGGREGATION_FUNCTIONS[i] + ", Expected: " + expected + " Actual: "
-              + actual);
+      Assert.assertEquals(actual, expected, "Aggregation mis-match for function " + AGGREGATION_FUNCTIONS[i]
+          + ", Expected: " + expected + " Actual: " + actual);
     }
   }
 
@@ -154,15 +152,13 @@ public class DefaultAggregationExecutorTest {
    *
    * @throws Exception
    */
-  private void setupSegment()
-      throws Exception {
+  private void setupSegment() throws Exception {
     if (INDEX_DIR.exists()) {
       FileUtils.deleteQuietly(INDEX_DIR);
     }
 
-    SegmentGeneratorConfig config =
-        new SegmentGeneratorConfig(new TableConfigBuilder(TableType.OFFLINE).setTableName("test").build(),
-            buildSchema());
+    SegmentGeneratorConfig config = new SegmentGeneratorConfig(
+        new TableConfigBuilder(TableType.OFFLINE).setTableName("test").build(), buildSchema());
     config.setSegmentName(SEGMENT_NAME);
     config.setOutDir(INDEX_DIR.getAbsolutePath());
 

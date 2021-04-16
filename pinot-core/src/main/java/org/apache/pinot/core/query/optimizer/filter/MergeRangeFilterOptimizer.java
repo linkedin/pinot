@@ -47,7 +47,7 @@ import org.apache.pinot.spi.utils.BytesUtils;
  * NOTE: This optimizer follows the {@link FlattenAndOrFilterOptimizer}, so all the AND/OR filters are already
  *       flattened.
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class MergeRangeFilterOptimizer implements FilterOptimizer {
 
   @Override

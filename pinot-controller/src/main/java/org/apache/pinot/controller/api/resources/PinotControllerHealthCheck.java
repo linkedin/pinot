@@ -49,7 +49,7 @@ public class PinotControllerHealthCheck {
   @GET
   @Path("pinot-controller/admin")
   @ApiOperation(value = "Check controller health")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Good")})
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Good") })
   @Produces(MediaType.TEXT_PLAIN)
   public String checkHealthLegacy() {
     if (StringUtils.isNotBlank(controllerConf.generateVipUrl())) {
@@ -61,7 +61,7 @@ public class PinotControllerHealthCheck {
   @GET
   @Path("health")
   @ApiOperation(value = "Check controller health")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Good")})
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Good") })
   @Produces(MediaType.TEXT_PLAIN)
   public String checkHealth() {
     ServiceStatus.Status status = ServiceStatus.getServiceStatus();

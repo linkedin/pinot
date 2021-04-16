@@ -61,7 +61,7 @@ import org.apache.pinot.core.query.aggregation.function.AggregationFunctionFacto
  *   </li>
  * </ul>
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class QueryContext {
   private final String _tableName;
   private final List<ExpressionContext> _selectExpressions;

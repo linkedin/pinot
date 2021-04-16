@@ -55,8 +55,7 @@ public class SchemaUtils {
   /**
    * Fetch {@link Schema} from a {@link ZNRecord}.
    */
-  public static Schema fromZNRecord(@Nonnull ZNRecord record)
-      throws IOException {
+  public static Schema fromZNRecord(@Nonnull ZNRecord record) throws IOException {
     String schemaJSON = record.getSimpleField("schemaJSON");
     return Schema.fromString(schemaJSON);
   }
@@ -76,8 +75,7 @@ public class SchemaUtils {
    * @return schema on success.
    * <P><code>null</code> on failure.
    */
-  public static @Nullable
-  Schema getSchema(@Nonnull String host, int port, @Nonnull String schemaName) {
+  public static @Nullable Schema getSchema(@Nonnull String host, int port, @Nonnull String schemaName) {
     Preconditions.checkNotNull(host);
     Preconditions.checkNotNull(schemaName);
 
@@ -120,7 +118,7 @@ public class SchemaUtils {
       URL url = new URL(CommonConstants.HTTP_PROTOCOL, host, port, "/schemas");
       PostMethod httpPost = new PostMethod(url.toString());
       try {
-        Part[] parts = {new StringPart(schema.getSchemaName(), schema.toSingleLineJsonString())};
+        Part[] parts = { new StringPart(schema.getSchemaName(), schema.toSingleLineJsonString()) };
         MultipartRequestEntity requestEntity = new MultipartRequestEntity(parts, new HttpMethodParams());
         httpPost.setRequestEntity(requestEntity);
         int responseCode = HTTP_CLIENT.executeMethod(httpPost);
@@ -180,8 +178,8 @@ public class SchemaUtils {
     Preconditions.checkNotNull(schema1);
     Preconditions.checkNotNull(schema2);
 
-    return schema1.getSchemaName().equals(schema2.getSchemaName()) && schema1.getFieldSpecMap()
-        .equals(schema2.getFieldSpecMap());
+    return schema1.getSchemaName().equals(schema2.getSchemaName())
+        && schema1.getFieldSpecMap().equals(schema2.getFieldSpecMap());
   }
 
   /**

@@ -52,7 +52,7 @@ public class RangeOfflineDictionaryPredicateEvaluatorTest {
       Assert.assertFalse(evaluator.applySV(rangeStart - 1));
       Assert.assertFalse(evaluator.applySV(rangeEnd + 1));
 
-      int[] dictIds = new int[]{1, 3, 7};
+      int[] dictIds = new int[] { 1, 3, 7 };
       Assert.assertTrue(evaluator.applyMV(dictIds, dictIds.length));
       Assert.assertFalse(evaluator.applyMV(dictIds, 1));
       dictIds = evaluator.getMatchingDictIds();
@@ -74,7 +74,7 @@ public class RangeOfflineDictionaryPredicateEvaluatorTest {
       Assert.assertFalse(evaluator.applySV(rangeStart - 1));
       Assert.assertFalse(evaluator.applySV(rangeEnd + 1));
 
-      int[] dictIds = new int[]{1, 3, 7};
+      int[] dictIds = new int[] { 1, 3, 7 };
       Assert.assertTrue(evaluator.applyMV(dictIds, dictIds.length));
       Assert.assertFalse(evaluator.applyMV(dictIds, 1));
       dictIds = evaluator.getMatchingDictIds();
@@ -96,7 +96,7 @@ public class RangeOfflineDictionaryPredicateEvaluatorTest {
       Assert.assertFalse(evaluator.applySV(rangeStart - 1));
       Assert.assertFalse(evaluator.applySV(rangeEnd + 1));
 
-      int[] dictIds = new int[]{1, 3, 7};
+      int[] dictIds = new int[] { 1, 3, 7 };
       Assert.assertTrue(evaluator.applyMV(dictIds, dictIds.length));
       Assert.assertFalse(evaluator.applyMV(dictIds, 1));
       dictIds = evaluator.getMatchingDictIds();
@@ -118,7 +118,7 @@ public class RangeOfflineDictionaryPredicateEvaluatorTest {
       Assert.assertFalse(evaluator.applySV(rangeStart - 1));
       Assert.assertFalse(evaluator.applySV(rangeEnd + 1));
 
-      int[] dictIds = new int[]{1, 3, 7};
+      int[] dictIds = new int[] { 1, 3, 7 };
       Assert.assertTrue(evaluator.applyMV(dictIds, dictIds.length));
       Assert.assertFalse(evaluator.applyMV(dictIds, 1));
       dictIds = evaluator.getMatchingDictIds();
@@ -151,7 +151,7 @@ public class RangeOfflineDictionaryPredicateEvaluatorTest {
       Assert.assertTrue(evaluator.applySV(rangeStart + 1));
       Assert.assertFalse(evaluator.applySV(rangeEnd + 1));
 
-      int[] dictIds = new int[]{5, 7, 9};
+      int[] dictIds = new int[] { 5, 7, 9 };
       Assert.assertFalse(evaluator.applyMV(dictIds, dictIds.length));
       Assert.assertFalse(evaluator.applyMV(dictIds, 1));
       dictIds = evaluator.getMatchingDictIds();
@@ -187,7 +187,7 @@ public class RangeOfflineDictionaryPredicateEvaluatorTest {
       Assert.assertTrue(evaluator.applySV(rangeStart + 1));
       Assert.assertFalse(evaluator.applySV(rangeStart - 1));
 
-      int[] dictIds = new int[]{5, 7, 9};
+      int[] dictIds = new int[] { 5, 7, 9 };
       Assert.assertTrue(evaluator.applyMV(dictIds, dictIds.length));
       Assert.assertFalse(evaluator.applyMV(dictIds, 1));
       dictIds = evaluator.getMatchingDictIds();
@@ -243,7 +243,7 @@ public class RangeOfflineDictionaryPredicateEvaluatorTest {
       Assert.assertFalse(evaluator.applySV(rangeStart + 1));
       Assert.assertFalse(evaluator.applySV(rangeStart - 1));
 
-      int[] dictIds = new int[]{5, 7, 9};
+      int[] dictIds = new int[] { 5, 7, 9 };
       Assert.assertFalse(evaluator.applyMV(dictIds, dictIds.length));
       Assert.assertFalse(evaluator.applyMV(dictIds, 1));
       dictIds = evaluator.getMatchingDictIds();

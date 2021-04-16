@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.List;
 
 
-@JsonPropertyOrder({"value", "group"})
+@JsonPropertyOrder({ "value", "group" })
 public class GroupByResult {
 
   private Serializable _value;

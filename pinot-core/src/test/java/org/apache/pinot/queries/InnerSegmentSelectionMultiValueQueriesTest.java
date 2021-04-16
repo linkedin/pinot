@@ -107,7 +107,7 @@ public class InnerSegmentSelectionMultiValueQueriesTest extends BaseMultiValueQu
     Object[] firstRow = selectionResult.get(0);
     Assert.assertEquals(firstRow.length, 10);
     Assert.assertEquals(((Integer) firstRow[columnIndexMap.get("column1")]).intValue(), 890282370);
-    Assert.assertEquals(firstRow[columnIndexMap.get("column6")], new int[]{2147483647});
+    Assert.assertEquals(firstRow[columnIndexMap.get("column6")], new int[] { 2147483647 });
 
     // Test query with filter
     selectionOnlyOperator = getOperatorForPqlQueryWithFilter(query);
@@ -132,7 +132,7 @@ public class InnerSegmentSelectionMultiValueQueriesTest extends BaseMultiValueQu
     firstRow = selectionResult.get(0);
     Assert.assertEquals(firstRow.length, 10);
     Assert.assertEquals(((Integer) firstRow[columnIndexMap.get("column1")]).intValue(), 890282370);
-    Assert.assertEquals(firstRow[columnIndexMap.get("column6")], new int[]{2147483647});
+    Assert.assertEquals(firstRow[columnIndexMap.get("column6")], new int[] { 2147483647 });
   }
 
   @Test
@@ -162,7 +162,7 @@ public class InnerSegmentSelectionMultiValueQueriesTest extends BaseMultiValueQu
     Object[] firstRow = selectionResult.get(0);
     Assert.assertEquals(firstRow.length, 3);
     Assert.assertEquals(((Integer) firstRow[columnIndexMap.get("column1")]).intValue(), 890282370);
-    Assert.assertEquals(firstRow[columnIndexMap.get("column6")], new int[]{2147483647});
+    Assert.assertEquals(firstRow[columnIndexMap.get("column6")], new int[] { 2147483647 });
 
     // Test query with filter
     selectionOnlyOperator = getOperatorForPqlQueryWithFilter(query);
@@ -187,7 +187,7 @@ public class InnerSegmentSelectionMultiValueQueriesTest extends BaseMultiValueQu
     firstRow = selectionResult.get(0);
     Assert.assertEquals(firstRow.length, 3);
     Assert.assertEquals(((Integer) firstRow[columnIndexMap.get("column1")]).intValue(), 890282370);
-    Assert.assertEquals(firstRow[columnIndexMap.get("column6")], new int[]{2147483647});
+    Assert.assertEquals(firstRow[columnIndexMap.get("column6")], new int[] { 2147483647 });
   }
 
   @Test
@@ -218,7 +218,7 @@ public class InnerSegmentSelectionMultiValueQueriesTest extends BaseMultiValueQu
     Object[] lastRow = selectionResult.peek();
     Assert.assertEquals(lastRow.length, 4);
     Assert.assertEquals((String) lastRow[columnIndexMap.get("column5")], "AKXcXcIqsqOJFsdwxZ");
-    Assert.assertEquals(lastRow[columnIndexMap.get("column6")], new int[]{1252});
+    Assert.assertEquals(lastRow[columnIndexMap.get("column6")], new int[] { 1252 });
 
     // Test query with filter
     selectionOrderByOperator = getOperatorForPqlQueryWithFilter(query);
@@ -244,7 +244,7 @@ public class InnerSegmentSelectionMultiValueQueriesTest extends BaseMultiValueQu
     lastRow = selectionResult.peek();
     Assert.assertEquals(lastRow.length, 4);
     Assert.assertEquals((String) lastRow[columnIndexMap.get("column5")], "AKXcXcIqsqOJFsdwxZ");
-    Assert.assertEquals(lastRow[columnIndexMap.get("column6")], new int[]{2147483647});
+    Assert.assertEquals(lastRow[columnIndexMap.get("column6")], new int[] { 2147483647 });
   }
 
   private Map<String, Integer> computeColumnNameToIndexMap(DataSchema dataSchema) {

@@ -545,7 +545,7 @@ public enum PinotDataType {
       return (int[]) value;
     }
     if (isSingleValue()) {
-      return new int[]{toInt(value)};
+      return new int[] { toInt(value) };
     } else {
       Object[] valueArray = toObjectArray(value);
       int length = valueArray.length;
@@ -563,7 +563,7 @@ public enum PinotDataType {
       return (Integer[]) value;
     }
     if (isSingleValue()) {
-      return new Integer[]{toInt(value)};
+      return new Integer[] { toInt(value) };
     } else {
       Object[] valueArray = toObjectArray(value);
       int length = valueArray.length;
@@ -581,7 +581,7 @@ public enum PinotDataType {
       return (long[]) value;
     }
     if (isSingleValue()) {
-      return new long[]{toLong(value)};
+      return new long[] { toLong(value) };
     } else {
       Object[] valueArray = toObjectArray(value);
       int length = valueArray.length;
@@ -599,7 +599,7 @@ public enum PinotDataType {
       return (Long[]) value;
     }
     if (isSingleValue()) {
-      return new Long[]{toLong(value)};
+      return new Long[] { toLong(value) };
     } else {
       Object[] valueArray = toObjectArray(value);
       int length = valueArray.length;
@@ -617,7 +617,7 @@ public enum PinotDataType {
       return (float[]) value;
     }
     if (isSingleValue()) {
-      return new float[]{toFloat(value)};
+      return new float[] { toFloat(value) };
     } else {
       Object[] valueArray = toObjectArray(value);
       int length = valueArray.length;
@@ -635,7 +635,7 @@ public enum PinotDataType {
       return (Float[]) value;
     }
     if (isSingleValue()) {
-      return new Float[]{toFloat(value)};
+      return new Float[] { toFloat(value) };
     } else {
       Object[] valueArray = toObjectArray(value);
       int length = valueArray.length;
@@ -653,7 +653,7 @@ public enum PinotDataType {
       return (double[]) value;
     }
     if (isSingleValue()) {
-      return new double[]{toDouble(value)};
+      return new double[] { toDouble(value) };
     } else {
       Object[] valueArray = toObjectArray(value);
       int length = valueArray.length;
@@ -671,7 +671,7 @@ public enum PinotDataType {
       return (Double[]) value;
     }
     if (isSingleValue()) {
-      return new Double[]{toDouble(value)};
+      return new Double[] { toDouble(value) };
     } else {
       Object[] valueArray = toObjectArray(value);
       int length = valueArray.length;
@@ -689,7 +689,7 @@ public enum PinotDataType {
       return (String[]) value;
     }
     if (isSingleValue()) {
-      return new String[]{toString(value)};
+      return new String[] { toString(value) };
     } else {
       Object[] valueArray = toObjectArray(value);
       int length = valueArray.length;

@@ -50,10 +50,10 @@ abstract class BaseRawBytesSingleColumnDistinctExecutor implements DistinctExecu
   @Override
   public DistinctTable getResult() {
     DataSchema dataSchema =
-        new DataSchema(new String[]{_expression.toString()}, new ColumnDataType[]{ColumnDataType.BYTES});
+        new DataSchema(new String[] { _expression.toString() }, new ColumnDataType[] { ColumnDataType.BYTES });
     List<Record> records = new ArrayList<>(_valueSet.size());
     for (ByteArray value : _valueSet) {
-      records.add(new Record(new Object[]{value}));
+      records.add(new Record(new Object[] { value }));
     }
     return new DistinctTable(dataSchema, records);
   }

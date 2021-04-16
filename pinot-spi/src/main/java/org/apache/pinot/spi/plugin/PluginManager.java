@@ -46,22 +46,33 @@ public class PluginManager {
   private static PluginManager PLUGIN_MANAGER = new PluginManager();
 
   // For backward compatibility, this map holds a mapping from old plugins class name to its new class name.
-  private static final Map<String, String> PLUGINS_BACKWARD_COMPATIBLE_CLASS_NAME_MAP = new HashMap<String, String>(){
+  private static final Map<String, String> PLUGINS_BACKWARD_COMPATIBLE_CLASS_NAME_MAP = new HashMap<String, String>() {
     {
       // MessageDecoder
-      put("org.apache.pinot.core.realtime.stream.SimpleAvroMessageDecoder", "org.apache.pinot.plugin.inputformat.avro.SimpleAvroMessageDecoder");
-      put("org.apache.pinot.core.realtime.impl.kafka.KafkaAvroMessageDecoder", "org.apache.pinot.plugin.inputformat.avro.KafkaAvroMessageDecoder");
-      put("org.apache.pinot.core.realtime.impl.kafka.KafkaJSONMessageDecoder", "org.apache.pinot.plugin.stream.kafka.KafkaJSONMessageDecoder");
+      put("org.apache.pinot.core.realtime.stream.SimpleAvroMessageDecoder",
+          "org.apache.pinot.plugin.inputformat.avro.SimpleAvroMessageDecoder");
+      put("org.apache.pinot.core.realtime.impl.kafka.KafkaAvroMessageDecoder",
+          "org.apache.pinot.plugin.inputformat.avro.KafkaAvroMessageDecoder");
+      put("org.apache.pinot.core.realtime.impl.kafka.KafkaJSONMessageDecoder",
+          "org.apache.pinot.plugin.stream.kafka.KafkaJSONMessageDecoder");
 
       // RecordReader
-      put("org.apache.pinot.core.data.readers.AvroRecordReader", "org.apache.pinot.plugin.inputformat.avro.AvroRecordReader");
-      put("org.apache.pinot.core.data.readers.CSVRecordReader", "org.apache.pinot.plugin.inputformat.csv.CSVRecordReader");
-      put("org.apache.pinot.core.data.readers.JSONRecordReader", "org.apache.pinot.plugin.inputformat.json.JSONRecordReader");
-      put("org.apache.pinot.plugin.inputformat.json.JsonRecordReader", "org.apache.pinot.plugin.inputformat.json.JSONRecordReader");
-      put("org.apache.pinot.orc.data.readers.ORCRecordReader", "org.apache.pinot.plugin.inputformat.orc.ORCRecordReader");
-      put("org.apache.pinot.plugin.inputformat.orc.OrcRecordReader", "org.apache.pinot.plugin.inputformat.orc.ORCRecordReader");
-      put("org.apache.pinot.parquet.data.readers.ParquetRecordReader", "org.apache.pinot.plugin.inputformat.parquet.ParquetRecordReader");
-      put("org.apache.pinot.core.data.readers.ThriftRecordReader", "org.apache.pinot.plugin.inputformat.thrift.ThriftRecordReader");
+      put("org.apache.pinot.core.data.readers.AvroRecordReader",
+          "org.apache.pinot.plugin.inputformat.avro.AvroRecordReader");
+      put("org.apache.pinot.core.data.readers.CSVRecordReader",
+          "org.apache.pinot.plugin.inputformat.csv.CSVRecordReader");
+      put("org.apache.pinot.core.data.readers.JSONRecordReader",
+          "org.apache.pinot.plugin.inputformat.json.JSONRecordReader");
+      put("org.apache.pinot.plugin.inputformat.json.JsonRecordReader",
+          "org.apache.pinot.plugin.inputformat.json.JSONRecordReader");
+      put("org.apache.pinot.orc.data.readers.ORCRecordReader",
+          "org.apache.pinot.plugin.inputformat.orc.ORCRecordReader");
+      put("org.apache.pinot.plugin.inputformat.orc.OrcRecordReader",
+          "org.apache.pinot.plugin.inputformat.orc.ORCRecordReader");
+      put("org.apache.pinot.parquet.data.readers.ParquetRecordReader",
+          "org.apache.pinot.plugin.inputformat.parquet.ParquetRecordReader");
+      put("org.apache.pinot.core.data.readers.ThriftRecordReader",
+          "org.apache.pinot.plugin.inputformat.thrift.ThriftRecordReader");
 
       // PinotFS
       put("org.apache.pinot.filesystem.AzurePinotFS", "org.apache.pinot.plugin.filesystem.AzurePinotFS");
@@ -69,30 +80,34 @@ public class PluginManager {
       put("org.apache.pinot.filesystem.LocalPinotFS", "org.apache.pinot.spi.filesystem.LocalPinotFS");
 
       // StreamConsumerFactory
-      put("org.apache.pinot.core.realtime.impl.kafka.KafkaConsumerFactory", "org.apache.pinot.plugin.stream.kafka09.KafkaConsumerFactory");
-      put("org.apache.pinot.core.realtime.impl.kafka2.KafkaConsumerFactory", "org.apache.pinot.plugin.stream.kafka20.KafkaConsumerFactory");
+      put("org.apache.pinot.core.realtime.impl.kafka.KafkaConsumerFactory",
+          "org.apache.pinot.plugin.stream.kafka09.KafkaConsumerFactory");
+      put("org.apache.pinot.core.realtime.impl.kafka2.KafkaConsumerFactory",
+          "org.apache.pinot.plugin.stream.kafka20.KafkaConsumerFactory");
     }
   };
 
-  private static final Map<String, String> INPUT_FORMAT_TO_RECORD_READER_CLASS_NAME_MAP = new HashMap<String, String>(){
-    {
-      put("avro", "org.apache.pinot.plugin.inputformat.avro.AvroRecordReader");
-      put("csv", "org.apache.pinot.plugin.inputformat.csv.CSVRecordReader");
-      put("json", "org.apache.pinot.plugin.inputformat.json.JSONRecordReader");
-      put("orc", "org.apache.pinot.plugin.inputformat.orc.ORCRecordReader");
-      put("parquet", "org.apache.pinot.plugin.inputformat.parquet.ParquetRecordReader");
-      put("protobuf", "org.apache.pinot.plugin.inputformat.protobuf.ProtoBufRecordReader");
-      put("thrift", "org.apache.pinot.plugin.inputformat.thrift.ThriftRecordReader");
-    }
-  };
+  private static final Map<String, String> INPUT_FORMAT_TO_RECORD_READER_CLASS_NAME_MAP =
+      new HashMap<String, String>() {
+        {
+          put("avro", "org.apache.pinot.plugin.inputformat.avro.AvroRecordReader");
+          put("csv", "org.apache.pinot.plugin.inputformat.csv.CSVRecordReader");
+          put("json", "org.apache.pinot.plugin.inputformat.json.JSONRecordReader");
+          put("orc", "org.apache.pinot.plugin.inputformat.orc.ORCRecordReader");
+          put("parquet", "org.apache.pinot.plugin.inputformat.parquet.ParquetRecordReader");
+          put("protobuf", "org.apache.pinot.plugin.inputformat.protobuf.ProtoBufRecordReader");
+          put("thrift", "org.apache.pinot.plugin.inputformat.thrift.ThriftRecordReader");
+        }
+      };
 
-  private static final Map<String, String> INPUT_FORMAT_TO_RECORD_READER_CONFIG_CLASS_NAME_MAP = new HashMap<String, String>(){
-    {
-      put("csv", "org.apache.pinot.plugin.inputformat.csv.CSVRecordReaderConfig");
-      put("protobuf", "org.apache.pinot.plugin.inputformat.protobuf.ProtoBufRecordReaderConfig");
-      put("thrift", "org.apache.pinot.plugin.inputformat.thrift.ThriftRecordReaderConfig");
-    }
-  };
+  private static final Map<String, String> INPUT_FORMAT_TO_RECORD_READER_CONFIG_CLASS_NAME_MAP =
+      new HashMap<String, String>() {
+        {
+          put("csv", "org.apache.pinot.plugin.inputformat.csv.CSVRecordReaderConfig");
+          put("protobuf", "org.apache.pinot.plugin.inputformat.protobuf.ProtoBufRecordReaderConfig");
+          put("thrift", "org.apache.pinot.plugin.inputformat.thrift.ThriftRecordReaderConfig");
+        }
+      };
 
   private Map<Plugin, PluginClassLoader> _registry = new HashMap<>();
   private String _pluginsRootDir;
@@ -136,7 +151,8 @@ public class PluginManager {
       }
       LOGGER.info("Plugins root dir is [{}]", pluginsRootDir);
     }
-    Collection<File> jarFiles = FileUtils.listFiles(new File(pluginsRootDir), new String[]{JAR_FILE_EXTENSION}, true);
+    Collection<File> jarFiles =
+        FileUtils.listFiles(new File(pluginsRootDir), new String[] { JAR_FILE_EXTENSION }, true);
     List<String> pluginsToLoad = null;
     if (!StringUtils.isEmpty(pluginsInclude)) {
       pluginsToLoad = Arrays.asList(pluginsInclude.split(","));
@@ -174,7 +190,7 @@ public class PluginManager {
    */
   public void load(String pluginName, File directory) {
     LOGGER.info("Trying to load plugin [{}] from location [{}]", pluginName, directory);
-    Collection<File> jarFiles = FileUtils.listFiles(directory, new String[]{"jar"}, true);
+    Collection<File> jarFiles = FileUtils.listFiles(directory, new String[] { "jar" }, true);
     Collection<URL> urlList = new ArrayList<>();
     for (File jarFile : jarFiles) {
       try {
@@ -204,8 +220,7 @@ public class PluginManager {
    * @return
    * @throws ClassNotFoundException
    */
-  public Class<?> loadClass(String className)
-      throws ClassNotFoundException {
+  public Class<?> loadClass(String className) throws ClassNotFoundException {
     String pluginName = DEFAULT_PLUGIN_NAME;
     String realClassName = className;
     if (className.indexOf(":") > -1) {
@@ -223,8 +238,7 @@ public class PluginManager {
    * @return
    * @throws ClassNotFoundException
    */
-  public Class<?> loadClass(String pluginName, String className)
-      throws ClassNotFoundException {
+  public Class<?> loadClass(String pluginName, String className) throws ClassNotFoundException {
     // Backward compatible check.
     return _registry.get(new Plugin(pluginName)).loadClass(loadClassWithBackwardCompatibleCheck(className), true);
   }
@@ -240,9 +254,8 @@ public class PluginManager {
    * @param className
    * @return
    */
-  public <T> T createInstance(String className)
-      throws Exception {
-    return createInstance(className, new Class[]{}, new Object[]{});
+  public <T> T createInstance(String className) throws Exception {
+    return createInstance(className, new Class[] {}, new Object[] {});
   }
 
   /**
@@ -252,8 +265,7 @@ public class PluginManager {
    * @param className
    * @return
    */
-  public <T> T createInstance(String className, Class[] argTypes, Object[] argValues)
-      throws Exception {
+  public <T> T createInstance(String className, Class[] argTypes, Object[] argValues) throws Exception {
     String pluginName = DEFAULT_PLUGIN_NAME;
     String realClassName = className;
     if (className.indexOf(":") > -1) {
@@ -272,9 +284,8 @@ public class PluginManager {
    * @return
    * @throws Exception
    */
-  public <T> T createInstance(String pluginName, String className)
-      throws Exception {
-    return createInstance(pluginName, className, new Class[]{}, new Object[]{});
+  public <T> T createInstance(String pluginName, String className) throws Exception {
+    return createInstance(pluginName, className, new Class[] {}, new Object[] {});
   }
 
   /**
@@ -290,12 +301,14 @@ public class PluginManager {
       throws Exception {
     PluginClassLoader pluginClassLoader = PLUGIN_MANAGER._registry.get(new Plugin(pluginName));
     try {
-      Class<T> loadedClass = (Class<T>) pluginClassLoader.loadClass(loadClassWithBackwardCompatibleCheck(className), true);
+      Class<T> loadedClass =
+          (Class<T>) pluginClassLoader.loadClass(loadClassWithBackwardCompatibleCheck(className), true);
       Constructor<?> constructor;
       constructor = loadedClass.getConstructor(argTypes);
       Object instance = constructor.newInstance(argValues);
       return (T) instance;
-    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
+    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException
+        | ClassNotFoundException e) {
       throw e;
     }
   }

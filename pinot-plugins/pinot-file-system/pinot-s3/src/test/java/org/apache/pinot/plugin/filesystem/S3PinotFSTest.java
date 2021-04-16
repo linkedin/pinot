@@ -62,23 +62,21 @@ public class S3PinotFSTest {
   }
 
   @AfterClass
-  public void tearDown()
-      throws IOException {
+  public void tearDown() throws IOException {
     _s3PinotFS.close();
     _s3Client.close();
   }
 
   private void createEmptyFile(String folderName, String fileName) {
     String fileNameWithFolder = folderName + DELIMITER + fileName;
-    _s3Client
-        .putObject(S3TestUtils.getPutObjectRequest(BUCKET, fileNameWithFolder), RequestBody.fromBytes(new byte[0]));
+    _s3Client.putObject(S3TestUtils.getPutObjectRequest(BUCKET, fileNameWithFolder),
+        RequestBody.fromBytes(new byte[0]));
   }
 
   @Test
-  public void testTouchFileInBucket()
-      throws Exception {
+  public void testTouchFileInBucket() throws Exception {
 
-    String[] originalFiles = new String[]{"a-touch.txt", "b-touch.txt", "c-touch.txt"};
+    String[] originalFiles = new String[] { "a-touch.txt", "b-touch.txt", "c-touch.txt" };
 
     for (String fileName : originalFiles) {
       _s3PinotFS.touch(URI.create(String.format(FILE_FORMAT, SCHEME, BUCKET, fileName)));
@@ -94,11 +92,10 @@ public class S3PinotFSTest {
   }
 
   @Test
-  public void testTouchFilesInFolder()
-      throws Exception {
+  public void testTouchFilesInFolder() throws Exception {
 
     String folder = "my-files";
-    String[] originalFiles = new String[]{"a-touch.txt", "b-touch.txt", "c-touch.txt"};
+    String[] originalFiles = new String[] { "a-touch.txt", "b-touch.txt", "c-touch.txt" };
 
     for (String fileName : originalFiles) {
       String fileNameWithFolder = folder + DELIMITER + fileName;
@@ -115,9 +112,8 @@ public class S3PinotFSTest {
   }
 
   @Test
-  public void testListFilesInBucketNonRecursive()
-      throws Exception {
-    String[] originalFiles = new String[]{"a-list.txt", "b-list.txt", "c-list.txt"};
+  public void testListFilesInBucketNonRecursive() throws Exception {
+    String[] originalFiles = new String[] { "a-list.txt", "b-list.txt", "c-list.txt" };
     List<String> expectedFileNames = new ArrayList<>();
 
     for (String fileName : originalFiles) {
@@ -127,18 +123,16 @@ public class S3PinotFSTest {
 
     String[] actualFiles = _s3PinotFS.listFiles(URI.create(String.format(DIR_FORMAT, SCHEME, BUCKET)), false);
 
-    actualFiles =
-        Arrays.stream(actualFiles).filter(x -> x.contains("list")).toArray(String[]::new);
+    actualFiles = Arrays.stream(actualFiles).filter(x -> x.contains("list")).toArray(String[]::new);
     Assert.assertEquals(actualFiles.length, originalFiles.length);
 
     Assert.assertTrue(Arrays.equals(actualFiles, expectedFileNames.toArray()));
   }
 
   @Test
-  public void testListFilesInFolderNonRecursive()
-      throws Exception {
+  public void testListFilesInFolderNonRecursive() throws Exception {
     String folder = "list-files";
-    String[] originalFiles = new String[]{"a-list-2.txt", "b-list-2.txt", "c-list-2.txt"};
+    String[] originalFiles = new String[] { "a-list-2.txt", "b-list-2.txt", "c-list-2.txt" };
 
     for (String fileName : originalFiles) {
       createEmptyFile(folder, fileName);
@@ -149,16 +143,17 @@ public class S3PinotFSTest {
     actualFiles = Arrays.stream(actualFiles).filter(x -> x.contains("list-2")).toArray(String[]::new);
     Assert.assertEquals(actualFiles.length, originalFiles.length);
 
-    Assert.assertTrue(
-        Arrays.equals(Arrays.stream(originalFiles).map(fileName -> String.format(FILE_FORMAT, SCHEME, BUCKET, folder + DELIMITER + fileName)).toArray(), actualFiles));
+    Assert.assertTrue(Arrays.equals(
+        Arrays.stream(originalFiles)
+            .map(fileName -> String.format(FILE_FORMAT, SCHEME, BUCKET, folder + DELIMITER + fileName)).toArray(),
+        actualFiles));
   }
 
   @Test
-  public void testListFilesInFolderRecursive()
-      throws Exception {
+  public void testListFilesInFolderRecursive() throws Exception {
     String folder = "list-files-rec";
-    String[] nestedFolders = new String[]{"list-files-child-1", "list-files-child-2"};
-    String[] originalFiles = new String[]{"a-list-3.txt", "b-list-3.txt", "c-list-3.txt"};
+    String[] nestedFolders = new String[] { "list-files-child-1", "list-files-child-2" };
+    String[] originalFiles = new String[] { "a-list-3.txt", "b-list-3.txt", "c-list-3.txt" };
 
     List<String> expectedResultList = new ArrayList<>();
     for (String childFolder : nestedFolders) {
@@ -176,9 +171,8 @@ public class S3PinotFSTest {
   }
 
   @Test
-  public void testDeleteFile()
-      throws Exception {
-    String[] originalFiles = new String[]{"a-delete.txt", "b-delete.txt", "c-delete.txt"};
+  public void testDeleteFile() throws Exception {
+    String[] originalFiles = new String[] { "a-delete.txt", "b-delete.txt", "c-delete.txt" };
     String fileToDelete = "a-delete.txt";
 
     List<String> expectedResultList = new ArrayList<>();
@@ -193,18 +187,16 @@ public class S3PinotFSTest {
 
     ListObjectsV2Response listObjectsV2Response =
         _s3Client.listObjectsV2(S3TestUtils.getListObjectRequest(BUCKET, "", true));
-    String[] actualResponse =
-        listObjectsV2Response.contents().stream().map(x -> x.key().substring(1)).filter(x -> x.contains("delete"))
-            .toArray(String[]::new);
+    String[] actualResponse = listObjectsV2Response.contents().stream().map(x -> x.key().substring(1))
+        .filter(x -> x.contains("delete")).toArray(String[]::new);
 
     Assert.assertEquals(actualResponse.length, 2);
     Assert.assertTrue(Arrays.equals(actualResponse, expectedResultList.toArray()));
   }
 
   @Test
-  public void testDeleteFolder()
-      throws Exception {
-    String[] originalFiles = new String[]{"a-delete-2.txt", "b-delete-2.txt", "c-delete-2.txt"};
+  public void testDeleteFolder() throws Exception {
+    String[] originalFiles = new String[] { "a-delete-2.txt", "b-delete-2.txt", "c-delete-2.txt" };
     String folderName = "my-files";
 
     for (String fileName : originalFiles) {
@@ -215,17 +207,15 @@ public class S3PinotFSTest {
 
     ListObjectsV2Response listObjectsV2Response =
         _s3Client.listObjectsV2(S3TestUtils.getListObjectRequest(BUCKET, "", true));
-    String[] actualResponse =
-        listObjectsV2Response.contents().stream().map(S3Object::key).filter(x -> x.contains("delete-2"))
-            .toArray(String[]::new);
+    String[] actualResponse = listObjectsV2Response.contents().stream().map(S3Object::key)
+        .filter(x -> x.contains("delete-2")).toArray(String[]::new);
 
     Assert.assertEquals(0, actualResponse.length);
   }
 
   @Test
-  public void testIsDirectory()
-      throws Exception {
-    String[] originalFiles = new String[]{"a-dir.txt", "b-dir.txt", "c-dir.txt"};
+  public void testIsDirectory() throws Exception {
+    String[] originalFiles = new String[] { "a-dir.txt", "b-dir.txt", "c-dir.txt" };
     String folder = "my-files-dir";
     String childFolder = "my-files-dir-child";
     for (String fileName : originalFiles) {
@@ -247,9 +237,8 @@ public class S3PinotFSTest {
   }
 
   @Test
-  public void testExists()
-      throws Exception {
-    String[] originalFiles = new String[]{"a-ex.txt", "b-ex.txt", "c-ex.txt"};
+  public void testExists() throws Exception {
+    String[] originalFiles = new String[] { "a-ex.txt", "b-ex.txt", "c-ex.txt" };
     String folder = "my-files-dir";
     String childFolder = "my-files-dir-child";
 
@@ -262,10 +251,10 @@ public class S3PinotFSTest {
     boolean dirExists = _s3PinotFS.exists(URI.create(String.format(FILE_FORMAT, SCHEME, BUCKET, folder)));
     boolean childDirExists =
         _s3PinotFS.exists(URI.create(String.format(FILE_FORMAT, SCHEME, BUCKET, folder + DELIMITER + childFolder)));
-    boolean fileExists = _s3PinotFS.exists(URI.create(
-        String.format(FILE_FORMAT, SCHEME, BUCKET, folder + DELIMITER + childFolder + DELIMITER + "a-ex.txt")));
-    boolean fileNotExists = _s3PinotFS.exists(URI.create(
-        String.format(FILE_FORMAT, SCHEME, BUCKET, folder + DELIMITER + childFolder + DELIMITER + "d-ex.txt")));
+    boolean fileExists = _s3PinotFS.exists(URI
+        .create(String.format(FILE_FORMAT, SCHEME, BUCKET, folder + DELIMITER + childFolder + DELIMITER + "a-ex.txt")));
+    boolean fileNotExists = _s3PinotFS.exists(URI
+        .create(String.format(FILE_FORMAT, SCHEME, BUCKET, folder + DELIMITER + childFolder + DELIMITER + "d-ex.txt")));
 
     Assert.assertTrue(bucketExists);
     Assert.assertTrue(dirExists);
@@ -275,8 +264,7 @@ public class S3PinotFSTest {
   }
 
   @Test
-  public void testCopyFromAndToLocal()
-      throws Exception {
+  public void testCopyFromAndToLocal() throws Exception {
     String fileName = "copyFile.txt";
 
     File fileToCopy = new File(getClass().getClassLoader().getResource(fileName).getFile());
@@ -295,8 +283,7 @@ public class S3PinotFSTest {
   }
 
   @Test
-  public void testOpenFile()
-      throws Exception {
+  public void testOpenFile() throws Exception {
     String fileName = "sample.txt";
     String fileContent = "Hello, World";
 
@@ -308,8 +295,7 @@ public class S3PinotFSTest {
   }
 
   @Test
-  public void testMkdir()
-      throws Exception {
+  public void testMkdir() throws Exception {
     String folderName = "my-test-folder";
 
     _s3PinotFS.mkdir(URI.create(String.format(FILE_FORMAT, SCHEME, BUCKET, folderName)));

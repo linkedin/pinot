@@ -40,7 +40,7 @@ import org.roaringbitmap.PeekableIntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class DistinctCountAggregationFunction extends BaseSingleInputAggregationFunction<Set, Integer> {
 
   public DistinctCountAggregationFunction(ExpressionContext expression) {

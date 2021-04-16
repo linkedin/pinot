@@ -110,7 +110,7 @@ public class ExpressionTransformerTest {
 
     Assert.assertEquals(genericRow.getValue("userId"), 1L);
     Assert.assertEquals(genericRow.getValue("fullName"), "John Denver");
-    Assert.assertEquals(((Object[]) genericRow.getValue("bids")), new Integer[]{10, 20});
+    Assert.assertEquals(((Object[]) genericRow.getValue("bids")), new Integer[] { 10, 20 });
     Assert.assertEquals(genericRow.getValue("maxBid"), 20);
     // handle Map through transform functions
     Object[] map2Keys = (Object[]) genericRow.getValue("map2_keys");
@@ -216,7 +216,8 @@ public class ExpressionTransformerTest {
 
     pinotSchema = new Schema.SchemaBuilder()
         .addTime(new TimeGranularitySpec(FieldSpec.DataType.LONG, TimeUnit.MILLISECONDS, "incoming"),
-            new TimeGranularitySpec(FieldSpec.DataType.INT, TimeUnit.DAYS, "outgoing")).build();
+            new TimeGranularitySpec(FieldSpec.DataType.INT, TimeUnit.DAYS, "outgoing"))
+        .build();
     tableConfig = new TableConfigBuilder(TableType.REALTIME).setTableName("testValueExists")
         .setIngestionConfig(new IngestionConfig(null, null, null, null)).build();
     expressionTransformer = new ExpressionTransformer(tableConfig, pinotSchema);

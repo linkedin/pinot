@@ -31,9 +31,9 @@ public class AndDocIdIteratorTest {
   @Test
   public void testAndDocIdIterator() {
     // AND result: [2, 7, 13, 15, 16, 20]
-    int[] docIds1 = new int[]{0, 1, 2, 3, 5, 7, 10, 12, 13, 15, 16, 18, 20};
-    int[] docIds2 = new int[]{1, 2, 4, 5, 6, 7, 9, 11, 12, 13, 15, 16, 17, 19, 20};
-    int[] docIds3 = new int[]{0, 2, 3, 4, 7, 8, 10, 11, 13, 15, 16, 19, 20};
+    int[] docIds1 = new int[] { 0, 1, 2, 3, 5, 7, 10, 12, 13, 15, 16, 18, 20 };
+    int[] docIds2 = new int[] { 1, 2, 4, 5, 6, 7, 9, 11, 12, 13, 15, 16, 17, 19, 20 };
+    int[] docIds3 = new int[] { 0, 2, 3, 4, 7, 8, 10, 11, 13, 15, 16, 19, 20 };
 
     MutableRoaringBitmap bitmap1 = new MutableRoaringBitmap();
     bitmap1.add(docIds1);
@@ -41,9 +41,9 @@ public class AndDocIdIteratorTest {
     bitmap2.add(docIds2);
     MutableRoaringBitmap bitmap3 = new MutableRoaringBitmap();
     bitmap3.add(docIds3);
-    AndDocIdIterator andDocIdIterator = new AndDocIdIterator(
-        new BlockDocIdIterator[]{new RangelessBitmapDocIdIterator(bitmap1), new RangelessBitmapDocIdIterator(
-            bitmap2), new RangelessBitmapDocIdIterator(bitmap3)});
+    AndDocIdIterator andDocIdIterator =
+        new AndDocIdIterator(new BlockDocIdIterator[] { new RangelessBitmapDocIdIterator(
+            bitmap1), new RangelessBitmapDocIdIterator(bitmap2), new RangelessBitmapDocIdIterator(bitmap3) });
 
     assertEquals(andDocIdIterator.next(), 2);
     assertEquals(andDocIdIterator.next(), 7);

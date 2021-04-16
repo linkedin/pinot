@@ -37,7 +37,7 @@ public class NullValueTransformer implements RecordTransformer {
         if (fieldSpec.isSingleValueField()) {
           _defaultNullValues.put(fieldName, defaultNullValue);
         } else {
-          _defaultNullValues.put(fieldName, new Object[]{defaultNullValue});
+          _defaultNullValues.put(fieldName, new Object[] { defaultNullValue });
         }
       }
     }

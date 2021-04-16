@@ -43,7 +43,7 @@ import org.apache.pinot.spi.env.PinotConfiguration;
  *   </li>
  * </ul>
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class SelectionQuerySegmentPruner implements SegmentPruner {
 
   @Override

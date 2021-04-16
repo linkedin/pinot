@@ -51,7 +51,7 @@ public class ControllerAdminApiApplication extends ResourceConfig {
 
     packages(RESOURCE_PACKAGE);
     // TODO See ControllerResponseFilter
-//    register(new LoggingFeature());
+    //    register(new LoggingFeature());
     register(JacksonFeature.class);
     register(MultiPartFeature.class);
     registerClasses(io.swagger.jaxrs.listing.ApiListingResource.class);
@@ -85,7 +85,8 @@ public class ControllerAdminApiApplication extends ResourceConfig {
     // So, we setup specific handlers for static resource directory. index.html is served directly
     // by a jersey handler
 
-    _httpServer.getServerConfiguration().addHttpHandler(new CLStaticHttpHandler(classLoader, "/webapp/"), "/index.html");
+    _httpServer.getServerConfiguration().addHttpHandler(new CLStaticHttpHandler(classLoader, "/webapp/"),
+        "/index.html");
     _httpServer.getServerConfiguration().addHttpHandler(new CLStaticHttpHandler(classLoader, "/webapp/js/"), "/js/");
   }
 
@@ -95,7 +96,7 @@ public class ControllerAdminApiApplication extends ResourceConfig {
     beanConfig.setDescription("APIs for accessing Pinot Controller information");
     beanConfig.setContact("https://github.com/apache/incubator-pinot");
     beanConfig.setVersion("1.0");
-    beanConfig.setSchemes(new String[]{CommonConstants.HTTP_PROTOCOL, CommonConstants.HTTPS_PROTOCOL});
+    beanConfig.setSchemes(new String[] { CommonConstants.HTTP_PROTOCOL, CommonConstants.HTTPS_PROTOCOL });
     beanConfig.setBasePath("/");
     beanConfig.setResourcePackage(RESOURCE_PACKAGE);
     beanConfig.setScan(true);
@@ -107,7 +108,7 @@ public class ControllerAdminApiApplication extends ResourceConfig {
     httpServer.getServerConfiguration().addHttpHandler(apiStaticHttpHandler, "/help/");
 
     URL swaggerDistLocation = loader.getResource("META-INF/resources/webjars/swagger-ui/3.18.2/");
-    CLStaticHttpHandler swaggerDist = new CLStaticHttpHandler(new URLClassLoader(new URL[]{swaggerDistLocation}));
+    CLStaticHttpHandler swaggerDist = new CLStaticHttpHandler(new URLClassLoader(new URL[] { swaggerDistLocation }));
     httpServer.getServerConfiguration().addHttpHandler(swaggerDist, "/swaggerui-dist/");
   }
 
@@ -121,8 +122,7 @@ public class ControllerAdminApiApplication extends ResourceConfig {
   private class CorsFilter implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext containerRequestContext,
-        ContainerResponseContext containerResponseContext)
-        throws IOException {
+        ContainerResponseContext containerResponseContext) throws IOException {
       containerResponseContext.getHeaders().add("Access-Control-Allow-Origin", "*");
     }
   }

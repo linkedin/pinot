@@ -36,7 +36,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 
-
 /**
  * Unit test for {@link JsonIndexCreator} and {@link JsonIndexReader}.
  */
@@ -44,23 +43,20 @@ public class JsonIndexTest {
   private static final File INDEX_DIR = new File(FileUtils.getTempDirectory(), "JsonIndexTest");
 
   @BeforeMethod
-  public void setUp()
-      throws IOException {
+  public void setUp() throws IOException {
     FileUtils.forceMkdir(INDEX_DIR);
   }
 
   @AfterMethod
-  public void tearDown()
-      throws IOException {
+  public void tearDown() throws IOException {
     FileUtils.deleteDirectory(INDEX_DIR);
   }
 
   @Test
-  public void testSmallIndex()
-      throws Exception {
+  public void testSmallIndex() throws Exception {
     //@formatter:off
     String[] records =
-        new String[]{"{\"name\":\"adam\",\"age\":20,\"addresses\":[{\"street\":\"street-00\",\"country\":\"us\"},{\"street\":\"street-01\",\"country\":\"us\"},{\"street\":\"street-02\",\"country\":\"ca\"}],\"skills\":[\"english\",\"programming\"]}", "{\"name\":\"bob\",\"age\":25,\"addresses\":[{\"street\":\"street-10\",\"country\":\"ca\"},{\"street\":\"street-11\",\"country\":\"us\"},{\"street\":\"street-12\",\"country\":\"in\"}],\"skills\":[]}", "{\"name\":\"charles\",\"age\":30,\"addresses\":[{\"street\":\"street-20\",\"country\":\"jp\"},{\"street\":\"street-21\",\"country\":\"kr\"},{\"street\":\"street-22\",\"country\":\"cn\"}],\"skills\":[\"japanese\",\"korean\",\"chinese\"]}", "{\"name\":\"david\",\"age\":35,\"addresses\":[{\"street\":\"street-30\",\"country\":\"ca\",\"types\":[\"home\",\"office\"]},{\"street\":\"street-31\",\"country\":\"ca\"},{\"street\":\"street-32\",\"country\":\"ca\"}],\"skills\":null}"};
+        new String[] { "{\"name\":\"adam\",\"age\":20,\"addresses\":[{\"street\":\"street-00\",\"country\":\"us\"},{\"street\":\"street-01\",\"country\":\"us\"},{\"street\":\"street-02\",\"country\":\"ca\"}],\"skills\":[\"english\",\"programming\"]}", "{\"name\":\"bob\",\"age\":25,\"addresses\":[{\"street\":\"street-10\",\"country\":\"ca\"},{\"street\":\"street-11\",\"country\":\"us\"},{\"street\":\"street-12\",\"country\":\"in\"}],\"skills\":[]}", "{\"name\":\"charles\",\"age\":30,\"addresses\":[{\"street\":\"street-20\",\"country\":\"jp\"},{\"street\":\"street-21\",\"country\":\"kr\"},{\"street\":\"street-22\",\"country\":\"cn\"}],\"skills\":[\"japanese\",\"korean\",\"chinese\"]}", "{\"name\":\"david\",\"age\":35,\"addresses\":[{\"street\":\"street-30\",\"country\":\"ca\",\"types\":[\"home\",\"office\"]},{\"street\":\"street-31\",\"country\":\"ca\"},{\"street\":\"street-32\",\"country\":\"ca\"}],\"skills\":null}" };
     //@formatter:on
 
     String onHeapColumnName = "onHeap";
@@ -91,53 +87,53 @@ public class JsonIndexTest {
       for (String record : records) {
         mutableJsonIndex.add(record);
       }
-      JsonIndexReader[] indexReaders = new JsonIndexReader[]{onHeapIndexReader, offHeapIndexReader, mutableJsonIndex};
+      JsonIndexReader[] indexReaders =
+          new JsonIndexReader[] { onHeapIndexReader, offHeapIndexReader, mutableJsonIndex };
       for (JsonIndexReader indexReader : indexReaders) {
         MutableRoaringBitmap matchingDocIds = getMatchingDocIds(indexReader, "name='bob'");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{1});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 1 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "addresses.street = 'street-21'");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{2});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 2 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "addresses.street NOT IN ('street-10', 'street-22')");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{0, 3});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 0, 3 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "\"addresses[0].country\" IN ('ca', 'us')");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{0, 1, 3});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 0, 1, 3 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "\"addresses.types[1]\" = 'office'");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{3});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 3 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "\"addresses[0].types[0]\" = 'home'");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{3});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 3 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "\"addresses[1].types\" = 'home'");
         Assert.assertEquals(matchingDocIds.toArray(), new int[0]);
 
         matchingDocIds = getMatchingDocIds(indexReader, "addresses.types IS NULL");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{0, 1, 2});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 0, 1, 2 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "\"addresses[1].types\" IS NULL");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{0, 1, 2, 3});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 0, 1, 2, 3 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "abc IS NULL");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{0, 1, 2, 3});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 0, 1, 2, 3 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "skills IS NOT NULL");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{0, 2});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 0, 2 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "addresses.country = 'ca' AND skills IS NOT NULL");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{0});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 0 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "addresses.country = 'us' OR skills IS NOT NULL");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{0, 1, 2});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 0, 1, 2 });
       }
     }
   }
 
   @Test
-  public void testLargeIndex()
-      throws Exception {
+  public void testLargeIndex() throws Exception {
     int numRecords = 123_456;
     String[] records = new String[numRecords];
     for (int i = 0; i < numRecords; i++) {
@@ -174,13 +170,14 @@ public class JsonIndexTest {
       for (String record : records) {
         mutableJsonIndex.add(record);
       }
-      JsonIndexReader[] indexReaders = new JsonIndexReader[]{onHeapIndexReader, offHeapIndexReader, mutableJsonIndex};
+      JsonIndexReader[] indexReaders =
+          new JsonIndexReader[] { onHeapIndexReader, offHeapIndexReader, mutableJsonIndex };
       for (JsonIndexReader indexReader : indexReaders) {
         MutableRoaringBitmap matchingDocIds = getMatchingDocIds(indexReader, "name = 'adam-123'");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{123});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 123 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "addresses.street = 'us-456'");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{456});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 456 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "\"addresses[1].street\" = 'us-456'");
         Assert.assertEquals(matchingDocIds.toArray(), new int[0]);
@@ -190,7 +187,7 @@ public class JsonIndexTest {
 
         matchingDocIds = getMatchingDocIds(indexReader,
             "name = 'adam-100000' AND addresses.street = 'us-100000' AND addresses.country = 'us'");
-        Assert.assertEquals(matchingDocIds.toArray(), new int[]{100000});
+        Assert.assertEquals(matchingDocIds.toArray(), new int[] { 100000 });
 
         matchingDocIds = getMatchingDocIds(indexReader, "name = 'adam-100000' AND addresses.street = 'us-100001'");
         Assert.assertEquals(matchingDocIds.toArray(), new int[0]);

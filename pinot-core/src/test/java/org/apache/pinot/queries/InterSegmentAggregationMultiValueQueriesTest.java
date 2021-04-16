@@ -47,31 +47,31 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
     String query = "SELECT COUNTMV(column6) FROM testTable";
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L, new String[]{"426752"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
+        new String[] { "426752" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L, new String[]{"62480"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
+        new String[] { "62480" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"231056"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "231056" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"199896"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "199896" });
 
     query = "SELECT COUNTMV(column6) FROM testTable GROUP BY VALUEIN(column7, 363, 469, 246, 100000)";
     brokerResponse = getBrokerResponseForPqlQuery(query);
     List<String[]> groupKeys = new ArrayList<>();
-    groupKeys.add(new String[]{"363"});
-    groupKeys.add(new String[]{"469"});
-    groupKeys.add(new String[]{"246"});
+    groupKeys.add(new String[] { "363" });
+    groupKeys.add(new String[] { "469" });
+    groupKeys.add(new String[] { "246" });
     List<String[]> aggregations = new ArrayList<>();
-    aggregations.add(new String[]{"35436"});
-    aggregations.add(new String[]{"33576"});
-    aggregations.add(new String[]{"24300"});
+    aggregations.add(new String[] { "35436" });
+    aggregations.add(new String[] { "33576" });
+    aggregations.add(new String[] { "24300" });
     QueriesTestUtils.testInterSegmentAggregationGroupByResult(brokerResponse, 400000L, 0L, 800000L, 400000L, groupKeys,
         aggregations);
 
@@ -79,97 +79,102 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
         "SELECT VALUEIN(column7, 363, 469, 246, 100000), COUNTMV(column6) FROM testTable GROUP BY VALUEIN(column7, 363, 469, 246, 100000)";
     brokerResponse = getBrokerResponseForSqlQuery(query);
     DataSchema expectedDataSchema =
-        new DataSchema(new String[]{"valuein(column7,'363','469','246','100000')", "countmv(column6)"},
-            new DataSchema.ColumnDataType[]{DataSchema.ColumnDataType.INT, DataSchema.ColumnDataType.LONG});
-    QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L, Lists
-        .newArrayList(new Object[]{469, (long) 33576}, new Object[]{246, (long) 24300},
-            new Object[]{363, (long) 35436}), 3, expectedDataSchema);
+        new DataSchema(new String[] { "valuein(column7,'363','469','246','100000')", "countmv(column6)" },
+            new DataSchema.ColumnDataType[] { DataSchema.ColumnDataType.INT, DataSchema.ColumnDataType.LONG });
+    QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        Lists.newArrayList(new Object[] { 469, (long) 33576 }, new Object[] { 246, (long) 24300 },
+            new Object[] { 363, (long) 35436 }),
+        3, expectedDataSchema);
 
     query =
         "SELECT VALUEIN(column7, 363, 469, 246, 100000), COUNTMV(column6) FROM testTable GROUP BY VALUEIN(column7, 363, 469, 246, 100000) ORDER BY COUNTMV(column6)";
     brokerResponse = getBrokerResponseForSqlQuery(query);
-    QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L, Lists
-        .newArrayList(new Object[]{246, (long) 24300}, new Object[]{469, (long) 33576},
-            new Object[]{363, (long) 35436}), 3, expectedDataSchema);
+    QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        Lists.newArrayList(new Object[] { 246, (long) 24300 }, new Object[] { 469, (long) 33576 },
+            new Object[] { 363, (long) 35436 }),
+        3, expectedDataSchema);
 
     query =
         "SELECT VALUEIN(column7, 363, 469, 246, 100000), COUNTMV(column6) FROM testTable GROUP BY VALUEIN(column7, 363, 469, 246, 100000) ORDER BY COUNTMV(column6) DESC";
     brokerResponse = getBrokerResponseForSqlQuery(query);
-    QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L, Lists
-        .newArrayList(new Object[]{363, (long) 35436}, new Object[]{469, (long) 33576},
-            new Object[]{246, (long) 24300}), 3, expectedDataSchema);
+    QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        Lists.newArrayList(new Object[] { 363, (long) 35436 }, new Object[] { 469, (long) 33576 },
+            new Object[] { 246, (long) 24300 }),
+        3, expectedDataSchema);
 
     query =
         "SELECT VALUEIN(column7, 363, 469, 246, 100000) AS value_in_col, COUNTMV(column6) FROM testTable GROUP BY value_in_col ORDER BY COUNTMV(column6) DESC";
-    expectedDataSchema = new DataSchema(new String[]{"value_in_col", "countmv(column6)"},
-        new DataSchema.ColumnDataType[]{DataSchema.ColumnDataType.INT, DataSchema.ColumnDataType.LONG});
+    expectedDataSchema = new DataSchema(new String[] { "value_in_col", "countmv(column6)" },
+        new DataSchema.ColumnDataType[] { DataSchema.ColumnDataType.INT, DataSchema.ColumnDataType.LONG });
     brokerResponse = getBrokerResponseForSqlQuery(query);
-    QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L, Lists
-        .newArrayList(new Object[]{363, (long) 35436}, new Object[]{469, (long) 33576},
-            new Object[]{246, (long) 24300}), 3, expectedDataSchema);
+    QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        Lists.newArrayList(new Object[] { 363, (long) 35436 }, new Object[] { 469, (long) 33576 },
+            new Object[] { 246, (long) 24300 }),
+        3, expectedDataSchema);
 
     query = "SELECT COUNTMV(column6) FROM testTable GROUP BY daysSinceEpoch";
     brokerResponse = getBrokerResponseForPqlQuery(query);
     groupKeys = new ArrayList<>();
-    groupKeys.add(new String[]{"1756015683"});
+    groupKeys.add(new String[] { "1756015683" });
     aggregations = new ArrayList<>();
-    aggregations.add(new String[]{"426752"});
+    aggregations.add(new String[] { "426752" });
     QueriesTestUtils.testInterSegmentAggregationGroupByResult(brokerResponse, 400000L, 0L, 800000L, 400000L, groupKeys,
         aggregations);
 
     query =
         "SELECT daysSinceEpoch, COUNTMV(column6) FROM testTable GROUP BY daysSinceEpoch ORDER BY COUNTMV(column6) DESC";
-    expectedDataSchema = new DataSchema(new String[]{"daysSinceEpoch", "countmv(column6)"},
-        new DataSchema.ColumnDataType[]{DataSchema.ColumnDataType.INT, DataSchema.ColumnDataType.LONG});
+    expectedDataSchema = new DataSchema(new String[] { "daysSinceEpoch", "countmv(column6)" },
+        new DataSchema.ColumnDataType[] { DataSchema.ColumnDataType.INT, DataSchema.ColumnDataType.LONG });
     brokerResponse = getBrokerResponseForSqlQuery(query);
     List<Object[]> result = new ArrayList<>();
-    result.add(new Object[]{1756015683, (long) 426752});
-    QueriesTestUtils
-        .testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L, result, 1, expectedDataSchema);
+    result.add(new Object[] { 1756015683, (long) 426752 });
+    QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L, result, 1,
+        expectedDataSchema);
 
     query = "SELECT COUNTMV(column6) FROM testTable GROUP BY timeconvert(daysSinceEpoch, 'DAYS', 'HOURS')";
     brokerResponse = getBrokerResponseForPqlQuery(query);
     groupKeys = new ArrayList<>();
-    groupKeys.add(new String[]{"42144376392"});
+    groupKeys.add(new String[] { "42144376392" });
     aggregations = new ArrayList<>();
-    aggregations.add(new String[]{"426752"});
+    aggregations.add(new String[] { "426752" });
     QueriesTestUtils.testInterSegmentAggregationGroupByResult(brokerResponse, 400000L, 0L, 800000L, 400000L, groupKeys,
         aggregations);
 
     query =
         "SELECT timeconvert(daysSinceEpoch, 'DAYS', 'HOURS'), COUNTMV(column6) FROM testTable GROUP BY timeconvert(daysSinceEpoch, 'DAYS', 'HOURS') ORDER BY COUNTMV(column6) DESC";
-    expectedDataSchema = new DataSchema(new String[]{"timeconvert(daysSinceEpoch,'DAYS','HOURS')", "countmv(column6)"},
-        new DataSchema.ColumnDataType[]{DataSchema.ColumnDataType.LONG, DataSchema.ColumnDataType.LONG});
+    expectedDataSchema =
+        new DataSchema(new String[] { "timeconvert(daysSinceEpoch,'DAYS','HOURS')", "countmv(column6)" },
+            new DataSchema.ColumnDataType[] { DataSchema.ColumnDataType.LONG, DataSchema.ColumnDataType.LONG });
     brokerResponse = getBrokerResponseForSqlQuery(query);
     result = new ArrayList<>();
-    result.add(new Object[]{42144376392L, (long) 426752});
-    QueriesTestUtils
-        .testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L, result, 1, expectedDataSchema);
+    result.add(new Object[] { 42144376392L, (long) 426752 });
+    QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L, result, 1,
+        expectedDataSchema);
   }
 
   @Test
   public void testCastCountMV() {
     String query = "SELECT COUNTMV(column6) as cnt_column6 FROM testTable";
     BrokerResponseNative brokerResponse = getBrokerResponseForSqlQuery(query);
-    DataSchema expectedDataSchema =
-        new DataSchema(new String[]{"cnt_column6"}, new DataSchema.ColumnDataType[]{DataSchema.ColumnDataType.LONG});
+    DataSchema expectedDataSchema = new DataSchema(new String[] { "cnt_column6" },
+        new DataSchema.ColumnDataType[] { DataSchema.ColumnDataType.LONG });
     QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 400000L, 400000L,
-        Arrays.asList(new Long[][]{new Long[]{426752L}}), 1, expectedDataSchema);
+        Arrays.asList(new Long[][] { new Long[] { 426752L } }), 1, expectedDataSchema);
     Assert.assertEquals(brokerResponse.getResultTable().getDataSchema().getColumnName(0), "cnt_column6");
 
     brokerResponse = getBrokerResponseForSqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        Arrays.asList(new Long[][]{new Long[]{62480L}}), 1, expectedDataSchema);
+        Arrays.asList(new Long[][] { new Long[] { 62480L } }), 1, expectedDataSchema);
     Assert.assertEquals(brokerResponse.getResultTable().getDataSchema().getColumnName(0), "cnt_column6");
 
     brokerResponse = getBrokerResponseForSqlQuery(query + SV_GROUP_BY + ORDER_BY_ALIAS);
     QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        Arrays.asList(new Long[][]{new Long[]{231056L}}), 10, expectedDataSchema);
+        Arrays.asList(new Long[][] { new Long[] { 231056L } }), 10, expectedDataSchema);
     Assert.assertEquals(brokerResponse.getResultTable().getDataSchema().getColumnName(0), "cnt_column6");
 
     brokerResponse = getBrokerResponseForSqlQuery(query + MV_GROUP_BY + ORDER_BY_ALIAS);
     QueriesTestUtils.testInterSegmentResultTable(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        Arrays.asList(new Long[][]{new Long[]{199896L}}), 10, expectedDataSchema);
+        Arrays.asList(new Long[][] { new Long[] { 199896L } }), 10, expectedDataSchema);
     Assert.assertEquals(brokerResponse.getResultTable().getDataSchema().getColumnName(0), "cnt_column6");
   }
 
@@ -179,19 +184,19 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
   }
 
   @Test
@@ -199,20 +204,20 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
     String query = "SELECT MINMV(column6) FROM testTable";
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L, new String[]{"1001.00000"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
+        new String[] { "1001.00000" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"1009.00000"});
+        new String[] { "1009.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"1001.00000"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "1001.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"1001.00000"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "1001.00000" });
   }
 
   @Test
@@ -221,19 +226,19 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
-        new String[]{"484324601810280.00000"});
+        new String[] { "484324601810280.00000" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"114652613591912.00000"});
+        new String[] { "114652613591912.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"402591409613620.00000"});
+        new String[] { "402591409613620.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"393483780531788.00000"});
+        new String[] { "393483780531788.00000" });
   }
 
   @Test
@@ -242,19 +247,19 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
-        new String[]{"1134908803.73210"});
+        new String[] { "1134908803.73210" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"1835029026.75916"});
+        new String[] { "1835029026.75916" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
   }
 
   @Test
@@ -263,19 +268,19 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
-        new String[]{"2147482646.00000"});
+        new String[] { "2147482646.00000" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"2147482638.00000"});
+        new String[] { "2147482638.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147482646.00000"});
+        new String[] { "2147482646.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147482646.00000"});
+        new String[] { "2147482646.00000" });
   }
 
   @Test
@@ -283,20 +288,20 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
     String query = "SELECT DISTINCTCOUNTMV(column6) FROM testTable";
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L, new String[]{"18499"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
+        new String[] { "18499" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L, new String[]{"1186"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
+        new String[] { "1186" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"4784"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "4784" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"3434"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "3434" });
   }
 
   @Test
@@ -304,20 +309,20 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
     String query = "SELECT DISTINCTCOUNTHLLMV(column6) FROM testTable";
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L, new String[]{"20039"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
+        new String[] { "20039" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L, new String[]{"1296"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
+        new String[] { "1296" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"4715"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "4715" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"3490"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "3490" });
   }
 
   @Test
@@ -327,48 +332,44 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
         .valueOf(ObjectSerDeUtils.HYPER_LOG_LOG_SER_DE.deserialize(BytesUtils.toBytes((String) value)).cardinality());
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L, cardinalityExtractor,
-            new String[]{"20039"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
+        cardinalityExtractor, new String[] { "20039" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L, cardinalityExtractor,
-            new String[]{"1296"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
+        cardinalityExtractor, new String[] { "1296" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, cardinalityExtractor,
-            new String[]{"4715"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        cardinalityExtractor, new String[] { "4715" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, cardinalityExtractor,
-            new String[]{"3490"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        cardinalityExtractor, new String[] { "3490" });
   }
 
   @Test
   public void testPercentile50MV() {
-    List<String> queries = Arrays
-        .asList("SELECT PERCENTILE50MV(column6) FROM testTable", "SELECT PERCENTILEMV(column6, 50) FROM testTable",
-            "SELECT PERCENTILEMV(column6, '50') FROM testTable", "SELECT PERCENTILEMV(column6, \"50\") FROM testTable");
+    List<String> queries = Arrays.asList("SELECT PERCENTILE50MV(column6) FROM testTable",
+        "SELECT PERCENTILEMV(column6, 50) FROM testTable", "SELECT PERCENTILEMV(column6, '50') FROM testTable",
+        "SELECT PERCENTILEMV(column6, \"50\") FROM testTable");
 
     for (String query : queries) {
       BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
       QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
-          new String[]{"2147483647.00000"});
+          new String[] { "2147483647.00000" });
 
       brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
       QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-          new String[]{"2147483647.00000"});
+          new String[] { "2147483647.00000" });
 
       brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
       QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-          new String[]{"2147483647.00000"});
+          new String[] { "2147483647.00000" });
 
       brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
       QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-          new String[]{"2147483647.00000"});
+          new String[] { "2147483647.00000" });
     }
   }
 
@@ -378,19 +379,19 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
   }
 
   @Test
@@ -399,19 +400,19 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
   }
 
   @Test
@@ -420,19 +421,19 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
-        new String[]{"2147483647.00000"});
+        new String[] { "2147483647.00000" });
   }
 
   @Test
@@ -440,20 +441,20 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
     String query = "SELECT PERCENTILEEST50MV(column6) FROM testTable";
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"2147483647"});
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "2147483647" });
   }
 
   @Test
@@ -461,20 +462,20 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
     String query = "SELECT PERCENTILEEST90MV(column6) FROM testTable";
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"2147483647"});
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "2147483647" });
   }
 
   @Test
@@ -482,20 +483,20 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
     String query = "SELECT PERCENTILEEST95MV(column6) FROM testTable";
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"2147483647"});
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "2147483647" });
   }
 
   @Test
@@ -503,20 +504,20 @@ public class InterSegmentAggregationMultiValueQueriesTest extends BaseMultiValue
     String query = "SELECT PERCENTILEEST99MV(column6) FROM testTable";
 
     BrokerResponseNative brokerResponse = getBrokerResponseForPqlQuery(query);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 400000L, 400000L,
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQueryWithFilter(query);
     QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 62480L, 1101664L, 62480L, 400000L,
-        new String[]{"2147483647"});
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + SV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "2147483647" });
 
     brokerResponse = getBrokerResponseForPqlQuery(query + MV_GROUP_BY);
-    QueriesTestUtils
-        .testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L, new String[]{"2147483647"});
+    QueriesTestUtils.testInterSegmentAggregationResult(brokerResponse, 400000L, 0L, 800000L, 400000L,
+        new String[] { "2147483647" });
   }
 
   @Test

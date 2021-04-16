@@ -61,7 +61,7 @@ public class ConstantValueFloatDictionary extends BaseImmutableDictionary {
 
   @Override
   public float[] getSortedValues() {
-    return new float[]{_value};
+    return new float[] { _value };
   }
 
   @Override

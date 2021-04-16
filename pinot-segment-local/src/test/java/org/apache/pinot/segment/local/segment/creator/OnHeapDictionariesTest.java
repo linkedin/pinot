@@ -75,8 +75,7 @@ public class OnHeapDictionariesTest {
   private IndexSegment _onHeapSegment;
 
   @BeforeClass
-  public void setup()
-      throws Exception {
+  public void setup() throws Exception {
     Schema schema = buildSchema();
 
     TableConfig tableConfig = new TableConfigBuilder(TableType.OFFLINE).setTableName("test").build();
@@ -88,14 +87,13 @@ public class OnHeapDictionariesTest {
     _offHeapSegment = ImmutableSegmentLoader.load(new File(SEGMENT_DIR_NAME, SEGMENT_NAME), loadingConfig);
 
     loadingConfig.setOnHeapDictionaryColumns(new HashSet<>(
-        Arrays.asList(new String[]{INT_COLUMN, LONG_COLUMN, FLOAT_COLUMN, DOUBLE_COLUMN, STRING_COLUMN})));
+        Arrays.asList(new String[] { INT_COLUMN, LONG_COLUMN, FLOAT_COLUMN, DOUBLE_COLUMN, STRING_COLUMN })));
 
     _onHeapSegment = ImmutableSegmentLoader.load(new File(SEGMENT_DIR_NAME, SEGMENT_NAME), loadingConfig);
   }
 
   @AfterClass
-  public void tearDown()
-      throws IOException {
+  public void tearDown() throws IOException {
     FileUtils.deleteDirectory(new File(SEGMENT_DIR_NAME));
   }
 

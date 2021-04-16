@@ -43,16 +43,14 @@ public class ProtoBufRecordReader implements RecordReader {
   private boolean _hasNext;
   private DynamicMessage _dynamicMessage;
 
-  private boolean hasMoreToRead()
-      throws IOException {
+  private boolean hasMoreToRead() throws IOException {
     _inputStream.mark(1);
     int nextByte = _inputStream.read();
     _inputStream.reset();
     return nextByte != -1;
   }
 
-  private void init()
-      throws IOException {
+  private void init() throws IOException {
     _inputStream = RecordReaderUtils.getBufferedInputStream(_dataFile);
     try {
       _hasNext = hasMoreToRead();
@@ -75,12 +73,11 @@ public class ProtoBufRecordReader implements RecordReader {
     init();
   }
 
-  private Descriptors.Descriptor buildProtoBufDescriptor(InputStream fin)
-      throws IOException {
+  private Descriptors.Descriptor buildProtoBufDescriptor(InputStream fin) throws IOException {
     try {
       DescriptorProtos.FileDescriptorSet set = DescriptorProtos.FileDescriptorSet.parseFrom(fin);
       Descriptors.FileDescriptor fileDescriptor =
-          Descriptors.FileDescriptor.buildFrom(set.getFile(0), new Descriptors.FileDescriptor[]{});
+          Descriptors.FileDescriptor.buildFrom(set.getFile(0), new Descriptors.FileDescriptor[] {});
       return fileDescriptor.getMessageTypes().get(0);
     } catch (Descriptors.DescriptorValidationException e) {
       throw new IOException("Descriptor file validation failed", e);
@@ -99,14 +96,12 @@ public class ProtoBufRecordReader implements RecordReader {
   }
 
   @Override
-  public GenericRow next()
-      throws IOException {
+  public GenericRow next() throws IOException {
     return next(new GenericRow());
   }
 
   @Override
-  public GenericRow next(GenericRow reuse)
-      throws IOException {
+  public GenericRow next(GenericRow reuse) throws IOException {
     Message message;
     try {
       Message.Builder builder = _dynamicMessage.newBuilderForType();
@@ -121,15 +116,13 @@ public class ProtoBufRecordReader implements RecordReader {
   }
 
   @Override
-  public void rewind()
-      throws IOException {
+  public void rewind() throws IOException {
     _inputStream.close();
     init();
   }
 
   @Override
-  public void close()
-      throws IOException {
+  public void close() throws IOException {
     _inputStream.close();
   }
 }

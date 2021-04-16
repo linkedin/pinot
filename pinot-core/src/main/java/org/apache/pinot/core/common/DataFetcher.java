@@ -39,7 +39,7 @@ import org.apache.pinot.spi.utils.BytesUtils;
  * DataFetcher can be used by both selection, aggregation and group-by data fetching process, reducing duplicate codes
  * and garbage collection.
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class DataFetcher {
   // Thread local (reusable) buffer for single-valued column dictionary Ids
   private static final ThreadLocal<int[]> THREAD_LOCAL_DICT_IDS =
@@ -566,8 +566,7 @@ public class DataFetcher {
     }
 
     @Override
-    public void close()
-        throws IOException {
+    public void close() throws IOException {
       if (_readerContext != null) {
         _readerContext.close();
       }

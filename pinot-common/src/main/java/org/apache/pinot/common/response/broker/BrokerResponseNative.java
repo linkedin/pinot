@@ -39,7 +39,7 @@ import org.apache.pinot.spi.utils.JsonUtils;
  *
  * Supports serialization via JSON.
  */
-@JsonPropertyOrder({"selectionResults", "aggregationResults", "resultTable", "exceptions", "numServersQueried", "numServersResponded", "numSegmentsQueried", "numSegmentsProcessed", "numSegmentsMatched", "numConsumingSegmentsQueried", "numDocsScanned", "numEntriesScannedInFilter", "numEntriesScannedPostFilter", "numGroupsLimitReached", "totalDocs", "timeUsedMs", "offlineThreadCpuTimeNs", "realtimeThreadCpuTimeNs", "segmentStatistics", "traceInfo"})
+@JsonPropertyOrder({ "selectionResults", "aggregationResults", "resultTable", "exceptions", "numServersQueried", "numServersResponded", "numSegmentsQueried", "numSegmentsProcessed", "numSegmentsMatched", "numConsumingSegmentsQueried", "numDocsScanned", "numEntriesScannedInFilter", "numEntriesScannedPostFilter", "numGroupsLimitReached", "totalDocs", "timeUsedMs", "offlineThreadCpuTimeNs", "realtimeThreadCpuTimeNs", "segmentStatistics", "traceInfo" })
 public class BrokerResponseNative implements BrokerResponse {
   public static final BrokerResponseNative EMPTY_RESULT = BrokerResponseNative.empty();
   public static final BrokerResponseNative NO_TABLE_RESULT =
@@ -291,7 +291,6 @@ public class BrokerResponseNative implements BrokerResponse {
     _offlineThreadCpuTimeNs = timeUsedMs;
   }
 
-
   @JsonProperty("realtimeThreadCpuTimeNs")
   @Override
   public long getRealtimeThreadCpuTimeNs() {
@@ -325,13 +324,11 @@ public class BrokerResponseNative implements BrokerResponse {
   }
 
   @Override
-  public String toJsonString()
-      throws IOException {
+  public String toJsonString() throws IOException {
     return JsonUtils.objectToString(this);
   }
 
-  public static BrokerResponseNative fromJsonString(String jsonString)
-      throws IOException {
+  public static BrokerResponseNative fromJsonString(String jsonString) throws IOException {
     return JsonUtils.stringToObject(jsonString, BrokerResponseNative.class);
   }
 
