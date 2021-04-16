@@ -29,7 +29,7 @@ public class FilterOperatorUtilsTest {
   private static final int NUM_DOCS = 10;
   private static final BaseFilterOperator EMPTY_FILTER_OPERATOR = EmptyFilterOperator.getInstance();
   private static final BaseFilterOperator MATCH_ALL_FILTER_OPERATOR = new MatchAllFilterOperator(NUM_DOCS);
-  private static final BaseFilterOperator REGULAR_FILTER_OPERATOR = new TestFilterOperator(new int[]{1, 4, 7});
+  private static final BaseFilterOperator REGULAR_FILTER_OPERATOR = new TestFilterOperator(new int[] { 1, 4, 7 });
 
   @Test
   public void testGetAndFilterOperator() {

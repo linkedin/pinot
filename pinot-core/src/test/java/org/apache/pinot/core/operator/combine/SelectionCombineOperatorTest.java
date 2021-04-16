@@ -80,8 +80,7 @@ public class SelectionCombineOperatorTest {
   private List<IndexSegment> _indexSegments;
 
   @BeforeClass
-  public void setUp()
-      throws Exception {
+  public void setUp() throws Exception {
     FileUtils.deleteDirectory(TEMP_DIR);
     _indexSegments = new ArrayList<>(NUM_SEGMENTS);
     for (int i = 0; i < NUM_SEGMENTS; i++) {
@@ -89,8 +88,7 @@ public class SelectionCombineOperatorTest {
     }
   }
 
-  private IndexSegment createSegment(int index)
-      throws Exception {
+  private IndexSegment createSegment(int index) throws Exception {
     int baseValue = index * NUM_RECORDS_PER_SEGMENT / 2;
     List<GenericRow> records = new ArrayList<>(NUM_RECORDS_PER_SEGMENT);
     for (int i = 0; i < NUM_RECORDS_PER_SEGMENT; i++) {
@@ -116,7 +114,7 @@ public class SelectionCombineOperatorTest {
   public void testSelectionLimit0() {
     IntermediateResultsBlock combineResult = getCombineResult("SELECT * FROM testTable LIMIT 0");
     assertEquals(combineResult.getDataSchema(),
-        new DataSchema(new String[]{INT_COLUMN}, new DataSchema.ColumnDataType[]{DataSchema.ColumnDataType.INT}));
+        new DataSchema(new String[] { INT_COLUMN }, new DataSchema.ColumnDataType[] { DataSchema.ColumnDataType.INT }));
     assertNotNull(combineResult.getSelectionResult());
     assertTrue(combineResult.getSelectionResult().isEmpty());
     assertEquals(combineResult.getNumDocsScanned(), 0);
@@ -131,7 +129,7 @@ public class SelectionCombineOperatorTest {
   public void testSelectionOnly() {
     IntermediateResultsBlock combineResult = getCombineResult("SELECT * FROM testTable");
     assertEquals(combineResult.getDataSchema(),
-        new DataSchema(new String[]{INT_COLUMN}, new DataSchema.ColumnDataType[]{DataSchema.ColumnDataType.INT}));
+        new DataSchema(new String[] { INT_COLUMN }, new DataSchema.ColumnDataType[] { DataSchema.ColumnDataType.INT }));
     assertNotNull(combineResult.getSelectionResult());
     assertEquals(combineResult.getSelectionResult().size(), 10);
     // Should early-terminate after processing the result of the first segment. Each thread should process at most 1
@@ -147,7 +145,7 @@ public class SelectionCombineOperatorTest {
 
     combineResult = getCombineResult("SELECT * FROM testTable LIMIT 10000");
     assertEquals(combineResult.getDataSchema(),
-        new DataSchema(new String[]{INT_COLUMN}, new DataSchema.ColumnDataType[]{DataSchema.ColumnDataType.INT}));
+        new DataSchema(new String[] { INT_COLUMN }, new DataSchema.ColumnDataType[] { DataSchema.ColumnDataType.INT }));
     assertNotNull(combineResult.getSelectionResult());
     assertEquals(combineResult.getSelectionResult().size(), NUM_SEGMENTS * NUM_RECORDS_PER_SEGMENT);
     // Should not early-terminate
@@ -164,7 +162,7 @@ public class SelectionCombineOperatorTest {
   public void testSelectionOrderBy() {
     IntermediateResultsBlock combineResult = getCombineResult("SELECT * FROM testTable ORDER BY intColumn");
     assertEquals(combineResult.getDataSchema(),
-        new DataSchema(new String[]{INT_COLUMN}, new DataSchema.ColumnDataType[]{DataSchema.ColumnDataType.INT}));
+        new DataSchema(new String[] { INT_COLUMN }, new DataSchema.ColumnDataType[] { DataSchema.ColumnDataType.INT }));
     PriorityQueue<Object[]> selectionResult = (PriorityQueue<Object[]>) combineResult.getSelectionResult();
     assertNotNull(selectionResult);
     assertEquals(selectionResult.size(), 10);
@@ -186,7 +184,7 @@ public class SelectionCombineOperatorTest {
 
     combineResult = getCombineResult("SELECT * FROM testTable ORDER BY intColumn DESC");
     assertEquals(combineResult.getDataSchema(),
-        new DataSchema(new String[]{INT_COLUMN}, new DataSchema.ColumnDataType[]{DataSchema.ColumnDataType.INT}));
+        new DataSchema(new String[] { INT_COLUMN }, new DataSchema.ColumnDataType[] { DataSchema.ColumnDataType.INT }));
     selectionResult = (PriorityQueue<Object[]>) combineResult.getSelectionResult();
     assertNotNull(selectionResult);
     assertEquals(selectionResult.size(), 10);
@@ -208,7 +206,7 @@ public class SelectionCombineOperatorTest {
 
     combineResult = getCombineResult("SELECT * FROM testTable ORDER BY intColumn DESC LIMIT 10000");
     assertEquals(combineResult.getDataSchema(),
-        new DataSchema(new String[]{INT_COLUMN}, new DataSchema.ColumnDataType[]{DataSchema.ColumnDataType.INT}));
+        new DataSchema(new String[] { INT_COLUMN }, new DataSchema.ColumnDataType[] { DataSchema.ColumnDataType.INT }));
     selectionResult = (PriorityQueue<Object[]>) combineResult.getSelectionResult();
     assertNotNull(selectionResult);
     assertEquals(selectionResult.size(), NUM_SEGMENTS * NUM_RECORDS_PER_SEGMENT);
@@ -230,14 +228,12 @@ public class SelectionCombineOperatorTest {
     }
     CombinePlanNode combinePlanNode = new CombinePlanNode(planNodes, queryContext, EXECUTOR,
         System.currentTimeMillis() + Server.DEFAULT_QUERY_EXECUTOR_TIMEOUT_MS,
-        InstancePlanMakerImplV2.DEFAULT_NUM_GROUPS_LIMIT, null,
-        InstancePlanMakerImplV2.DEFAULT_GROUPBY_TRIM_THRESHOLD);
+        InstancePlanMakerImplV2.DEFAULT_NUM_GROUPS_LIMIT, null, InstancePlanMakerImplV2.DEFAULT_GROUPBY_TRIM_THRESHOLD);
     return combinePlanNode.run().nextBlock();
   }
 
   @AfterClass
-  public void tearDown()
-      throws IOException {
+  public void tearDown() throws IOException {
     for (IndexSegment indexSegment : _indexSegments) {
       indexSegment.destroy();
     }

@@ -41,7 +41,7 @@ public class PinotVersionRestletResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Get version number of Pinot components")
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Success")})
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Success") })
   public String getVersionNumber() {
     try {
       return JsonUtils.objectToString(Utils.getComponentVersions());

@@ -31,7 +31,7 @@ import org.roaringbitmap.buffer.MutableRoaringBitmap;
  * The {@code MVScanDocIdIterator} is the scan-based iterator for MVScanDocIdSet to scan a multi-value column for the
  * matching document ids.
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public final class MVScanDocIdIterator implements ScanBasedDocIdIterator {
   private final PredicateEvaluator _predicateEvaluator;
   private final ForwardIndexReader _reader;

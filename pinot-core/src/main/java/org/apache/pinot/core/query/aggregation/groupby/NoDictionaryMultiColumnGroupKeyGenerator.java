@@ -159,7 +159,7 @@ public class NoDictionaryMultiColumnGroupKeyGenerator implements GroupKeyGenerat
         if (_isSingleValueExpressions[i]) {
           int[] dictIds = blockValSet.getDictionaryIdsSV();
           for (int j = 0; j < numDocs; j++) {
-            keys[j][i] = new int[]{dictIds[j]};
+            keys[j][i] = new int[] { dictIds[j] };
           }
         } else {
           int[][] dictIds = blockValSet.getDictionaryIdsMV();
@@ -174,37 +174,37 @@ public class NoDictionaryMultiColumnGroupKeyGenerator implements GroupKeyGenerat
             case INT:
               int[] intValues = blockValSet.getIntValuesSV();
               for (int j = 0; j < numDocs; j++) {
-                keys[j][i] = new int[]{onTheFlyDictionary.put(intValues[j])};
+                keys[j][i] = new int[] { onTheFlyDictionary.put(intValues[j]) };
               }
               break;
             case LONG:
               long[] longValues = blockValSet.getLongValuesSV();
               for (int j = 0; j < numDocs; j++) {
-                keys[j][i] = new int[]{onTheFlyDictionary.put(longValues[j])};
+                keys[j][i] = new int[] { onTheFlyDictionary.put(longValues[j]) };
               }
               break;
             case FLOAT:
               float[] floatValues = blockValSet.getFloatValuesSV();
               for (int j = 0; j < numDocs; j++) {
-                keys[j][i] = new int[]{onTheFlyDictionary.put(floatValues[j])};
+                keys[j][i] = new int[] { onTheFlyDictionary.put(floatValues[j]) };
               }
               break;
             case DOUBLE:
               double[] doubleValues = blockValSet.getDoubleValuesSV();
               for (int j = 0; j < numDocs; j++) {
-                keys[j][i] = new int[]{onTheFlyDictionary.put(doubleValues[j])};
+                keys[j][i] = new int[] { onTheFlyDictionary.put(doubleValues[j]) };
               }
               break;
             case STRING:
               String[] stringValues = blockValSet.getStringValuesSV();
               for (int j = 0; j < numDocs; j++) {
-                keys[j][i] = new int[]{onTheFlyDictionary.put(stringValues[j])};
+                keys[j][i] = new int[] { onTheFlyDictionary.put(stringValues[j]) };
               }
               break;
             case BYTES:
               byte[][] bytesValues = blockValSet.getBytesValuesSV();
               for (int j = 0; j < numDocs; j++) {
-                keys[j][i] = new int[]{onTheFlyDictionary.put(new ByteArray(bytesValues[j]))};
+                keys[j][i] = new int[] { onTheFlyDictionary.put(new ByteArray(bytesValues[j])) };
               }
               break;
             default:

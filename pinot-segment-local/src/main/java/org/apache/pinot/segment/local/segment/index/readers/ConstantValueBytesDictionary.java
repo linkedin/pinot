@@ -63,7 +63,7 @@ public class ConstantValueBytesDictionary extends BaseImmutableDictionary {
 
   @Override
   public Object getSortedValues() {
-    return new ByteArray[]{new ByteArray(_value)};
+    return new ByteArray[] { new ByteArray(_value) };
   }
 
   @Override

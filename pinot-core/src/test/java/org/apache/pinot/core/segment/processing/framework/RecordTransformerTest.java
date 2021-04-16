@@ -79,11 +79,11 @@ public class RecordTransformerTest {
     row.putValue("foo", 1587410614000L);
     row.putValue("bar", "dimValue1");
     row.putValue("zoo", "dimValue2");
-    row.putValue("dMv", new Object[]{1, 2, 3});
+    row.putValue("dMv", new Object[] { 1, 2, 3 });
     GenericRow transformRecord = recordTransformer.transformRecord(row);
     assertEquals(transformRecord.getValue("foo"), 18372L);
     assertEquals(transformRecord.getValue("bar"), "dimValue1_dimValue2");
     assertEquals(transformRecord.getValue("zoo"), "dimValue2");
-    assertTrue(Arrays.equals(((ArrayList<Object>) transformRecord.getValue("dMv")).toArray(), new Object[]{2, 3}));
+    assertTrue(Arrays.equals(((ArrayList<Object>) transformRecord.getValue("dMv")).toArray(), new Object[] { 2, 3 }));
   }
 }

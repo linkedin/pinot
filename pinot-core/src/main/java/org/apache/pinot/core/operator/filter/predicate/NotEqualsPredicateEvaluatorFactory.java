@@ -81,7 +81,7 @@ public class NotEqualsPredicateEvaluatorFactory {
     DictionaryBasedNeqPredicateEvaluator(NotEqPredicate nEqPredicate, Dictionary dictionary) {
       _nonMatchingDictId = dictionary.indexOf(nEqPredicate.getValue());
       if (_nonMatchingDictId >= 0) {
-        _nonMatchingDictIds = new int[]{_nonMatchingDictId};
+        _nonMatchingDictIds = new int[] { _nonMatchingDictId };
         if (dictionary.length() == 1) {
           _alwaysFalse = true;
         }

@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.List;
 
 
-@JsonPropertyOrder({"columns", "results"})
+@JsonPropertyOrder({ "columns", "results" })
 public class SelectionResults {
   private List<String> _columns;
   private List<Serializable[]> _rows;

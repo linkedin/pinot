@@ -40,9 +40,9 @@ public class EqualityUtilsTest {
 
   @Test
   public void testObjectArray() {
-    Integer[] integerArray1 = {1};
-    Integer[] integerArray1Copy = {1};
-    Integer[] integerArray2 = {1, 2};
+    Integer[] integerArray1 = { 1 };
+    Integer[] integerArray1Copy = { 1 };
+    Integer[] integerArray2 = { 1, 2 };
     Assert.assertFalse(EqualityUtils.isSameReference(integerArray1, integerArray1Copy));
     Assert.assertTrue(EqualityUtils.isEqual(integerArray1, integerArray1Copy));
     Assert.assertFalse(EqualityUtils.isEqual(integerArray1, integerArray2));

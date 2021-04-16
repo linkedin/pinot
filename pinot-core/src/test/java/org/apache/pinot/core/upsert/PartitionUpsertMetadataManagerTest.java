@@ -62,7 +62,7 @@ public class PartitionUpsertMetadataManagerTest {
     checkRecordLocation(recordLocationMap, 0, segment1, 5, 100);
     checkRecordLocation(recordLocationMap, 1, segment1, 4, 120);
     checkRecordLocation(recordLocationMap, 2, segment1, 2, 100);
-    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[]{2, 4, 5});
+    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[] { 2, 4, 5 });
 
     // Add the second segment
     String segment2 = getSegmentName(2);
@@ -80,8 +80,8 @@ public class PartitionUpsertMetadataManagerTest {
     checkRecordLocation(recordLocationMap, 1, segment1, 4, 120);
     checkRecordLocation(recordLocationMap, 2, segment2, 2, 120);
     checkRecordLocation(recordLocationMap, 3, segment2, 3, 80);
-    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[]{4});
-    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[]{0, 2, 3});
+    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[] { 4 });
+    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[] { 0, 2, 3 });
 
     // Replace (reload) the first segment
     ThreadSafeMutableRoaringBitmap newValidDocIds1 =
@@ -93,9 +93,9 @@ public class PartitionUpsertMetadataManagerTest {
     checkRecordLocation(recordLocationMap, 1, segment1, 4, 120);
     checkRecordLocation(recordLocationMap, 2, segment2, 2, 120);
     checkRecordLocation(recordLocationMap, 3, segment2, 3, 80);
-    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[]{4});
-    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[]{0, 2, 3});
-    assertEquals(newValidDocIds1.getMutableRoaringBitmap().toArray(), new int[]{4});
+    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[] { 4 });
+    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[] { 0, 2, 3 });
+    assertEquals(newValidDocIds1.getMutableRoaringBitmap().toArray(), new int[] { 4 });
     assertSame(recordLocationMap.get(getPrimaryKey(1)).getValidDocIds(), newValidDocIds1);
 
     // Remove the original segment1
@@ -106,8 +106,8 @@ public class PartitionUpsertMetadataManagerTest {
     checkRecordLocation(recordLocationMap, 1, segment1, 4, 120);
     checkRecordLocation(recordLocationMap, 2, segment2, 2, 120);
     checkRecordLocation(recordLocationMap, 3, segment2, 3, 80);
-    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[]{0, 2, 3});
-    assertEquals(newValidDocIds1.getMutableRoaringBitmap().toArray(), new int[]{4});
+    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[] { 0, 2, 3 });
+    assertEquals(newValidDocIds1.getMutableRoaringBitmap().toArray(), new int[] { 4 });
     assertSame(recordLocationMap.get(getPrimaryKey(1)).getValidDocIds(), newValidDocIds1);
   }
 
@@ -116,7 +116,7 @@ public class PartitionUpsertMetadataManagerTest {
   }
 
   private static PrimaryKey getPrimaryKey(int value) {
-    return new PrimaryKey(new Object[]{value});
+    return new PrimaryKey(new Object[] { value });
   }
 
   private static void checkRecordLocation(Map<PrimaryKey, RecordLocation> recordLocationMap, int keyValue,
@@ -148,49 +148,49 @@ public class PartitionUpsertMetadataManagerTest {
     String segment2 = getSegmentName(2);
     ThreadSafeMutableRoaringBitmap validDocIds2 = new ThreadSafeMutableRoaringBitmap();
 
-    upsertMetadataManager
-        .updateRecord(segment2, new PartitionUpsertMetadataManager.RecordInfo(getPrimaryKey(3), 0, 100), validDocIds2);
+    upsertMetadataManager.updateRecord(segment2,
+        new PartitionUpsertMetadataManager.RecordInfo(getPrimaryKey(3), 0, 100), validDocIds2);
     // segment1: 0 -> {0, 100}, 1 -> {1, 120}, 2 -> {2, 100}
     // segment2: 3 -> {0, 100}
     checkRecordLocation(recordLocationMap, 0, segment1, 0, 100);
     checkRecordLocation(recordLocationMap, 1, segment1, 1, 120);
     checkRecordLocation(recordLocationMap, 2, segment1, 2, 100);
     checkRecordLocation(recordLocationMap, 3, segment2, 0, 100);
-    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[]{0, 1, 2});
-    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[]{0});
+    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[] { 0, 1, 2 });
+    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[] { 0 });
 
-    upsertMetadataManager
-        .updateRecord(segment2, new PartitionUpsertMetadataManager.RecordInfo(getPrimaryKey(2), 1, 120), validDocIds2);
+    upsertMetadataManager.updateRecord(segment2,
+        new PartitionUpsertMetadataManager.RecordInfo(getPrimaryKey(2), 1, 120), validDocIds2);
     // segment1: 0 -> {0, 100}, 1 -> {1, 120}
     // segment2: 2 -> {1, 120}, 3 -> {0, 100}
     checkRecordLocation(recordLocationMap, 0, segment1, 0, 100);
     checkRecordLocation(recordLocationMap, 1, segment1, 1, 120);
     checkRecordLocation(recordLocationMap, 2, segment2, 1, 120);
     checkRecordLocation(recordLocationMap, 3, segment2, 0, 100);
-    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[]{0, 1});
-    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[]{0, 1});
+    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[] { 0, 1 });
+    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[] { 0, 1 });
 
-    upsertMetadataManager
-        .updateRecord(segment2, new PartitionUpsertMetadataManager.RecordInfo(getPrimaryKey(1), 2, 100), validDocIds2);
+    upsertMetadataManager.updateRecord(segment2,
+        new PartitionUpsertMetadataManager.RecordInfo(getPrimaryKey(1), 2, 100), validDocIds2);
     // segment1: 0 -> {0, 100}, 1 -> {1, 120}
     // segment2: 2 -> {1, 120}, 3 -> {0, 100}
     checkRecordLocation(recordLocationMap, 0, segment1, 0, 100);
     checkRecordLocation(recordLocationMap, 1, segment1, 1, 120);
     checkRecordLocation(recordLocationMap, 2, segment2, 1, 120);
     checkRecordLocation(recordLocationMap, 3, segment2, 0, 100);
-    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[]{0, 1});
-    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[]{0, 1});
+    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[] { 0, 1 });
+    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[] { 0, 1 });
 
-    upsertMetadataManager
-        .updateRecord(segment2, new PartitionUpsertMetadataManager.RecordInfo(getPrimaryKey(0), 3, 100), validDocIds2);
+    upsertMetadataManager.updateRecord(segment2,
+        new PartitionUpsertMetadataManager.RecordInfo(getPrimaryKey(0), 3, 100), validDocIds2);
     // segment1: 1 -> {1, 120}
     // segment2: 0 -> {3, 100}, 2 -> {1, 120}, 3 -> {0, 100}
     checkRecordLocation(recordLocationMap, 0, segment2, 3, 100);
     checkRecordLocation(recordLocationMap, 1, segment1, 1, 120);
     checkRecordLocation(recordLocationMap, 2, segment2, 1, 120);
     checkRecordLocation(recordLocationMap, 3, segment2, 0, 100);
-    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[]{1});
-    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[]{0, 1, 3});
+    assertEquals(validDocIds1.getMutableRoaringBitmap().toArray(), new int[] { 1 });
+    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[] { 0, 1, 3 });
   }
 
   @Test
@@ -222,6 +222,6 @@ public class PartitionUpsertMetadataManagerTest {
     assertNull(recordLocationMap.get(getPrimaryKey(1)));
     checkRecordLocation(recordLocationMap, 2, segment2, 0, 100);
     checkRecordLocation(recordLocationMap, 3, segment2, 1, 100);
-    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[]{0, 1});
+    assertEquals(validDocIds2.getMutableRoaringBitmap().toArray(), new int[] { 0, 1 });
   }
 }

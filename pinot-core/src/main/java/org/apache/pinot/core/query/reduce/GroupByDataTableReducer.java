@@ -62,7 +62,7 @@ import org.apache.pinot.core.util.trace.TraceRunnable;
 /**
  * Helper class to reduce data tables and set group by results into the BrokerResponseNative
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class GroupByDataTableReducer implements DataTableReducer {
   private static final int MIN_DATA_TABLES_FOR_CONCURRENT_REDUCE = 2; // TBD, find a better value.
 
@@ -189,8 +189,7 @@ public class GroupByDataTableReducer implements DataTableReducer {
    */
   private void setSQLGroupByInResultTable(BrokerResponseNative brokerResponseNative, DataSchema dataSchema,
       Collection<DataTable> dataTables, DataTableReducerContext reducerContext, String rawTableName,
-      BrokerMetrics brokerMetrics)
-      throws TimeoutException {
+      BrokerMetrics brokerMetrics) throws TimeoutException {
     IndexedTable indexedTable = getIndexedTable(dataSchema, dataTables, reducerContext);
     if (brokerMetrics != null) {
       brokerMetrics.addMeteredTableValue(rawTableName, BrokerMeter.NUM_RESIZES, indexedTable.getNumResizes());
@@ -285,8 +284,7 @@ public class GroupByDataTableReducer implements DataTableReducer {
   }
 
   private IndexedTable getIndexedTable(DataSchema dataSchema, Collection<DataTable> dataTablesToReduce,
-      DataTableReducerContext reducerContext)
-      throws TimeoutException {
+      DataTableReducerContext reducerContext) throws TimeoutException {
     long start = System.currentTimeMillis();
     int numDataTables = dataTablesToReduce.size();
 
@@ -421,8 +419,7 @@ public class GroupByDataTableReducer implements DataTableReducer {
    * @throws TimeoutException If unable to complete within the timeout.
    */
   private void setSQLGroupByInAggregationResults(BrokerResponseNative brokerResponseNative, DataSchema dataSchema,
-      Collection<DataTable> dataTables, DataTableReducerContext reducerContext)
-      throws TimeoutException {
+      Collection<DataTable> dataTables, DataTableReducerContext reducerContext) throws TimeoutException {
 
     List<String> groupByColumns = new ArrayList<>(_numGroupByExpressions);
     int idx = 0;

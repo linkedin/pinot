@@ -50,11 +50,11 @@ abstract class BaseRawDoubleSingleColumnDistinctExecutor implements DistinctExec
   @Override
   public DistinctTable getResult() {
     DataSchema dataSchema =
-        new DataSchema(new String[]{_expression.toString()}, new ColumnDataType[]{ColumnDataType.DOUBLE});
+        new DataSchema(new String[] { _expression.toString() }, new ColumnDataType[] { ColumnDataType.DOUBLE });
     List<Record> records = new ArrayList<>(_valueSet.size());
     DoubleIterator valueIterator = _valueSet.iterator();
     while (valueIterator.hasNext()) {
-      records.add(new Record(new Object[]{valueIterator.nextDouble()}));
+      records.add(new Record(new Object[] { valueIterator.nextDouble() }));
     }
     return new DistinctTable(dataSchema, records);
   }

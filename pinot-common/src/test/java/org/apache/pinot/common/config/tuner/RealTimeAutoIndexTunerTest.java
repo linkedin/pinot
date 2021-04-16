@@ -40,8 +40,8 @@ public class RealTimeAutoIndexTunerTest {
   private static final String TUNER_NAME = "realtimeAutoIndexTuner";
   private TunerConfig _tunerConfig;
   private Schema schema;
-  private String dimensionColumns[] = {"col1", "col2"};
-  private String metricColumns[] = {"count"};
+  private String dimensionColumns[] = { "col1", "col2" };
+  private String metricColumns[] = { "count" };
 
   @BeforeClass
   public void setup() {

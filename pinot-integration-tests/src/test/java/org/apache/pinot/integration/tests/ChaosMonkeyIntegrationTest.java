@@ -63,8 +63,8 @@ public class ChaosMonkeyIntegrationTest {
     completeArgs.addAll(Arrays.asList(args));
 
     try {
-      Process process = new ProcessBuilder(completeArgs).redirectError(ProcessBuilder.Redirect.INHERIT).
-          redirectOutput(ProcessBuilder.Redirect.INHERIT).start();
+      Process process = new ProcessBuilder(completeArgs).redirectError(ProcessBuilder.Redirect.INHERIT)
+          .redirectOutput(ProcessBuilder.Redirect.INHERIT).start();
       synchronized (_processes) {
         _processes.add(process);
       }
@@ -96,56 +96,54 @@ public class ChaosMonkeyIntegrationTest {
   }
 
   private Process startZookeeper() {
-    return runAdministratorCommand(new String[]{"StartZookeeper", "-zkPort", "2191"});
+    return runAdministratorCommand(new String[] { "StartZookeeper", "-zkPort", "2191" });
   }
 
   private Process startController() {
     return runAdministratorCommand(
-        new String[]{"StartController", "-zkAddress", "localhost:2191", "-controllerPort", "39000", "-dataDir", "/tmp/ChaosMonkeyClusterController"});
+        new String[] { "StartController", "-zkAddress", "localhost:2191", "-controllerPort", "39000", "-dataDir", "/tmp/ChaosMonkeyClusterController" });
   }
 
   private Process startBroker() {
-    return runAdministratorCommand(new String[]{"StartBroker", "-brokerPort", "8099", "-zkAddress", "localhost:2191"});
+    return runAdministratorCommand(
+        new String[] { "StartBroker", "-brokerPort", "8099", "-zkAddress", "localhost:2191" });
   }
 
   private Process startServer() {
     return runAdministratorCommand(
-        new String[]{"StartServer", "-serverPort", "8098", "-zkAddress", "localhost:2191", "-dataDir", "/tmp/ChaosMonkeyCluster/data", "-segmentDir", "/tmp/ChaosMonkeyCluster/segments"});
+        new String[] { "StartServer", "-serverPort", "8098", "-zkAddress", "localhost:2191", "-dataDir", "/tmp/ChaosMonkeyCluster/data", "-segmentDir", "/tmp/ChaosMonkeyCluster/segments" });
   }
 
-  private void generateData()
-      throws InterruptedException {
-    String schemaFile = TestUtils.getFileFromResourceUrl(ChaosMonkeyIntegrationTest.class.getClassLoader().
-        getResource("chaos-monkey-schema.json"));
-    String schemaAnnotationsFile = TestUtils.getFileFromResourceUrl(ChaosMonkeyIntegrationTest.class.getClassLoader().
-        getResource("chaos-monkey-schema-annotations.json"));
+  private void generateData() throws InterruptedException {
+    String schemaFile = TestUtils.getFileFromResourceUrl(
+        ChaosMonkeyIntegrationTest.class.getClassLoader().getResource("chaos-monkey-schema.json"));
+    String schemaAnnotationsFile = TestUtils.getFileFromResourceUrl(
+        ChaosMonkeyIntegrationTest.class.getClassLoader().getResource("chaos-monkey-schema-annotations.json"));
     runAdministratorCommand(
-        new String[]{"GenerateData", "-numRecords", TOTAL_RECORD_COUNT, "-numFiles", SEGMENT_COUNT, "-schemaFile", schemaFile, "-schemaAnnotationFile", schemaAnnotationsFile, "-overwrite", "-outDir", AVRO_DIR})
-        .waitFor();
+        new String[] { "GenerateData", "-numRecords", TOTAL_RECORD_COUNT, "-numFiles", SEGMENT_COUNT, "-schemaFile", schemaFile, "-schemaAnnotationFile", schemaAnnotationsFile, "-overwrite", "-outDir", AVRO_DIR })
+            .waitFor();
   }
 
-  private void createTable()
-      throws InterruptedException {
-    String schemaFile = TestUtils.getFileFromResourceUrl(ChaosMonkeyIntegrationTest.class.getClassLoader().
-        getResource("chaos-monkey-schema.json"));
-    String createTableFile = TestUtils.getFileFromResourceUrl(ChaosMonkeyIntegrationTest.class.getClassLoader().
-        getResource("chaos-monkey-create-table.json"));
-    runAdministratorCommand(new String[]{"AddTable", "-controllerPort", "39000", "-schemaFile", schemaFile, "-tableConfigFile", createTableFile, "-exec"})
-        .waitFor();
-  }
-
-  private void convertData()
-      throws InterruptedException {
-    String schemaFile = TestUtils.getFileFromResourceUrl(ChaosMonkeyIntegrationTest.class.getClassLoader().
-        getResource("chaos-monkey-schema.json"));
+  private void createTable() throws InterruptedException {
+    String schemaFile = TestUtils.getFileFromResourceUrl(
+        ChaosMonkeyIntegrationTest.class.getClassLoader().getResource("chaos-monkey-schema.json"));
+    String createTableFile = TestUtils.getFileFromResourceUrl(
+        ChaosMonkeyIntegrationTest.class.getClassLoader().getResource("chaos-monkey-create-table.json"));
     runAdministratorCommand(
-        new String[]{"CreateSegment", "-schemaFile", schemaFile, "-dataDir", AVRO_DIR, "-tableName", "myTable", "-segmentName", "my_table", "-outDir", SEGMENT_DIR, "-overwrite"})
-        .waitFor();
+        new String[] { "AddTable", "-controllerPort", "39000", "-schemaFile", schemaFile, "-tableConfigFile", createTableFile, "-exec" })
+            .waitFor();
   }
 
-  private void uploadData()
-      throws InterruptedException {
-    runAdministratorCommand(new String[]{"UploadSegment", "-controllerPort", "39000", "-segmentDir", SEGMENT_DIR})
+  private void convertData() throws InterruptedException {
+    String schemaFile = TestUtils.getFileFromResourceUrl(
+        ChaosMonkeyIntegrationTest.class.getClassLoader().getResource("chaos-monkey-schema.json"));
+    runAdministratorCommand(
+        new String[] { "CreateSegment", "-schemaFile", schemaFile, "-dataDir", AVRO_DIR, "-tableName", "myTable", "-segmentName", "my_table", "-outDir", SEGMENT_DIR, "-overwrite" })
+            .waitFor();
+  }
+
+  private void uploadData() throws InterruptedException {
+    runAdministratorCommand(new String[] { "UploadSegment", "-controllerPort", "39000", "-segmentDir", SEGMENT_DIR })
         .waitFor();
   }
 
@@ -155,19 +153,16 @@ public class ChaosMonkeyIntegrationTest {
   }
 
   @Test(enabled = false)
-  public void testShortZookeeperFreeze()
-      throws Exception {
+  public void testShortZookeeperFreeze() throws Exception {
     testFreezeZookeeper(10000L);
   }
 
   @Test(enabled = false)
-  public void testLongZookeeperFreeze()
-      throws Exception {
+  public void testLongZookeeperFreeze() throws Exception {
     testFreezeZookeeper(60000L);
   }
 
-  public void testFreezeZookeeper(long freezeLength)
-      throws Exception {
+  public void testFreezeZookeeper(long freezeLength) throws Exception {
     Process zookeeper = startZookeeper();
     Thread.sleep(1000L);
 

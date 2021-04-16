@@ -30,8 +30,8 @@ public class AndFilterOperatorTest {
 
   @Test
   public void testIntersectionForTwoLists() {
-    int[] docIds1 = new int[]{2, 3, 10, 15, 16, 28};
-    int[] docIds2 = new int[]{3, 6, 8, 20, 28};
+    int[] docIds1 = new int[] { 2, 3, 10, 15, 16, 28 };
+    int[] docIds2 = new int[] { 3, 6, 8, 20, 28 };
 
     List<BaseFilterOperator> operators = new ArrayList<>();
     operators.add(new TestFilterOperator(docIds1));
@@ -46,9 +46,9 @@ public class AndFilterOperatorTest {
 
   @Test
   public void testIntersectionForThreeLists() {
-    int[] docIds1 = new int[]{2, 3, 6, 10, 15, 16, 28};
-    int[] docIds2 = new int[]{3, 6, 8, 20, 28};
-    int[] docIds3 = new int[]{1, 2, 3, 6, 30};
+    int[] docIds1 = new int[] { 2, 3, 6, 10, 15, 16, 28 };
+    int[] docIds2 = new int[] { 3, 6, 8, 20, 28 };
+    int[] docIds3 = new int[] { 1, 2, 3, 6, 30 };
 
     List<BaseFilterOperator> operators = new ArrayList<>();
     operators.add(new TestFilterOperator(docIds1));
@@ -64,9 +64,9 @@ public class AndFilterOperatorTest {
 
   @Test
   public void testComplex() {
-    int[] docIds1 = new int[]{2, 3, 6, 10, 15, 16, 28};
-    int[] docIds2 = new int[]{3, 6, 8, 20, 28};
-    int[] docIds3 = new int[]{1, 2, 3, 6, 30};
+    int[] docIds1 = new int[] { 2, 3, 6, 10, 15, 16, 28 };
+    int[] docIds2 = new int[] { 3, 6, 8, 20, 28 };
+    int[] docIds3 = new int[] { 1, 2, 3, 6, 30 };
 
     List<BaseFilterOperator> childOperators = new ArrayList<>();
     childOperators.add(new TestFilterOperator(docIds1));
@@ -86,9 +86,9 @@ public class AndFilterOperatorTest {
 
   @Test
   public void testComplexWithOr() {
-    int[] docIds1 = new int[]{2, 3, 6, 10, 15, 16, 28};
-    int[] docIds2 = new int[]{3, 6, 8, 20, 28};
-    int[] docIds3 = new int[]{1, 2, 3, 6, 30};
+    int[] docIds1 = new int[] { 2, 3, 6, 10, 15, 16, 28 };
+    int[] docIds2 = new int[] { 3, 6, 8, 20, 28 };
+    int[] docIds3 = new int[] { 1, 2, 3, 6, 30 };
 
     List<BaseFilterOperator> childOperators = new ArrayList<>();
     childOperators.add(new TestFilterOperator(docIds3));

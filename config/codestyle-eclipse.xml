@@ -68,7 +68,7 @@
 <setting id="org.eclipse.jdt.core.formatter.blank_lines_before_new_chunk" value="0"/>
 <setting id="org.eclipse.jdt.core.formatter.insert_space_before_binary_operator" value="insert"/>
 <setting id="org.eclipse.jdt.core.formatter.blank_lines_before_package" value="0"/>
-<setting id="org.eclipse.jdt.core.compiler.source" value="1.6"/>
+<setting id="org.eclipse.jdt.core.compiler.source" value="1.8"/>
 <setting id="org.eclipse.jdt.core.formatter.insert_space_after_comma_in_enum_constant_arguments" value="insert"/>
 <setting id="org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_constructor_declaration" value="do not insert"/>
 <setting id="org.eclipse.jdt.core.formatter.comment.format_line_comments" value="false"/>

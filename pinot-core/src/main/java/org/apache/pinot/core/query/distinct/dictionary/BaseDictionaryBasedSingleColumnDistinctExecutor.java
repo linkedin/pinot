@@ -54,17 +54,17 @@ abstract class BaseDictionaryBasedSingleColumnDistinctExecutor implements Distin
 
   @Override
   public DistinctTable getResult() {
-    DataSchema dataSchema = new DataSchema(new String[]{_expression.toString()},
-        new ColumnDataType[]{ColumnDataType.fromDataTypeSV(_dictionary.getValueType())});
+    DataSchema dataSchema = new DataSchema(new String[] { _expression.toString() },
+        new ColumnDataType[] { ColumnDataType.fromDataTypeSV(_dictionary.getValueType()) });
     List<Record> records = new ArrayList<>(_dictIdSet.size());
     IntIterator dictIdIterator = _dictIdSet.iterator();
     if (_dictionary.getValueType() == DataType.BYTES) {
       while (dictIdIterator.hasNext()) {
-        records.add(new Record(new Object[]{new ByteArray(_dictionary.getBytesValue(dictIdIterator.nextInt()))}));
+        records.add(new Record(new Object[] { new ByteArray(_dictionary.getBytesValue(dictIdIterator.nextInt())) }));
       }
     } else {
       while (dictIdIterator.hasNext()) {
-        records.add(new Record(new Object[]{_dictionary.get(dictIdIterator.nextInt())}));
+        records.add(new Record(new Object[] { _dictionary.get(dictIdIterator.nextInt()) }));
       }
     }
     return new DistinctTable(dataSchema, records);

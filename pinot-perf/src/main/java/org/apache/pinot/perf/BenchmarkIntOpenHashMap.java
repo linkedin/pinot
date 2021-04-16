@@ -58,12 +58,11 @@ public class BenchmarkIntOpenHashMap {
   private final int[] _values = new int[NUM_VALUES];
   private ExecutorService _executorService;
 
-  @Param({"10000", "20000", "50000", "100000", "150000"})
+  @Param({ "10000", "20000", "50000", "100000", "150000" })
   public int _cardinality;
 
   @Setup
-  public void setUp()
-      throws Exception {
+  public void setUp() throws Exception {
     for (int i = 0; i < NUM_VALUES; i++) {
       _values[i] = RANDOM.nextInt(_cardinality);
     }
@@ -77,8 +76,7 @@ public class BenchmarkIntOpenHashMap {
 
   @Benchmark
   @BenchmarkMode(Mode.AverageTime)
-  public int intOpenHashMap()
-      throws Exception {
+  public int intOpenHashMap() throws Exception {
     AtomicInteger globalSum = new AtomicInteger();
     CountDownLatch operatorLatch = new CountDownLatch(NUM_THREADS);
     for (int i = 0; i < NUM_THREADS; i++) {
@@ -114,8 +112,7 @@ public class BenchmarkIntOpenHashMap {
 
   @Benchmark
   @BenchmarkMode(Mode.AverageTime)
-  public int intGroupIdMap()
-      throws Exception {
+  public int intGroupIdMap() throws Exception {
     AtomicInteger globalSum = new AtomicInteger();
     CountDownLatch operatorLatch = new CountDownLatch(NUM_THREADS);
     for (int i = 0; i < NUM_THREADS; i++) {
@@ -139,8 +136,7 @@ public class BenchmarkIntOpenHashMap {
     return globalSum.get();
   }
 
-  public static void main(String[] args)
-      throws Exception {
+  public static void main(String[] args) throws Exception {
     new Runner(new OptionsBuilder().include(BenchmarkIntOpenHashMap.class.getSimpleName()).build()).run();
   }
 }

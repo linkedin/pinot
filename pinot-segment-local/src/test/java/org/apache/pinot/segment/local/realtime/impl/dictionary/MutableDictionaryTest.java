@@ -50,7 +50,7 @@ public class MutableDictionaryTest {
   private static final int EST_CARDINALITY = NUM_ENTRIES / 3;
   private static final int NUM_READERS = 3;
   private static final FieldSpec.DataType[] DATA_TYPES =
-      {FieldSpec.DataType.INT, FieldSpec.DataType.LONG, FieldSpec.DataType.FLOAT, FieldSpec.DataType.DOUBLE, FieldSpec.DataType.STRING, FieldSpec.DataType.BYTES};
+      { FieldSpec.DataType.INT, FieldSpec.DataType.LONG, FieldSpec.DataType.FLOAT, FieldSpec.DataType.DOUBLE, FieldSpec.DataType.STRING, FieldSpec.DataType.BYTES };
   private static final long RANDOM_SEED = System.currentTimeMillis();
   private static final Random RANDOM = new Random(RANDOM_SEED);
 
@@ -64,12 +64,12 @@ public class MutableDictionaryTest {
       try (MutableDictionary dictionary = new IntOnHeapMutableDictionary()) {
         testSingleReaderSingleWriter(dictionary, FieldSpec.DataType.INT);
       }
-      try (MutableDictionary dictionary = new IntOffHeapMutableDictionary(EST_CARDINALITY, 2000, _memoryManager,
-          "intColumn")) {
+      try (MutableDictionary dictionary =
+          new IntOffHeapMutableDictionary(EST_CARDINALITY, 2000, _memoryManager, "intColumn")) {
         testSingleReaderSingleWriter(dictionary, FieldSpec.DataType.INT);
       }
-      try (MutableDictionary dictionary = new StringOffHeapMutableDictionary(EST_CARDINALITY, 2000, _memoryManager,
-          "stringColumn", 32)) {
+      try (MutableDictionary dictionary =
+          new StringOffHeapMutableDictionary(EST_CARDINALITY, 2000, _memoryManager, "stringColumn", 32)) {
         testSingleReaderSingleWriter(dictionary, FieldSpec.DataType.STRING);
       }
     } catch (Throwable t) {
@@ -92,12 +92,12 @@ public class MutableDictionaryTest {
       try (MutableDictionary dictionary = new IntOnHeapMutableDictionary()) {
         testMultiReadersSingleWriter(dictionary, FieldSpec.DataType.INT);
       }
-      try (MutableDictionary dictionary = new IntOffHeapMutableDictionary(EST_CARDINALITY, 2000, _memoryManager,
-          "intColumn")) {
+      try (MutableDictionary dictionary =
+          new IntOffHeapMutableDictionary(EST_CARDINALITY, 2000, _memoryManager, "intColumn")) {
         testMultiReadersSingleWriter(dictionary, FieldSpec.DataType.INT);
       }
-      try (MutableDictionary dictionary = new StringOffHeapMutableDictionary(EST_CARDINALITY, 2000, _memoryManager,
-          "stringColumn", 32)) {
+      try (MutableDictionary dictionary =
+          new StringOffHeapMutableDictionary(EST_CARDINALITY, 2000, _memoryManager, "stringColumn", 32)) {
         testMultiReadersSingleWriter(dictionary, FieldSpec.DataType.STRING);
       }
     } catch (Throwable t) {
@@ -123,8 +123,8 @@ public class MutableDictionaryTest {
   public void testOnHeapMutableDictionary() {
     try {
       for (FieldSpec.DataType dataType : DATA_TYPES) {
-        try (MutableDictionary dictionary = MutableDictionaryFactory
-            .getMutableDictionary(dataType, false, null, 0, 0, null)) {
+        try (MutableDictionary dictionary =
+            MutableDictionaryFactory.getMutableDictionary(dataType, false, null, 0, 0, null)) {
           testMutableDictionary(dictionary, dataType);
         }
       }
@@ -135,7 +135,7 @@ public class MutableDictionaryTest {
 
   @Test
   public void testOffHeapMutableDictionary() {
-    int[] maxOverflowSizes = {0, 2000};
+    int[] maxOverflowSizes = { 0, 2000 };
 
     try {
       for (FieldSpec.DataType dataType : DATA_TYPES) {
@@ -193,8 +193,8 @@ public class MutableDictionaryTest {
     Collections.sort(expectedSortedValues);
     Object sortedValues = dictionary.getSortedValues();
     List<Comparable> actualSortedValues =
-        (dataType.equals(FieldSpec.DataType.STRING) || dataType.equals(FieldSpec.DataType.BYTES)) ? Arrays
-            .asList((Comparable[]) dictionary.getSortedValues()) : primitiveArrayToList(dataType, sortedValues);
+        (dataType.equals(FieldSpec.DataType.STRING) || dataType.equals(FieldSpec.DataType.BYTES))
+            ? Arrays.asList((Comparable[]) dictionary.getSortedValues()) : primitiveArrayToList(dataType, sortedValues);
     Assert.assertEquals(actualSortedValues, expectedSortedValues);
 
     Assert.assertEquals(dictionary.getDictIdsInRange(expectedMin.toString(), expectedMax.toString(), true, true).size(),
@@ -243,8 +243,7 @@ public class MutableDictionaryTest {
   }
 
   @AfterClass
-  public void tearDown()
-      throws Exception {
+  public void tearDown() throws Exception {
     _executorService.shutdown();
     _memoryManager.close();
   }

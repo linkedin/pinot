@@ -35,7 +35,7 @@ import org.apache.pinot.spi.data.FieldSpec;
 import org.roaringbitmap.RoaringBitmap;
 
 
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class DistinctCountMVAggregationFunction extends DistinctCountAggregationFunction {
 
   public DistinctCountMVAggregationFunction(ExpressionContext expression) {

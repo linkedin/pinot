@@ -40,7 +40,7 @@ import org.apache.pinot.core.util.QueryOptions;
 /**
  * Helper class to reduce and set Aggregation results into the BrokerResponseNative
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class AggregationDataTableReducer implements DataTableReducer {
   private final QueryContext _queryContext;
   private final AggregationFunction[] _aggregationFunctions;

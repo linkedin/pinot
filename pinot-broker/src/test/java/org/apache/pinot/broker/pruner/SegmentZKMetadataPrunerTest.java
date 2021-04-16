@@ -49,7 +49,7 @@ public class SegmentZKMetadataPrunerTest {
     columnPartitionMap.put(PARTITION_COLUMN,
         new ColumnPartitionMetadata(PARTITION_FUNCTION_NAME, NUM_PARTITION, Collections.singleton(expectedPartition)));
 
-    SegmentZKMetadataPrunerService prunerService = new SegmentZKMetadataPrunerService(new String[]{PRUNER_NAME});
+    SegmentZKMetadataPrunerService prunerService = new SegmentZKMetadataPrunerService(new String[] { PRUNER_NAME });
     SegmentPartitionMetadata segmentPartitionMetadata = new SegmentPartitionMetadata(columnPartitionMap);
     metadata.setPartitionMetadata(segmentPartitionMetadata);
 

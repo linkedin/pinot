@@ -41,7 +41,7 @@ import org.apache.pinot.segment.spi.index.startree.AggregationFunctionColumnPair
 /**
  * The <code>AggregationFunctionUtils</code> class provides utility methods for aggregation function.
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class AggregationFunctionUtils {
   private AggregationFunctionUtils() {
   }
@@ -92,8 +92,8 @@ public class AggregationFunctionUtils {
 
       // NOTE: String.format() is very expensive, so avoid it for whole numbers that can fit in Long.
       //       We simply append ".00000" to long, in order to keep the existing behavior.
-      if (doubleValue <= Long.MAX_VALUE && doubleValue >= Long.MIN_VALUE && DoubleMath
-          .isMathematicalInteger(doubleValue)) {
+      if (doubleValue <= Long.MAX_VALUE && doubleValue >= Long.MIN_VALUE
+          && DoubleMath.isMathematicalInteger(doubleValue)) {
         return (long) doubleValue + ".00000";
       } else {
         return String.format(Locale.US, "%1.5f", doubleValue);

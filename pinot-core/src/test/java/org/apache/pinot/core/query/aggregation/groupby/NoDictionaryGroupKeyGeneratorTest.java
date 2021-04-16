@@ -76,8 +76,8 @@ public class NoDictionaryGroupKeyGeneratorTest {
   private static final String STRING_COLUMN = "stringColumn";
   private static final String BYTES_COLUMN = "bytesColumn";
   private static final String BYTES_DICT_COLUMN = "bytesDictColumn";
-  private static final List<String> COLUMNS = Arrays
-      .asList(INT_COLUMN, LONG_COLUMN, FLOAT_COLUMN, DOUBLE_COLUMN, STRING_COLUMN, BYTES_COLUMN, BYTES_DICT_COLUMN);
+  private static final List<String> COLUMNS = Arrays.asList(INT_COLUMN, LONG_COLUMN, FLOAT_COLUMN, DOUBLE_COLUMN,
+      STRING_COLUMN, BYTES_COLUMN, BYTES_DICT_COLUMN);
   private static final int NUM_COLUMNS = COLUMNS.size();
   private static final TableConfig TABLE_CONFIG = new TableConfigBuilder(TableType.OFFLINE).setTableName(RAW_TABLE_NAME)
       .setNoDictionaryColumns(COLUMNS.subList(0, NUM_COLUMNS - 1)).build();
@@ -99,8 +99,7 @@ public class NoDictionaryGroupKeyGeneratorTest {
   private TransformBlock _transformBlock;
 
   @BeforeClass
-  public void setUp()
-      throws Exception {
+  public void setUp() throws Exception {
     FileUtils.deleteDirectory(TEMP_DIR);
 
     List<GenericRow> records = new ArrayList<>(NUM_RECORDS);
@@ -165,7 +164,7 @@ public class NoDictionaryGroupKeyGeneratorTest {
   @Test
   public void testSingleColumnGroupKeyGenerator() {
     for (int i = 0; i < NUM_COLUMNS - 1; i++) {
-      testGroupKeyGenerator(new int[]{i});
+      testGroupKeyGenerator(new int[] { i });
     }
   }
 
@@ -174,12 +173,12 @@ public class NoDictionaryGroupKeyGeneratorTest {
    */
   @Test
   public void testMultiColumnGroupKeyGenerator() {
-    testGroupKeyGenerator(new int[]{0, 1});
-    testGroupKeyGenerator(new int[]{2, 3});
-    testGroupKeyGenerator(new int[]{4, 5});
-    testGroupKeyGenerator(new int[]{1, 2, 3});
-    testGroupKeyGenerator(new int[]{4, 5, 0});
-    testGroupKeyGenerator(new int[]{5, 4, 3, 2, 1, 0});
+    testGroupKeyGenerator(new int[] { 0, 1 });
+    testGroupKeyGenerator(new int[] { 2, 3 });
+    testGroupKeyGenerator(new int[] { 4, 5 });
+    testGroupKeyGenerator(new int[] { 1, 2, 3 });
+    testGroupKeyGenerator(new int[] { 4, 5, 0 });
+    testGroupKeyGenerator(new int[] { 5, 4, 3, 2, 1, 0 });
   }
 
   /**
@@ -188,7 +187,7 @@ public class NoDictionaryGroupKeyGeneratorTest {
   @Test
   public void testMultiColumnHybridGroupKeyGenerator() {
     for (int i = 0; i < NUM_COLUMNS - 1; i++) {
-      testGroupKeyGenerator(new int[]{i, NUM_COLUMNS - 1});
+      testGroupKeyGenerator(new int[] { i, NUM_COLUMNS - 1 });
     }
   }
 
@@ -241,8 +240,7 @@ public class NoDictionaryGroupKeyGeneratorTest {
   }
 
   @AfterClass
-  public void tearDown()
-      throws IOException {
+  public void tearDown() throws IOException {
     _indexSegment.destroy();
     FileUtils.deleteDirectory(TEMP_DIR);
   }

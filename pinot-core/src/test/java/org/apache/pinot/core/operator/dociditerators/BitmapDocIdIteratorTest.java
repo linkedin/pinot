@@ -29,7 +29,7 @@ public class BitmapDocIdIteratorTest {
 
   @Test
   public void testBitmapDocIdIterator() {
-    int[] docIds = new int[]{1, 2, 4, 5, 6, 8, 12, 15, 16, 18, 20, 21};
+    int[] docIds = new int[] { 1, 2, 4, 5, 6, 8, 12, 15, 16, 18, 20, 21 };
     MutableRoaringBitmap bitmap = new MutableRoaringBitmap();
     bitmap.add(docIds);
     int numDocs = 25;

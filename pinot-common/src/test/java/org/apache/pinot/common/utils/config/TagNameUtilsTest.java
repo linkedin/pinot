@@ -35,24 +35,29 @@ public class TagNameUtilsTest {
     List<Object[]> inputs = new ArrayList<>();
 
     TenantConfig tenantConfig = new TenantConfig(null, "aServerTenant", null);
-    inputs.add(new Object[]{tenantConfig, "aServerTenant_OFFLINE", "aServerTenant_REALTIME", "aServerTenant_REALTIME"});
+    inputs.add(
+        new Object[] { tenantConfig, "aServerTenant_OFFLINE", "aServerTenant_REALTIME", "aServerTenant_REALTIME" });
 
     // empty tag override
     tenantConfig = new TenantConfig(null, "aServerTenant", new TagOverrideConfig(null, null));
-    inputs.add(new Object[]{tenantConfig, "aServerTenant_OFFLINE", "aServerTenant_REALTIME", "aServerTenant_REALTIME"});
+    inputs.add(
+        new Object[] { tenantConfig, "aServerTenant_OFFLINE", "aServerTenant_REALTIME", "aServerTenant_REALTIME" });
 
     // defined realtime consuming override
     tenantConfig = new TenantConfig(null, "aServerTenant", new TagOverrideConfig("overriddenTag_REALTIME", null));
-    inputs.add(new Object[]{tenantConfig, "aServerTenant_OFFLINE", "overriddenTag_REALTIME", "aServerTenant_REALTIME"});
+    inputs.add(
+        new Object[] { tenantConfig, "aServerTenant_OFFLINE", "overriddenTag_REALTIME", "aServerTenant_REALTIME" });
 
     // defined realtime completed override
     tenantConfig = new TenantConfig(null, "aServerTenant", new TagOverrideConfig(null, "overriddenTag_OFFLINE"));
-    inputs.add(new Object[]{tenantConfig, "aServerTenant_OFFLINE", "aServerTenant_REALTIME", "overriddenTag_OFFLINE"});
+    inputs
+        .add(new Object[] { tenantConfig, "aServerTenant_OFFLINE", "aServerTenant_REALTIME", "overriddenTag_OFFLINE" });
 
     // defined both overrides
     tenantConfig = new TenantConfig(null, "aServerTenant",
         new TagOverrideConfig("overriddenTag_REALTIME", "overriddenTag_OFFLINE"));
-    inputs.add(new Object[]{tenantConfig, "aServerTenant_OFFLINE", "overriddenTag_REALTIME", "overriddenTag_OFFLINE"});
+    inputs
+        .add(new Object[] { tenantConfig, "aServerTenant_OFFLINE", "overriddenTag_REALTIME", "overriddenTag_OFFLINE" });
 
     return inputs.toArray(new Object[inputs.size()][]);
   }

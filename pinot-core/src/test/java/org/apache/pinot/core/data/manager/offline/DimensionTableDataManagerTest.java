@@ -60,8 +60,7 @@ public class DimensionTableDataManagerTest {
   private IndexLoadingConfig _indexLoadingConfig;
 
   @BeforeClass
-  public void setUp()
-      throws Exception {
+  public void setUp() throws Exception {
     // prepare segment data
     URL resourceUrl = getClass().getClassLoader().getResource(AVRO_DATA_PATH);
     Assert.assertNotNull(resourceUrl);
@@ -93,8 +92,7 @@ public class DimensionTableDataManagerTest {
     zkSchemaRec.setSimpleField("schemaJSON", baseballTeamsSchemaStr);
 
     ZkHelixPropertyStore propertyStore = mock(ZkHelixPropertyStore.class);
-    when(propertyStore.get("/SCHEMAS/dimBaseballTeams", null, AccessOption.PERSISTENT)).
-        thenReturn(zkSchemaRec);
+    when(propertyStore.get("/SCHEMAS/dimBaseballTeams", null, AccessOption.PERSISTENT)).thenReturn(zkSchemaRec);
 
     return propertyStore;
   }
@@ -115,8 +113,7 @@ public class DimensionTableDataManagerTest {
   }
 
   @Test
-  public void instantiationTests()
-      throws Exception {
+  public void instantiationTests() throws Exception {
     DimensionTableDataManager mgr = makeTestableManager();
     Assert.assertEquals(mgr.getTableName(), TABLE_NAME);
 
@@ -141,18 +138,17 @@ public class DimensionTableDataManagerTest {
   }
 
   @Test
-  public void lookupTests()
-      throws Exception {
+  public void lookupTests() throws Exception {
     DimensionTableDataManager mgr = makeTestableManager();
 
     // try fetching data BEFORE loading segment
-    GenericRow resp = mgr.lookupRowByPrimaryKey(new PrimaryKey(new String[]{"SF"}));
+    GenericRow resp = mgr.lookupRowByPrimaryKey(new PrimaryKey(new String[] { "SF" }));
     Assert.assertNull(resp, "Response should be null if no segment is loaded");
 
     mgr.addSegment(_indexDir, _indexLoadingConfig);
 
     // Confirm table is loaded and available for lookup
-    resp = mgr.lookupRowByPrimaryKey(new PrimaryKey(new String[]{"SF"}));
+    resp = mgr.lookupRowByPrimaryKey(new PrimaryKey(new String[] { "SF" }));
     Assert.assertNotNull(resp, "Should return response after segment load");
     Assert.assertEquals(resp.getValue("teamName"), "San Francisco Giants");
 
@@ -173,7 +169,7 @@ public class DimensionTableDataManagerTest {
     String segmentName = segMgr.getSegmentName();
     mgr.removeSegment(segmentName);
     // confirm table is cleaned up
-    resp = mgr.lookupRowByPrimaryKey(new PrimaryKey(new String[]{"SF"}));
+    resp = mgr.lookupRowByPrimaryKey(new PrimaryKey(new String[] { "SF" }));
     Assert.assertNull(resp, "Response should be null if no segment is loaded");
   }
 }

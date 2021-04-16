@@ -492,7 +492,7 @@ public class DictionaryBasedGroupKeyGenerator implements GroupKeyGenerator {
       }
 
       if (rawKeys == null) {
-        rawKeys = new int[]{rawKey};
+        rawKeys = new int[] { rawKey };
       }
     }
 
@@ -505,7 +505,7 @@ public class DictionaryBasedGroupKeyGenerator implements GroupKeyGenerator {
   private Object[] getKeys(int rawKey) {
     // Specialize single group-by column case
     if (_numGroupByExpressions == 1) {
-      return new Object[]{_dictionaries[0].getInternal(rawKey)};
+      return new Object[] { _dictionaries[0].getInternal(rawKey) };
     } else {
       Object[] groupKeys = new Object[_numGroupByExpressions];
       for (int i = 0; i < _numGroupByExpressions; i++) {
@@ -703,7 +703,7 @@ public class DictionaryBasedGroupKeyGenerator implements GroupKeyGenerator {
     }
 
     if (rawKeys == null) {
-      return new long[]{rawKey};
+      return new long[] { rawKey };
     } else {
       return rawKeys;
     }
@@ -909,7 +909,7 @@ public class DictionaryBasedGroupKeyGenerator implements GroupKeyGenerator {
     }
 
     if (rawKeys == null) {
-      return new IntArray[]{new IntArray(dictIds)};
+      return new IntArray[] { new IntArray(dictIds) };
     } else {
       return rawKeys;
     }

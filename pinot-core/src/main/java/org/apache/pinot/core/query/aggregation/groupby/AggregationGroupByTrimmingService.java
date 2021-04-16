@@ -43,7 +43,7 @@ import org.apache.pinot.core.util.GroupByUtils;
 /**
  * The <code>AggregationGroupByTrimmingService</code> class provides trimming service for aggregation group-by queries.
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class AggregationGroupByTrimmingService {
   private final AggregationFunction[] _aggregationFunctions;
   private final int _numGroupByExpressions;

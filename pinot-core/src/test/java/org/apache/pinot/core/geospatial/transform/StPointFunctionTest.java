@@ -71,7 +71,7 @@ public class StPointFunctionTest extends BaseTransformFunctionTest {
     testTransformFunction(transformFunction, expectedValues);
   }
 
-  @Test(dataProvider = "testIllegalArguments", expectedExceptions = {BadQueryRequestException.class})
+  @Test(dataProvider = "testIllegalArguments", expectedExceptions = { BadQueryRequestException.class })
   public void testIllegalArguments(String expressionStr) {
     ExpressionContext expression = RequestContextUtils.getExpression(expressionStr);
     TransformFunctionFactory.get(expression, _dataSourceMap);
@@ -79,8 +79,8 @@ public class StPointFunctionTest extends BaseTransformFunctionTest {
 
   @DataProvider(name = "testIllegalArguments")
   public Object[][] testIllegalArguments() {
-    return new Object[][]{new Object[]{String.format("ST_Point(%s)", DOUBLE_SV_COLUMN)}, new Object[]{String.format(
-        "ST_Point(%s, %s)", INT_MV_COLUMN, LONG_SV_COLUMN)}, new Object[]{String.format("st_Point(%s, %s)",
-        LONG_SV_COLUMN, INT_MV_COLUMN)}};
+    return new Object[][] { new Object[] { String.format("ST_Point(%s)", DOUBLE_SV_COLUMN) }, new Object[] { String
+        .format("ST_Point(%s, %s)", INT_MV_COLUMN,
+            LONG_SV_COLUMN) }, new Object[] { String.format("st_Point(%s, %s)", LONG_SV_COLUMN, INT_MV_COLUMN) } };
   }
 }

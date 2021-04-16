@@ -51,79 +51,78 @@ public class JsonFunctionsTest {
   }
 
   @DataProvider(name = "jsonFunctionsDataProvider")
-  public Object[][] jsonFunctionsDataProvider()
-      throws IOException {
+  public Object[][] jsonFunctionsDataProvider() throws IOException {
     List<Object[]> inputs = new ArrayList<>();
 
     // toJsonMapStr
     GenericRow row0 = new GenericRow();
     String jsonStr = "{\"k1\":\"foo\",\"k2\":\"bar\"}";
     row0.putValue("jsonMap", JsonUtils.stringToObject(jsonStr, Map.class));
-    inputs.add(new Object[]{"toJsonMapStr(jsonMap)", Lists.newArrayList("jsonMap"), row0, jsonStr});
+    inputs.add(new Object[] { "toJsonMapStr(jsonMap)", Lists.newArrayList("jsonMap"), row0, jsonStr });
 
     GenericRow row1 = new GenericRow();
     jsonStr = "{\"k3\":{\"sub1\":10,\"sub2\":1.0},\"k4\":\"baz\",\"k5\":[1,2,3]}";
     row1.putValue("jsonMap", JsonUtils.stringToObject(jsonStr, Map.class));
-    inputs.add(new Object[]{"toJsonMapStr(jsonMap)", Lists.newArrayList("jsonMap"), row1, jsonStr});
+    inputs.add(new Object[] { "toJsonMapStr(jsonMap)", Lists.newArrayList("jsonMap"), row1, jsonStr });
 
     GenericRow row2 = new GenericRow();
     jsonStr = "{\"k1\":\"foo\",\"k2\":\"bar\"}";
     row2.putValue("jsonMap", JsonUtils.stringToObject(jsonStr, Map.class));
-    inputs.add(new Object[]{"json_format(jsonMap)", Lists.newArrayList("jsonMap"), row2, jsonStr});
+    inputs.add(new Object[] { "json_format(jsonMap)", Lists.newArrayList("jsonMap"), row2, jsonStr });
 
     GenericRow row3 = new GenericRow();
     jsonStr = "{\"k3\":{\"sub1\":10,\"sub2\":1.0},\"k4\":\"baz\",\"k5\":[1,2,3]}";
     row3.putValue("jsonMap", JsonUtils.stringToObject(jsonStr, Map.class));
-    inputs.add(new Object[]{"json_format(jsonMap)", Lists.newArrayList("jsonMap"), row3, jsonStr});
+    inputs.add(new Object[] { "json_format(jsonMap)", Lists.newArrayList("jsonMap"), row3, jsonStr });
 
     GenericRow row4 = new GenericRow();
     jsonStr = "[{\"one\":1,\"two\":\"too\"},{\"one\":11,\"two\":\"roo\"}]";
     row4.putValue("jsonMap", JsonUtils.stringToObject(jsonStr, List.class));
-    inputs.add(new Object[]{"json_format(jsonMap)", Lists.newArrayList("jsonMap"), row4, jsonStr});
+    inputs.add(new Object[] { "json_format(jsonMap)", Lists.newArrayList("jsonMap"), row4, jsonStr });
 
     GenericRow row5 = new GenericRow();
     jsonStr =
         "[{\"one\":1,\"two\":{\"sub1\":1.1,\"sub2\":1.2},\"three\":[\"a\",\"b\"]},{\"one\":11,\"two\":{\"sub1\":11.1,\"sub2\":11.2},\"three\":[\"aa\",\"bb\"]}]";
     row5.putValue("jsonMap", JsonUtils.stringToObject(jsonStr, List.class));
-    inputs.add(new Object[]{"json_format(jsonMap)", Lists.newArrayList("jsonMap"), row5, jsonStr});
+    inputs.add(new Object[] { "json_format(jsonMap)", Lists.newArrayList("jsonMap"), row5, jsonStr });
 
     GenericRow row6 = new GenericRow();
     jsonStr =
         "[{\"one\":1,\"two\":{\"sub1\":1.1,\"sub2\":1.2},\"three\":[\"a\",\"b\"]},{\"one\":11,\"two\":{\"sub1\":11.1,\"sub2\":11.2},\"three\":[\"aa\",\"bb\"]}]";
     row6.putValue("jsonPathArray", JsonUtils.stringToObject(jsonStr, List.class));
-    inputs.add(new Object[]{"json_path_array(jsonPathArray, '$.[*].one')", Lists.newArrayList(
-        "jsonPathArray"), row6, new Object[]{1, 11}});
+    inputs.add(new Object[] { "json_path_array(jsonPathArray, '$.[*].one')", Lists
+        .newArrayList("jsonPathArray"), row6, new Object[] { 1, 11 } });
 
     GenericRow row7 = new GenericRow();
     jsonStr =
         "[{\"one\":1,\"two\":{\"sub1\":1.1,\"sub2\":1.2},\"three\":[\"a\",\"b\"]},{\"one\":11,\"two\":{\"sub1\":11.1,\"sub2\":11.2},\"three\":[\"aa\",\"bb\"]}]";
     row7.putValue("jsonPathArray", JsonUtils.stringToObject(jsonStr, List.class));
-    inputs.add(new Object[]{"json_path_array(jsonPathArray, '$.[*].three')", Lists.newArrayList(
-        "jsonPathArray"), row7, new Object[]{Arrays.asList("a", "b"), Arrays.asList("aa", "bb")}});
+    inputs.add(new Object[] { "json_path_array(jsonPathArray, '$.[*].three')", Lists
+        .newArrayList("jsonPathArray"), row7, new Object[] { Arrays.asList("a", "b"), Arrays.asList("aa", "bb") } });
 
     GenericRow row8 = new GenericRow();
     jsonStr = "{\"k3\":{\"sub1\":10,\"sub2\":1.0},\"k4\":\"baz\",\"k5\":[1,2,3]}";
     row8.putValue("jsonPathString", JsonUtils.stringToObject(jsonStr, Map.class));
-    inputs.add(new Object[]{"json_path_string(jsonPathString, '$.k3')", Lists.newArrayList(
-        "jsonPathString"), row8, "{\"sub1\":10,\"sub2\":1.0}"});
+    inputs.add(new Object[] { "json_path_string(jsonPathString, '$.k3')", Lists
+        .newArrayList("jsonPathString"), row8, "{\"sub1\":10,\"sub2\":1.0}" });
 
     GenericRow row9 = new GenericRow();
     jsonStr = "{\"k3\":{\"sub1\":10,\"sub2\":1.0},\"k4\":\"baz\",\"k5\":[1,2,3]}";
     row9.putValue("jsonPathString", JsonUtils.stringToObject(jsonStr, Map.class));
-    inputs.add(new Object[]{"json_path_string(jsonPathString, '$.k4')", Lists.newArrayList(
-        "jsonPathString"), row9, "baz"});
+    inputs.add(
+        new Object[] { "json_path_string(jsonPathString, '$.k4')", Lists.newArrayList("jsonPathString"), row9, "baz" });
 
     GenericRow row10 = new GenericRow();
     jsonStr = "{\"k3\":{\"sub1\":10,\"sub2\":1.0},\"k4\":\"baz\",\"k5\":[1,2,3]}";
     row10.putValue("jsonPathString", JsonUtils.stringToObject(jsonStr, Map.class));
-    inputs.add(new Object[]{"json_path_long(jsonPathString, '$.k3.sub1')", Lists.newArrayList(
-        "jsonPathString"), row10, 10L});
+    inputs.add(new Object[] { "json_path_long(jsonPathString, '$.k3.sub1')", Lists
+        .newArrayList("jsonPathString"), row10, 10L });
 
     GenericRow row11 = new GenericRow();
     jsonStr = "{\"k3\":{\"sub1\":10,\"sub2\":1.0},\"k4\":\"baz\",\"k5\":[1,2,3]}";
     row11.putValue("jsonPathString", JsonUtils.stringToObject(jsonStr, Map.class));
-    inputs.add(new Object[]{"json_path_double(jsonPathString, '$.k3.sub2')", Lists.newArrayList(
-        "jsonPathString"), row11, 1.0});
+    inputs.add(new Object[] { "json_path_double(jsonPathString, '$.k3.sub2')", Lists
+        .newArrayList("jsonPathString"), row11, 1.0 });
     return inputs.toArray(new Object[0][]);
   }
 }

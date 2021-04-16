@@ -35,7 +35,7 @@ import org.apache.pinot.segment.spi.index.reader.ForwardIndexReaderContext;
 import org.apache.pinot.spi.utils.Pair;
 
 
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Projection {
   private final ImmutableSegment _immutableSegment;
   private final SegmentMetadataImpl _metadata;

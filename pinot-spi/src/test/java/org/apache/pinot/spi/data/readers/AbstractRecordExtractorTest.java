@@ -49,8 +49,7 @@ public abstract class AbstractRecordExtractorTest {
   protected final File _tempDir = new File(FileUtils.getTempDirectory(), "RecordTransformationTest");
 
   @BeforeClass
-  public void setup()
-      throws IOException {
+  public void setup() throws IOException {
     FileUtils.forceMkdir(_tempDir);
     _sourceFieldNames = getSourceFields();
     _inputRecords = getInputRecords();
@@ -60,13 +59,13 @@ public abstract class AbstractRecordExtractorTest {
   }
 
   protected List<Map<String, Object>> getInputRecords() {
-    Integer[] userID = new Integer[]{1, 2, null, 4};
-    String[] firstName = new String[]{null, "John", "Ringo", "George"};
-    String[] lastName = new String[]{"McCartney", "Lenon", "Starr", "Harrison"};
-    List[] bids = new List[]{Arrays.asList(10, 20), null, Collections.singletonList(1), Arrays.asList(1, 2, 3)};
-    String[] campaignInfo = new String[]{"yesterday", "blackbird", "here comes the sun", "hey jude"};
-    double[] cost = new double[]{10000, 20000, 30000, 25000};
-    long[] timestamp = new long[]{1570863600000L, 1571036400000L, 1571900400000L, 1574000000000L};
+    Integer[] userID = new Integer[] { 1, 2, null, 4 };
+    String[] firstName = new String[] { null, "John", "Ringo", "George" };
+    String[] lastName = new String[] { "McCartney", "Lenon", "Starr", "Harrison" };
+    List[] bids = new List[] { Arrays.asList(10, 20), null, Collections.singletonList(1), Arrays.asList(1, 2, 3) };
+    String[] campaignInfo = new String[] { "yesterday", "blackbird", "here comes the sun", "hey jude" };
+    double[] cost = new double[] { 10000, 20000, 30000, 25000 };
+    long[] timestamp = new long[] { 1570863600000L, 1571036400000L, 1571900400000L, 1574000000000L };
 
     List<Map<String, Object>> inputRecords = new ArrayList<>(4);
     for (int i = 0; i < 4; i++) {
@@ -88,16 +87,13 @@ public abstract class AbstractRecordExtractorTest {
   }
 
   @AfterClass
-  public void tearDown()
-      throws Exception {
+  public void tearDown() throws Exception {
     FileUtils.forceDelete(_tempDir);
   }
 
-  protected abstract RecordReader createRecordReader(Set<String> fieldsToRead)
-      throws IOException;
+  protected abstract RecordReader createRecordReader(Set<String> fieldsToRead) throws IOException;
 
-  protected abstract void createInputFile()
-      throws IOException;
+  protected abstract void createInputFile() throws IOException;
 
   protected void checkValue(Map<String, Object> inputRecord, GenericRow genericRow) {
     for (Map.Entry<String, Object> entry : inputRecord.entrySet()) {
@@ -110,8 +106,7 @@ public abstract class AbstractRecordExtractorTest {
 
   private void checkValue(Object expectedValue, Object actualValue) {
     if (expectedValue instanceof Collection) {
-      List actualArray =
-          actualValue instanceof List ? (ArrayList) actualValue : Arrays.asList((Object[]) actualValue);
+      List actualArray = actualValue instanceof List ? (ArrayList) actualValue : Arrays.asList((Object[]) actualValue);
       List expectedArray = (List) expectedValue;
       for (int j = 0; j < actualArray.size(); j++) {
         checkValue(expectedArray.get(j), actualArray.get(j));
@@ -142,8 +137,7 @@ public abstract class AbstractRecordExtractorTest {
    * The record reader should output records which have all the source fields.
    */
   @Test
-  public void testRecordExtractor()
-      throws IOException {
+  public void testRecordExtractor() throws IOException {
     _recordReader.rewind();
     GenericRow genericRow = new GenericRow();
     int i = 0;

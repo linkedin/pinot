@@ -137,14 +137,14 @@ public abstract class BaseOffHeapMutableDictionary implements MutableDictionary 
 
   // List of primes from http://compoasso.free.fr/primelistweb/page/prime/liste_online_en.php
   private static final int[] PRIME_NUMBERS =
-      new int[]{13, 127, 547, 1009, 2003, 3001, 4003, 5003, 7001, 9001, 10007, 12007, 14009, 16001, 18013, 20011, 40009, 60013, 80021, 100003, 125113, 150011, 175003, 200003, 225023, 250007, 275003, 300007, 350003, 400009, 450001, 500009, 600011, 700001, 800011, 900001, 1000003};
+      new int[] { 13, 127, 547, 1009, 2003, 3001, 4003, 5003, 7001, 9001, 10007, 12007, 14009, 16001, 18013, 20011, 40009, 60013, 80021, 100003, 125113, 150011, 175003, 200003, 225023, 250007, 275003, 300007, 350003, 400009, 450001, 500009, 600011, 700001, 800011, 900001, 1000003 };
 
   // expansionMultiple setting as we add new buffers. A setting of 1 sets the new buffer to be
   // the same size as the last one added. Setting of 2 allocates a buffer twice as big as the
   // previous one. It is assumed that these values are powers of 2. It is a good idea to restrict
   // these to 1 or 2, but not higher values. This array can be arbitrarily long. If the number of
   // buffers exceeds the number of elements in the array, we use the last value.
-  private static final int[] EXPANSION_MULTIPLES = new int[]{1, 1, 2, 2, 2};
+  private static final int[] EXPANSION_MULTIPLES = new int[] { 1, 1, 2, 2, 2 };
 
   // Number of columns in each row of an IntBuffer.
   private static final int NUM_COLUMNS = 3;
@@ -211,8 +211,7 @@ public abstract class BaseOffHeapMutableDictionary implements MutableDictionary 
   }
 
   @Override
-  public void close()
-      throws IOException {
+  public void close() throws IOException {
     doClose();
   }
 
@@ -439,6 +438,5 @@ public abstract class BaseOffHeapMutableDictionary implements MutableDictionary 
 
   public abstract long getTotalOffHeapMemUsed();
 
-  protected abstract void doClose()
-      throws IOException;
+  protected abstract void doClose() throws IOException;
 }

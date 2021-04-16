@@ -63,9 +63,8 @@ public class CollectorTest {
 
   @Test
   public void testConcatCollector() {
-    Schema schema =
-        new Schema.SchemaBuilder().setSchemaName("testSchema").addSingleValueDimension("d", FieldSpec.DataType.STRING)
-            .build();
+    Schema schema = new Schema.SchemaBuilder().setSchemaName("testSchema")
+        .addSingleValueDimension("d", FieldSpec.DataType.STRING).build();
     CollectorConfig collectorConfig = new CollectorConfig.Builder().build();
     Collector collector = CollectorFactory.getCollector(collectorConfig, schema);
     assertEquals(collector.getClass(), ConcatCollector.class);
@@ -87,9 +86,8 @@ public class CollectorTest {
 
   @Test
   public void testRollupCollectorWithNoMetrics() {
-    Schema schema =
-        new Schema.SchemaBuilder().setSchemaName("testSchema").addSingleValueDimension("d", FieldSpec.DataType.STRING)
-            .build();
+    Schema schema = new Schema.SchemaBuilder().setSchemaName("testSchema")
+        .addSingleValueDimension("d", FieldSpec.DataType.STRING).build();
     CollectorConfig collectorConfig =
         new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP).build();
     Collector collector = CollectorFactory.getCollector(collectorConfig, schema);
@@ -157,24 +155,23 @@ public class CollectorTest {
 
   @Test
   public void testRollupCollectorWithMVDimensions() {
-    Schema schema =
-        new Schema.SchemaBuilder().setSchemaName("testSchema").addMultiValueDimension("dMv", FieldSpec.DataType.STRING)
-            .addMetric("m1", FieldSpec.DataType.INT).build();
+    Schema schema = new Schema.SchemaBuilder().setSchemaName("testSchema")
+        .addMultiValueDimension("dMv", FieldSpec.DataType.STRING).addMetric("m1", FieldSpec.DataType.INT).build();
     CollectorConfig collectorConfig =
         new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP).build();
     Collector collector = CollectorFactory.getCollector(collectorConfig, schema);
 
     GenericRow r1 = new GenericRow();
-    r1.putValue("dMv", new Object[]{"a", "b"});
+    r1.putValue("dMv", new Object[] { "a", "b" });
     r1.putValue("m1", 100);
     GenericRow r2 = new GenericRow();
-    r2.putValue("dMv", new Object[]{"b", "a"});
+    r2.putValue("dMv", new Object[] { "b", "a" });
     r2.putValue("m1", 100);
     GenericRow r3 = new GenericRow();
-    r3.putValue("dMv", new Object[]{"a", "b"});
+    r3.putValue("dMv", new Object[] { "a", "b" });
     r3.putValue("m1", 100);
     GenericRow r4 = new GenericRow();
-    r4.putValue("dMv", new Object[]{"a"});
+    r4.putValue("dMv", new Object[] { "a" });
     r4.putValue("m1", 100);
     collector.collect(r1);
     collector.collect(r2);
@@ -191,9 +188,8 @@ public class CollectorTest {
     Map<String, ValueAggregatorFactory.ValueAggregatorType> valueAggregatorMap = new HashMap<>();
     valueAggregatorMap.put("m1", ValueAggregatorFactory.ValueAggregatorType.MAX);
     valueAggregatorMap.put("m2", ValueAggregatorFactory.ValueAggregatorType.MIN);
-    CollectorConfig collectorConfig =
-        new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP)
-            .setAggregatorTypeMap(valueAggregatorMap).build();
+    CollectorConfig collectorConfig = new CollectorConfig.Builder()
+        .setCollectorType(CollectorFactory.CollectorType.ROLLUP).setAggregatorTypeMap(valueAggregatorMap).build();
     Collector collector = CollectorFactory.getCollector(collectorConfig, schema);
 
     Map<String, Integer> m1Map = new HashMap<>();
@@ -231,9 +227,8 @@ public class CollectorTest {
 
   @Test
   public void testConcatCollectorWithSort() {
-    Schema schema =
-        new Schema.SchemaBuilder().setSchemaName("testSchema").addSingleValueDimension("d", FieldSpec.DataType.STRING)
-            .build();
+    Schema schema = new Schema.SchemaBuilder().setSchemaName("testSchema")
+        .addSingleValueDimension("d", FieldSpec.DataType.STRING).build();
     CollectorConfig collectorConfig = new CollectorConfig.Builder().setSortOrder(Lists.newArrayList("d")).build();
     Collector collector = CollectorFactory.getCollector(collectorConfig, schema);
     assertEquals(collector.getClass(), ConcatCollector.class);
@@ -260,12 +255,10 @@ public class CollectorTest {
 
   @Test
   public void testRollupCollectorWithSort() {
-    Schema schema =
-        new Schema.SchemaBuilder().setSchemaName("testSchema").addSingleValueDimension("d", FieldSpec.DataType.STRING)
-            .addMetric("m1", FieldSpec.DataType.INT).build();
-    CollectorConfig collectorConfig =
-        new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP)
-            .setSortOrder(Lists.newArrayList("d")).build();
+    Schema schema = new Schema.SchemaBuilder().setSchemaName("testSchema")
+        .addSingleValueDimension("d", FieldSpec.DataType.STRING).addMetric("m1", FieldSpec.DataType.INT).build();
+    CollectorConfig collectorConfig = new CollectorConfig.Builder()
+        .setCollectorType(CollectorFactory.CollectorType.ROLLUP).setSortOrder(Lists.newArrayList("d")).build();
     Collector collector = CollectorFactory.getCollector(collectorConfig, schema);
 
     Set<String> dValues = new HashSet<>();

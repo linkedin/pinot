@@ -169,8 +169,7 @@ public class PartitionFunctionTest {
     // 10 values of size 7, were randomly generated, using {@link Random::nextBytes} with seed 100
     // Applied org.apache.kafka.common.utils.Utils::murmur2 to those values and stored in expectedMurmurValues
     int[] expectedMurmurValues =
-        new int[]{-1044832774, -594851693, 1441878663, 1766739604, 1034724141, -296671913, 443511156, 1483601453,
-            1819695080, -931669296};
+        new int[] { -1044832774, -594851693, 1441878663, 1766739604, 1034724141, -296671913, 443511156, 1483601453, 1819695080, -931669296 };
 
     long seed = 100;
     Random random = new Random(seed);
@@ -198,7 +197,7 @@ public class PartitionFunctionTest {
     // 10 String values of size 7, were randomly generated, using {@link Random::nextBytes} with seed 100
     // Applied {@link MurmurPartitionFunction} initialized with 5 partitions, by overriding {@MurmurPartitionFunction::murmur2} with org.apache.kafka.common.utils.Utils::murmur2
     // stored the results in expectedPartitions
-    int[] expectedPartitions = new int[]{1, 4, 4, 1, 1, 2, 0, 4, 2, 3};
+    int[] expectedPartitions = new int[] { 1, 4, 4, 1, 1, 2, 0, 4, 2, 3 };
 
     // initialized {@link MurmurPartitionFunction} with 5 partitions
     int numPartitions = 5;
@@ -216,7 +215,7 @@ public class PartitionFunctionTest {
   public void testByteArrayPartitionFunctionEquivalence() {
     // 10 String values of size 7, were randomly generated, using {@link Random::nextBytes} with seed 100
     // Applied kafka.producer.ByteArrayPartitioner::partition to those values and stored in expectedPartitions
-    int[] expectedPartitions = new int[]{1, 3, 2, 0, 0, 4, 4, 1, 2, 4};
+    int[] expectedPartitions = new int[] { 1, 3, 2, 0, 0, 4, 4, 1, 2, 4 };
 
     // initialized {@link ByteArrayPartitionFunction} with 5 partitions
     int numPartitions = 5;

@@ -74,7 +74,7 @@ public abstract class ArrayBaseTransformFunctionTest extends BaseTransformFuncti
     }
   }
 
-  @Test(dataProvider = "testIllegalArguments", expectedExceptions = {BadQueryRequestException.class})
+  @Test(dataProvider = "testIllegalArguments", expectedExceptions = { BadQueryRequestException.class })
   public void testIllegalArguments(String expressionStr) {
     ExpressionContext expression = RequestContextUtils.getExpression(expressionStr);
     TransformFunctionFactory.get(expression, _dataSourceMap);
@@ -82,9 +82,9 @@ public abstract class ArrayBaseTransformFunctionTest extends BaseTransformFuncti
 
   @DataProvider(name = "testIllegalArguments")
   public Object[][] testIllegalArguments() {
-    return new Object[][]{new Object[]{String.format("%s(%s,1)", getFunctionName(),
-        INT_MV_COLUMN)}, new Object[]{String.format("%s(2)", getFunctionName())}, new Object[]{String.format("%s(%s)",
-        getFunctionName(), LONG_SV_COLUMN)}};
+    return new Object[][] { new Object[] { String.format("%s(%s,1)", getFunctionName(),
+        INT_MV_COLUMN) }, new Object[] { String.format("%s(2)",
+            getFunctionName()) }, new Object[] { String.format("%s(%s)", getFunctionName(), LONG_SV_COLUMN) } };
   }
 
   abstract String getFunctionName();

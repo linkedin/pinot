@@ -64,12 +64,11 @@ public class BenchmarkFixedBitSVForwardIndexReader {
   private final int[] _sparseDocIds = new int[NUM_DOC_IDS];
   private final int[] _dictIdBuffer = new int[NUM_DOC_IDS];
 
-  @Param({"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"})
+  @Param({ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" })
   public int _numBits;
 
   @Setup
-  public void setUp()
-      throws Exception {
+  public void setUp() throws Exception {
     FileUtils.deleteDirectory(INDEX_DIR);
     FileUtils.forceMkdir(INDEX_DIR);
     File indexFile = new File(INDEX_DIR, "bit-" + _numBits);
@@ -97,8 +96,7 @@ public class BenchmarkFixedBitSVForwardIndexReader {
   }
 
   @TearDown
-  public void tearDown()
-      throws Exception {
+  public void tearDown() throws Exception {
     _dataBuffer.close();
     FileUtils.deleteDirectory(INDEX_DIR);
   }
@@ -139,8 +137,7 @@ public class BenchmarkFixedBitSVForwardIndexReader {
     return _dictIdBuffer[0];
   }
 
-  public static void main(String[] args)
-      throws Exception {
+  public static void main(String[] args) throws Exception {
     new Runner(new OptionsBuilder().include(BenchmarkFixedBitSVForwardIndexReader.class.getSimpleName()).build()).run();
   }
 }

@@ -88,7 +88,7 @@ public class CombinePlanNode implements PlanNode {
     _groupByTrimThreshold = groupByTrimThreshold;
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public Operator<IntermediateResultsBlock> run() {
     int numPlanNodes = _planNodes.size();

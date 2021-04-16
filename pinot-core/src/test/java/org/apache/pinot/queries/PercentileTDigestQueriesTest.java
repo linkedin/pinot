@@ -85,7 +85,7 @@ public class PercentileTDigestQueriesTest extends BaseQueriesTest {
   protected static final String DOUBLE_COLUMN = "doubleColumn";
   protected static final String TDIGEST_COLUMN = "tDigestColumn";
   protected static final String GROUP_BY_COLUMN = "groupByColumn";
-  protected static final String[] GROUPS = new String[]{"G1", "G2", "G3"};
+  protected static final String[] GROUPS = new String[] { "G1", "G2", "G3" };
   protected static final long RANDOM_SEED = System.nanoTime();
   protected static final Random RANDOM = new Random(RANDOM_SEED);
   protected static final String ERROR_MESSAGE = "Random seed: " + RANDOM_SEED;
@@ -109,8 +109,7 @@ public class PercentileTDigestQueriesTest extends BaseQueriesTest {
   }
 
   @BeforeClass
-  public void setUp()
-      throws Exception {
+  public void setUp() throws Exception {
     FileUtils.deleteQuietly(INDEX_DIR);
 
     buildSegment();
@@ -119,8 +118,7 @@ public class PercentileTDigestQueriesTest extends BaseQueriesTest {
     _indexSegments = Arrays.asList(immutableSegment, immutableSegment);
   }
 
-  protected void buildSegment()
-      throws Exception {
+  protected void buildSegment() throws Exception {
     List<GenericRow> rows = new ArrayList<>(NUM_ROWS);
     for (int i = 0; i < NUM_ROWS; i++) {
       HashMap<String, Object> valueMap = new HashMap<>();
@@ -272,8 +270,8 @@ public class PercentileTDigestQueriesTest extends BaseQueriesTest {
   protected String getAggregationQuery(int percentile) {
     return String.format(
         "SELECT PERCENTILE%1$d(%2$s), PERCENTILETDIGEST%1$d(%2$s), PERCENTILETDIGEST%1$d(%3$s), PERCENTILE(%2$s, %1$d), "
-            + "PERCENTILETDIGEST(%2$s, %1$d), PERCENTILETDIGEST(%3$s, %1$d) FROM %4$s", percentile, DOUBLE_COLUMN,
-        TDIGEST_COLUMN, TABLE_NAME);
+            + "PERCENTILETDIGEST(%2$s, %1$d), PERCENTILETDIGEST(%3$s, %1$d) FROM %4$s",
+        percentile, DOUBLE_COLUMN, TDIGEST_COLUMN, TABLE_NAME);
   }
 
   private String getGroupByQuery(int percentile) {

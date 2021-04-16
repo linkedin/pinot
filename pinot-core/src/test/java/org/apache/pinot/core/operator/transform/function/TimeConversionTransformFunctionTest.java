@@ -52,13 +52,13 @@ public class TimeConversionTransformFunctionTest extends BaseTransformFunctionTe
 
   @DataProvider(name = "testTimeConversionTransformFunction")
   public Object[][] testTimeConversionTransformFunction() {
-    return new Object[][]{new Object[]{String.format("timeConvert(%s,'MILLISECONDS','DAYS')",
-        TIME_COLUMN)}, new Object[]{String.format(
-        "timeConvert(timeConvert(timeConvert(%s,'MILLISECONDS','SECONDS'),'SECONDS','HOURS'),'HOURS','DAYS')",
-        TIME_COLUMN)}};
+    return new Object[][] { new Object[] { String.format("timeConvert(%s,'MILLISECONDS','DAYS')",
+        TIME_COLUMN) }, new Object[] { String.format(
+            "timeConvert(timeConvert(timeConvert(%s,'MILLISECONDS','SECONDS'),'SECONDS','HOURS'),'HOURS','DAYS')",
+            TIME_COLUMN) } };
   }
 
-  @Test(dataProvider = "testIllegalArguments", expectedExceptions = {BadQueryRequestException.class})
+  @Test(dataProvider = "testIllegalArguments", expectedExceptions = { BadQueryRequestException.class })
   public void testIllegalArguments(String expressionStr) {
     ExpressionContext expression = RequestContextUtils.getExpression(expressionStr);
     TransformFunctionFactory.get(expression, _dataSourceMap);
@@ -66,10 +66,10 @@ public class TimeConversionTransformFunctionTest extends BaseTransformFunctionTe
 
   @DataProvider(name = "testIllegalArguments")
   public Object[][] testIllegalArguments() {
-    return new Object[][]{new Object[]{String.format("timeConvert(%s,'MILLISECONDS')",
-        TIME_COLUMN)}, new Object[]{"timeConvert(5,'MILLISECONDS','DAYS')"}, new Object[]{String.format(
-        "timeConvert(%s,'MILLISECONDS','DAYS')", INT_MV_COLUMN)}, new Object[]{String.format(
-        "timeConvert(%s,'MILLISECONDS','1:DAYS')", TIME_COLUMN)}, new Object[]{String.format(
-        "timeConvert(%s,%s,'DAYS')", TIME_COLUMN, INT_SV_COLUMN)}};
+    return new Object[][] { new Object[] { String.format("timeConvert(%s,'MILLISECONDS')",
+        TIME_COLUMN) }, new Object[] { "timeConvert(5,'MILLISECONDS','DAYS')" }, new Object[] { String
+            .format("timeConvert(%s,'MILLISECONDS','DAYS')", INT_MV_COLUMN) }, new Object[] { String
+                .format("timeConvert(%s,'MILLISECONDS','1:DAYS')", TIME_COLUMN) }, new Object[] { String
+                    .format("timeConvert(%s,%s,'DAYS')", TIME_COLUMN, INT_SV_COLUMN) } };
   }
 }

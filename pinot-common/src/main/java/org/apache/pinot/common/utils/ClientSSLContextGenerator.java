@@ -115,22 +115,20 @@ public class ClientSSLContextGenerator {
       return tmf.getTrustManagers();
     }
     // Server verification disabled. Trust all servers
-    TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+    TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
       @Override
-      public void checkClientTrusted(X509Certificate[] x509Certificates, String s)
-          throws CertificateException {
+      public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
       }
 
       @Override
-      public void checkServerTrusted(X509Certificate[] x509Certificates, String s)
-          throws CertificateException {
+      public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
       }
 
       @Override
       public X509Certificate[] getAcceptedIssuers() {
         return new X509Certificate[0];
       }
-    }};
+    } };
     return trustAllCerts;
   }
 

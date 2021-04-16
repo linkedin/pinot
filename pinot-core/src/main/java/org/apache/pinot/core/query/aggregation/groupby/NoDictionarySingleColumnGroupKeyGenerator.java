@@ -44,7 +44,7 @@ import org.apache.pinot.spi.utils.ByteArray;
  * in absence of dictionary for the group by column.
  *
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class NoDictionarySingleColumnGroupKeyGenerator implements GroupKeyGenerator {
   private final ExpressionContext _groupByExpression;
   private final DataType _dataType;
@@ -278,7 +278,7 @@ public class NoDictionarySingleColumnGroupKeyGenerator implements GroupKeyGenera
     public GroupKey next() {
       Int2IntMap.Entry entry = _iterator.next();
       _groupKey._groupId = entry.getIntValue();
-      _groupKey._keys = new Object[]{entry.getIntKey()};
+      _groupKey._keys = new Object[] { entry.getIntKey() };
       return _groupKey;
     }
 
@@ -306,7 +306,7 @@ public class NoDictionarySingleColumnGroupKeyGenerator implements GroupKeyGenera
     public GroupKey next() {
       Long2IntMap.Entry entry = _iterator.next();
       _groupKey._groupId = entry.getIntValue();
-      _groupKey._keys = new Object[]{entry.getLongKey()};
+      _groupKey._keys = new Object[] { entry.getLongKey() };
       return _groupKey;
     }
 
@@ -334,7 +334,7 @@ public class NoDictionarySingleColumnGroupKeyGenerator implements GroupKeyGenera
     public GroupKey next() {
       Float2IntMap.Entry entry = _iterator.next();
       _groupKey._groupId = entry.getIntValue();
-      _groupKey._keys = new Object[]{entry.getFloatKey()};
+      _groupKey._keys = new Object[] { entry.getFloatKey() };
       return _groupKey;
     }
 
@@ -362,7 +362,7 @@ public class NoDictionarySingleColumnGroupKeyGenerator implements GroupKeyGenera
     public GroupKey next() {
       Double2IntMap.Entry entry = _iterator.next();
       _groupKey._groupId = entry.getIntValue();
-      _groupKey._keys = new Object[]{entry.getDoubleKey()};
+      _groupKey._keys = new Object[] { entry.getDoubleKey() };
       return _groupKey;
     }
 
@@ -390,7 +390,7 @@ public class NoDictionarySingleColumnGroupKeyGenerator implements GroupKeyGenera
     public GroupKey next() {
       Object2IntMap.Entry entry = _iterator.next();
       _groupKey._groupId = entry.getIntValue();
-      _groupKey._keys = new Object[]{entry.getKey()};
+      _groupKey._keys = new Object[] { entry.getKey() };
       return _groupKey;
     }
 

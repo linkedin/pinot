@@ -47,19 +47,19 @@ import org.openjdk.jmh.runner.options.TimeValue;
 
 
 @State(Scope.Benchmark)
-@Fork(value = 1, jvmArgs = {"-server", "-Xmx8G", "-XX:MaxDirectMemorySize=16G"})
+@Fork(value = 1, jvmArgs = { "-server", "-Xmx8G", "-XX:MaxDirectMemorySize=16G" })
 public class BenchmarkQueryEngine {
   /** List of query patterns used in the benchmark */
-  private static final String[] QUERY_PATTERNS = new String[]{"SELECT count(*) from myTable"};
+  private static final String[] QUERY_PATTERNS = new String[] { "SELECT count(*) from myTable" };
 
   /** List of optimization flags to test,
    * see {@link OptimizationFlags#getOptimizationFlags(BrokerRequest)} for the syntax
    * used here. */
-  @Param({"", "-multipleOrEqualitiesToInClause"})
+  @Param({ "", "-multipleOrEqualitiesToInClause" })
   public String optimizationFlags;
 
   /** List of query patterns indices to run */
-  @Param({"0"})
+  @Param({ "0" })
   public int queryPattern;
 
   /** The table name which contains the offline data, for example "myTable_OFFLINE." */
@@ -81,8 +81,7 @@ public class BenchmarkQueryEngine {
   boolean ranOnce = false;
 
   @Setup
-  public void startPinot()
-      throws Exception {
+  public void startPinot() throws Exception {
     System.out.println("Using table name " + TABLE_NAME);
     System.out.println("Using data directory " + DATA_DIRECTORY);
     System.out.println("Starting pinot");
@@ -139,15 +138,13 @@ public class BenchmarkQueryEngine {
   }
 
   @Benchmark
-  @BenchmarkMode({Mode.SampleTime})
+  @BenchmarkMode({ Mode.SampleTime })
   @OutputTimeUnit(TimeUnit.MILLISECONDS)
-  public int sendQueryToPinot()
-      throws Exception {
+  public int sendQueryToPinot() throws Exception {
     return _perfBenchmarkDriver.postQuery(QUERY_PATTERNS[queryPattern], optimizationFlags).get("totalDocs").asInt();
   }
 
-  public static void main(String[] args)
-      throws Exception {
+  public static void main(String[] args) throws Exception {
     ChainedOptionsBuilder opt =
         new OptionsBuilder().include(BenchmarkQueryEngine.class.getSimpleName()).warmupTime(TimeValue.seconds(30))
             .warmupIterations(4).measurementTime(TimeValue.seconds(30)).measurementIterations(20);

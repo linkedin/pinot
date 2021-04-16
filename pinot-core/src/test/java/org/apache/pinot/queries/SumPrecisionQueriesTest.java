@@ -103,8 +103,7 @@ public class SumPrecisionQueriesTest extends BaseQueriesTest {
   }
 
   @BeforeClass
-  public void setUp()
-      throws Exception {
+  public void setUp() throws Exception {
     FileUtils.deleteQuietly(INDEX_DIR);
 
     _intSum = BigDecimal.ZERO;
@@ -171,8 +170,8 @@ public class SumPrecisionQueriesTest extends BaseQueriesTest {
     BrokerResponseNative brokerResponse = getBrokerResponseForSqlQuery(query);
     ResultTable resultTable = brokerResponse.getResultTable();
     DataSchema expectedDataSchema = new DataSchema(
-        new String[]{"sumprecision(intColumn)", "sumprecision(longColumn)", "sumprecision(floatColumn)", "sumprecision(doubleColumn)", "sumprecision(stringColumn)", "sumprecision(bytesColumn)"},
-        new ColumnDataType[]{ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING});
+        new String[] { "sumprecision(intColumn)", "sumprecision(longColumn)", "sumprecision(floatColumn)", "sumprecision(doubleColumn)", "sumprecision(stringColumn)", "sumprecision(bytesColumn)" },
+        new ColumnDataType[] { ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING });
     assertEquals(resultTable.getDataSchema(), expectedDataSchema);
     List<Object[]> rows = resultTable.getRows();
     assertEquals(rows.size(), 1);
@@ -180,7 +179,7 @@ public class SumPrecisionQueriesTest extends BaseQueriesTest {
     String longSum = _longSum.multiply(FOUR).toString();
     String floatSum = _floatSum.multiply(FOUR).toString();
     String doubleSum = _doubleSum.multiply(FOUR).toString();
-    assertEquals(rows.get(0), new Object[]{intSum, longSum, floatSum, doubleSum, doubleSum, doubleSum});
+    assertEquals(rows.get(0), new Object[] { intSum, longSum, floatSum, doubleSum, doubleSum, doubleSum });
   }
 
   @Test
@@ -205,8 +204,8 @@ public class SumPrecisionQueriesTest extends BaseQueriesTest {
     BrokerResponseNative brokerResponse = getBrokerResponseForSqlQuery(query);
     ResultTable resultTable = brokerResponse.getResultTable();
     DataSchema expectedDataSchema = new DataSchema(
-        new String[]{"sumprecision(intColumn)", "sumprecision(longColumn)", "sumprecision(floatColumn)", "sumprecision(doubleColumn)", "sumprecision(stringColumn)", "sumprecision(bytesColumn)"},
-        new ColumnDataType[]{ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING});
+        new String[] { "sumprecision(intColumn)", "sumprecision(longColumn)", "sumprecision(floatColumn)", "sumprecision(doubleColumn)", "sumprecision(stringColumn)", "sumprecision(bytesColumn)" },
+        new ColumnDataType[] { ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING });
     assertEquals(resultTable.getDataSchema(), expectedDataSchema);
     List<Object[]> rows = resultTable.getRows();
     assertEquals(rows.size(), 1);
@@ -215,7 +214,7 @@ public class SumPrecisionQueriesTest extends BaseQueriesTest {
     String longSum = _longSum.multiply(FOUR).round(mathContext).toString();
     String floatSum = _floatSum.multiply(FOUR).round(mathContext).toString();
     String doubleSum = _doubleSum.multiply(FOUR).round(mathContext).toString();
-    assertEquals(rows.get(0), new Object[]{intSum, longSum, floatSum, doubleSum, doubleSum, doubleSum});
+    assertEquals(rows.get(0), new Object[] { intSum, longSum, floatSum, doubleSum, doubleSum, doubleSum });
   }
 
   @Test
@@ -240,8 +239,8 @@ public class SumPrecisionQueriesTest extends BaseQueriesTest {
     BrokerResponseNative brokerResponse = getBrokerResponseForSqlQuery(query);
     ResultTable resultTable = brokerResponse.getResultTable();
     DataSchema expectedDataSchema = new DataSchema(
-        new String[]{"sumprecision(intColumn)", "sumprecision(longColumn)", "sumprecision(floatColumn)", "sumprecision(doubleColumn)", "sumprecision(stringColumn)", "sumprecision(bytesColumn)"},
-        new ColumnDataType[]{ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING});
+        new String[] { "sumprecision(intColumn)", "sumprecision(longColumn)", "sumprecision(floatColumn)", "sumprecision(doubleColumn)", "sumprecision(stringColumn)", "sumprecision(bytesColumn)" },
+        new ColumnDataType[] { ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING, ColumnDataType.STRING });
     assertEquals(resultTable.getDataSchema(), expectedDataSchema);
     List<Object[]> rows = resultTable.getRows();
     assertEquals(rows.size(), 1);
@@ -250,7 +249,7 @@ public class SumPrecisionQueriesTest extends BaseQueriesTest {
     String longSum = _longSum.multiply(FOUR).round(mathContext).setScale(3, RoundingMode.HALF_EVEN).toString();
     String floatSum = _floatSum.multiply(FOUR).round(mathContext).setScale(3, RoundingMode.HALF_EVEN).toString();
     String doubleSum = _doubleSum.multiply(FOUR).round(mathContext).setScale(3, RoundingMode.HALF_EVEN).toString();
-    assertEquals(rows.get(0), new Object[]{intSum, longSum, floatSum, doubleSum, doubleSum, doubleSum});
+    assertEquals(rows.get(0), new Object[] { intSum, longSum, floatSum, doubleSum, doubleSum, doubleSum });
   }
 
   @Test
@@ -268,18 +267,17 @@ public class SumPrecisionQueriesTest extends BaseQueriesTest {
     // Inter segment
     BrokerResponseNative brokerResponse = getBrokerResponseForSqlQuery(query);
     ResultTable resultTable = brokerResponse.getResultTable();
-    DataSchema expectedDataSchema = new DataSchema(new String[]{"times(sum_precision(intColumn),'2')"},
-        new ColumnDataType[]{ColumnDataType.DOUBLE});
+    DataSchema expectedDataSchema = new DataSchema(new String[] { "times(sum_precision(intColumn),'2')" },
+        new ColumnDataType[] { ColumnDataType.DOUBLE });
     assertEquals(resultTable.getDataSchema(), expectedDataSchema);
     List<Object[]> rows = resultTable.getRows();
     assertEquals(rows.size(), 1);
     double expectedResult = _intSum.multiply(FOUR).doubleValue() * 2;
-    assertEquals(rows.get(0), new Object[]{expectedResult});
+    assertEquals(rows.get(0), new Object[] { expectedResult });
   }
 
   @AfterClass
-  public void tearDown()
-      throws IOException {
+  public void tearDown() throws IOException {
     _indexSegment.destroy();
     FileUtils.deleteDirectory(INDEX_DIR);
   }

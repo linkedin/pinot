@@ -133,8 +133,7 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
    * {@inheritDoc}
    */
   @Override
-  public void updateDefaultColumns()
-      throws Exception {
+  public void updateDefaultColumns() throws Exception {
     // Compute the action needed for each column.
     Map<String, DefaultColumnAction> defaultColumnActionMap = computeDefaultColumnActionMap();
     if (defaultColumnActionMap.isEmpty()) {
@@ -321,16 +320,14 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
    * Helper method to update default column indices, returns {@code true} if the update succeeds, {@code false}
    * otherwise.
    */
-  protected abstract boolean updateDefaultColumn(String column, DefaultColumnAction action)
-      throws Exception;
+  protected abstract boolean updateDefaultColumn(String column, DefaultColumnAction action) throws Exception;
 
   /**
    * Helper method to remove the V1 indices (dictionary and forward index) for a column.
    *
    * @param column column name.
    */
-  protected void removeColumnV1Indices(String column)
-      throws IOException {
+  protected void removeColumnV1Indices(String column) throws IOException {
     // Delete existing dictionary and forward index
     FileUtils.forceDelete(new File(_indexDir, column + V1Constants.Dict.FILE_EXTENSION));
     File svFwdIndex = new File(_indexDir, column + V1Constants.Indexes.SORTED_SV_FORWARD_INDEX_FILE_EXTENSION);
@@ -348,8 +345,7 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
    * Helper method to create the V1 indices (dictionary and forward index) for a column, returns {@code true} if the
    * creation succeeds, {@code false} otherwise.
    */
-  protected boolean createColumnV1Indices(String column)
-      throws Exception {
+  protected boolean createColumnV1Indices(String column) throws Exception {
     TableConfig tableConfig = _indexLoadingConfig.getTableConfig();
     if (tableConfig != null && tableConfig.getIngestionConfig() != null
         && tableConfig.getIngestionConfig().getTransformConfigs() != null) {
@@ -404,8 +400,7 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
   /**
    * Helper method to create the V1 indices (dictionary and forward index) for a column with default values.
    */
-  private void createDefaultValueColumnV1Indices(String column)
-      throws Exception {
+  private void createDefaultValueColumnV1Indices(String column) throws Exception {
     FieldSpec fieldSpec = _schema.getFieldSpecFor(column);
 
     // Generate column index creation information.
@@ -420,26 +415,26 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
     switch (dataType) {
       case INT:
         Preconditions.checkState(defaultValue instanceof Integer);
-        sortedArray = new int[]{(Integer) defaultValue};
+        sortedArray = new int[] { (Integer) defaultValue };
         break;
       case LONG:
         Preconditions.checkState(defaultValue instanceof Long);
-        sortedArray = new long[]{(Long) defaultValue};
+        sortedArray = new long[] { (Long) defaultValue };
         break;
       case FLOAT:
         Preconditions.checkState(defaultValue instanceof Float);
-        sortedArray = new float[]{(Float) defaultValue};
+        sortedArray = new float[] { (Float) defaultValue };
         break;
       case DOUBLE:
         Preconditions.checkState(defaultValue instanceof Double);
-        sortedArray = new double[]{(Double) defaultValue};
+        sortedArray = new double[] { (Double) defaultValue };
         break;
       case STRING:
         Preconditions.checkState(defaultValue instanceof String);
         String stringDefaultValue = (String) defaultValue;
         // Length of the UTF-8 encoded byte array.
         dictionaryElementSize = StringUtil.encodeUtf8(stringDefaultValue).length;
-        sortedArray = new String[]{stringDefaultValue};
+        sortedArray = new String[] { stringDefaultValue };
         break;
       case BYTES:
         Preconditions.checkState(defaultValue instanceof byte[]);
@@ -447,18 +442,16 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
         // Convert byte[] to ByteArray for internal usage
         ByteArray bytesDefaultValue = new ByteArray((byte[]) defaultValue);
         defaultValue = bytesDefaultValue;
-        sortedArray = new ByteArray[]{bytesDefaultValue};
+        sortedArray = new ByteArray[] { bytesDefaultValue };
         break;
       default:
         throw new UnsupportedOperationException("Unsupported data type: " + dataType + " for column: " + column);
     }
-    DefaultColumnStatistics columnStatistics =
-        new DefaultColumnStatistics(defaultValue  /* min */, defaultValue  /* max */, sortedArray, isSingleValue,
-            totalDocs, maxNumberOfMultiValueElements);
+    DefaultColumnStatistics columnStatistics = new DefaultColumnStatistics(defaultValue /* min */,
+        defaultValue /* max */, sortedArray, isSingleValue, totalDocs, maxNumberOfMultiValueElements);
 
-    ColumnIndexCreationInfo columnIndexCreationInfo =
-        new ColumnIndexCreationInfo(columnStatistics, true/*createDictionary*/, false, true/*isAutoGenerated*/,
-            defaultValue/*defaultNullValue*/);
+    ColumnIndexCreationInfo columnIndexCreationInfo = new ColumnIndexCreationInfo(columnStatistics,
+        true/*createDictionary*/, false, true/*isAutoGenerated*/, defaultValue/*defaultNullValue*/);
 
     // Create dictionary.
     // We will have only one value in the dictionary.
@@ -470,8 +463,8 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
     if (isSingleValue) {
       // Single-value column.
 
-      try (SingleValueSortedForwardIndexCreator svFwdIndexCreator = new SingleValueSortedForwardIndexCreator(_indexDir,
-          fieldSpec.getName(), 1/*cardinality*/)) {
+      try (SingleValueSortedForwardIndexCreator svFwdIndexCreator =
+          new SingleValueSortedForwardIndexCreator(_indexDir, fieldSpec.getName(), 1/*cardinality*/)) {
         for (int docId = 0; docId < totalDocs; docId++) {
           svFwdIndexCreator.putDictId(0);
         }
@@ -482,7 +475,7 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
       try (
           MultiValueUnsortedForwardIndexCreator mvFwdIndexCreator = new MultiValueUnsortedForwardIndexCreator(_indexDir,
               fieldSpec.getName(), 1/*cardinality*/, totalDocs/*numDocs*/, totalDocs/*totalNumberOfValues*/)) {
-        int[] dictIds = {0};
+        int[] dictIds = { 0 };
         for (int docId = 0; docId < totalDocs; docId++) {
           mvFwdIndexCreator.putDictIdMV(dictIds);
         }
@@ -490,10 +483,9 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
     }
 
     // Add the column metadata information to the metadata properties.
-    SegmentColumnarIndexCreator
-        .addColumnMetadataInfo(_segmentProperties, column, columnIndexCreationInfo, totalDocs, fieldSpec,
-            true/*hasDictionary*/, dictionaryElementSize, true/*hasInvertedIndex*/, TextIndexType.NONE,
-            false/*hasFSTIndex*/, false/*hasJsonIndex*/);
+    SegmentColumnarIndexCreator.addColumnMetadataInfo(_segmentProperties, column, columnIndexCreationInfo, totalDocs,
+        fieldSpec, true/*hasDictionary*/, dictionaryElementSize, true/*hasInvertedIndex*/, TextIndexType.NONE,
+        false/*hasFSTIndex*/, false/*hasJsonIndex*/);
   }
 
   /**
@@ -504,8 +496,7 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
    *   - Support multi-value derived column
    */
   private void createDerivedColumnV1Indices(String column, FunctionEvaluator functionEvaluator,
-      List<ColumnMetadata> argumentsMetadata)
-      throws Exception {
+      List<ColumnMetadata> argumentsMetadata) throws Exception {
     // Initialize value readers for all arguments
     int numArguments = argumentsMetadata.size();
     List<ValueReader> valueReaders = new ArrayList<>(numArguments);
@@ -623,25 +614,24 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
       }
 
       // Create dictionary
-      try (SegmentDictionaryCreator dictionaryCreator = new SegmentDictionaryCreator(
-          indexCreationInfo.getSortedUniqueElementsArray(), fieldSpec, _indexDir,
-          indexCreationInfo.isUseVarLengthDictionary())) {
+      try (SegmentDictionaryCreator dictionaryCreator =
+          new SegmentDictionaryCreator(indexCreationInfo.getSortedUniqueElementsArray(), fieldSpec, _indexDir,
+              indexCreationInfo.isUseVarLengthDictionary())) {
         dictionaryCreator.build();
 
         // Create forward index
         int cardinality = indexCreationInfo.getDistinctValueCount();
-        try (ForwardIndexCreator forwardIndexCreator = indexCreationInfo.isSorted()
-            ? new SingleValueSortedForwardIndexCreator(_indexDir, column, cardinality)
-            : new SingleValueUnsortedForwardIndexCreator(_indexDir, column, cardinality, numDocs)) {
+        try (ForwardIndexCreator forwardIndexCreator =
+            indexCreationInfo.isSorted() ? new SingleValueSortedForwardIndexCreator(_indexDir, column, cardinality)
+                : new SingleValueUnsortedForwardIndexCreator(_indexDir, column, cardinality, numDocs)) {
           for (int i = 0; i < numDocs; i++) {
             forwardIndexCreator.putDictId(dictionaryCreator.indexOfSV(outputValues[i]));
           }
         }
 
         // Add the column metadata
-        SegmentColumnarIndexCreator
-            .addColumnMetadataInfo(_segmentProperties, column, indexCreationInfo, numDocs, fieldSpec, true,
-                dictionaryCreator.getNumBytesPerEntry(), true, TextIndexType.NONE, false, false);
+        SegmentColumnarIndexCreator.addColumnMetadataInfo(_segmentProperties, column, indexCreationInfo, numDocs,
+            fieldSpec, true, dictionaryCreator.getNumBytesPerEntry(), true, TextIndexType.NONE, false, false);
       }
     } finally {
       for (ValueReader valueReader : valueReaders) {
@@ -656,8 +646,7 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
     final Dictionary _dictionary;
     final PinotSegmentColumnReader _columnReader;
 
-    ValueReader(ColumnMetadata columnMetadata)
-        throws IOException {
+    ValueReader(ColumnMetadata columnMetadata) throws IOException {
       _forwardIndexReader = LoaderUtils.getForwardIndexReader(_segmentWriter, columnMetadata);
       if (columnMetadata.hasDictionary()) {
         _dictionary = LoaderUtils.getDictionary(_segmentWriter, columnMetadata);
@@ -673,8 +662,7 @@ public abstract class BaseDefaultColumnHandler implements DefaultColumnHandler {
     }
 
     @Override
-    public void close()
-        throws IOException {
+    public void close() throws IOException {
       _columnReader.close();
       if (_dictionary != null) {
         _dictionary.close();

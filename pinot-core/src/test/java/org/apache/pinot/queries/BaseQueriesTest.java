@@ -67,7 +67,7 @@ public abstract class BaseQueriesTest {
    * Run PQL query on single index segment.
    * <p>Use this to test a single operator.
    */
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   protected <T extends Operator> T getOperatorForPqlQuery(String pqlQuery) {
     QueryContext queryContext = QueryContextConverterUtils.getQueryContextFromPQL(pqlQuery);
     return (T) PLAN_MAKER.makeSegmentPlanNode(getIndexSegment(), queryContext).run();
@@ -86,7 +86,7 @@ public abstract class BaseQueriesTest {
    * Run SQL query on single index segment.
    * <p>Use this to test a single operator.
    */
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   protected <T extends Operator> T getOperatorForSqlQuery(String sqlQuery) {
     QueryContext queryContext = QueryContextConverterUtils.getQueryContextFromSQL(sqlQuery);
     return (T) PLAN_MAKER.makeSegmentPlanNode(getIndexSegment(), queryContext).run();
@@ -224,9 +224,8 @@ public abstract class BaseQueriesTest {
       Utils.rethrowException(e);
     }
 
-    BrokerResponseNative brokerResponse = brokerReduceService
-        .reduceOnDataTable(queryContext.getBrokerRequest(), dataTableMap,
-            CommonConstants.Broker.DEFAULT_BROKER_TIMEOUT_MS, null);
+    BrokerResponseNative brokerResponse = brokerReduceService.reduceOnDataTable(queryContext.getBrokerRequest(),
+        dataTableMap, CommonConstants.Broker.DEFAULT_BROKER_TIMEOUT_MS, null);
     brokerReduceService.shutDown();
     return brokerResponse;
   }

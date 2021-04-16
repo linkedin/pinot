@@ -61,7 +61,7 @@ public class ConstantValueIntDictionary extends BaseImmutableDictionary {
 
   @Override
   public int[] getSortedValues() {
-    return new int[]{_value};
+    return new int[] { _value };
   }
 
   @Override

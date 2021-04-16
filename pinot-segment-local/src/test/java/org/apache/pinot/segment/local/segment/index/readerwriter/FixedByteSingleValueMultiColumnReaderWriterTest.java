@@ -40,7 +40,7 @@ public class FixedByteSingleValueMultiColumnReaderWriterTest {
   private static final int STRING_LENGTH = 11;
 
   private static final int[] COLUMN_SIZES_IN_BYTES =
-      new int[]{Integer.BYTES, Long.BYTES, Float.BYTES, Double.BYTES, STRING_LENGTH};
+      new int[] { Integer.BYTES, Long.BYTES, Float.BYTES, Double.BYTES, STRING_LENGTH };
 
   private PinotDataBufferMemoryManager _memoryManager;
   private FixedByteSingleValueMultiColumnReaderWriter _readerWriter;
@@ -49,15 +49,13 @@ public class FixedByteSingleValueMultiColumnReaderWriterTest {
   @BeforeClass
   public void setup() {
     _memoryManager = new DirectMemoryManager(FixedByteSingleValueMultiColumnReaderWriterTest.class.getName());
-    _readerWriter =
-        new FixedByteSingleValueMultiColumnReaderWriter(NUM_ROWS_PER_CHUNK, COLUMN_SIZES_IN_BYTES, _memoryManager,
-            "test");
+    _readerWriter = new FixedByteSingleValueMultiColumnReaderWriter(NUM_ROWS_PER_CHUNK, COLUMN_SIZES_IN_BYTES,
+        _memoryManager, "test");
     _random = new Random(System.nanoTime());
   }
 
   @AfterClass
-  public void tearDown()
-      throws IOException {
+  public void tearDown() throws IOException {
     _readerWriter.close();
     _memoryManager.close();
   }

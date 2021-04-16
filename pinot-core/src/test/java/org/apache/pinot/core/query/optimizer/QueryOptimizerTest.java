@@ -145,7 +145,7 @@ public class QueryOptimizerTest {
       FilterQueryTree secondChild = children.get(1);
       assertEquals(secondChild.getColumn(), "long");
       assertEquals(secondChild.getOperator(), FilterOperator.IN);
-      assertEqualsNoOrder(secondChild.getValue().toArray(), new Object[]{"2", "3", "4"});
+      assertEqualsNoOrder(secondChild.getValue().toArray(), new Object[] { "2", "3", "4" });
 
       FilterQueryTree thirdChild = children.get(2);
       assertEquals(thirdChild.getOperator(), FilterOperator.OR);
@@ -159,14 +159,14 @@ public class QueryOptimizerTest {
       FilterQueryTree thirdOrFilterChild = orFilterChildren.get(2);
       assertEquals(thirdOrFilterChild.getOperator(), FilterOperator.IN);
       if (secondOrFilterChild.getColumn().equals("float")) {
-        assertEqualsNoOrder(secondOrFilterChild.getValue().toArray(), new Object[]{"3.5", "4.5"});
+        assertEqualsNoOrder(secondOrFilterChild.getValue().toArray(), new Object[] { "3.5", "4.5" });
         assertEquals(thirdOrFilterChild.getColumn(), "double");
-        assertEqualsNoOrder(thirdOrFilterChild.getValue().toArray(), new Object[]{"1.1", "1.2", "1.3"});
+        assertEqualsNoOrder(thirdOrFilterChild.getValue().toArray(), new Object[] { "1.1", "1.2", "1.3" });
       } else {
         assertEquals(secondOrFilterChild.getColumn(), "double");
-        assertEqualsNoOrder(secondOrFilterChild.getValue().toArray(), new Object[]{"1.1", "1.2", "1.3"});
+        assertEqualsNoOrder(secondOrFilterChild.getValue().toArray(), new Object[] { "1.1", "1.2", "1.3" });
         assertEquals(thirdOrFilterChild.getColumn(), "float");
-        assertEqualsNoOrder(thirdOrFilterChild.getValue().toArray(), new Object[]{"3.5", "4.5"});
+        assertEqualsNoOrder(thirdOrFilterChild.getValue().toArray(), new Object[] { "3.5", "4.5" });
       }
     }
 
@@ -362,10 +362,10 @@ public class QueryOptimizerTest {
       assertNull(actual.getFilterQuery());
       return;
     }
-    FilterQueryTree actualFilter = RequestUtils
-        .buildFilterQuery(actual.getFilterQuery().getId(), actual.getFilterSubQueryMap().getFilterQueryMap());
-    FilterQueryTree expectedFilter = RequestUtils
-        .buildFilterQuery(expected.getFilterQuery().getId(), expected.getFilterSubQueryMap().getFilterQueryMap());
+    FilterQueryTree actualFilter = RequestUtils.buildFilterQuery(actual.getFilterQuery().getId(),
+        actual.getFilterSubQueryMap().getFilterQueryMap());
+    FilterQueryTree expectedFilter = RequestUtils.buildFilterQuery(expected.getFilterQuery().getId(),
+        expected.getFilterSubQueryMap().getFilterQueryMap());
     compareFilterQueryTree(actualFilter, expectedFilter);
   }
 

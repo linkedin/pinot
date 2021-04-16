@@ -79,7 +79,7 @@ public class EqualsPredicateEvaluatorFactory {
     DictionaryBasedEqPredicateEvaluator(EqPredicate eqPredicate, Dictionary dictionary) {
       _matchingDictId = dictionary.indexOf(eqPredicate.getValue());
       if (_matchingDictId >= 0) {
-        _matchingDictIds = new int[]{_matchingDictId};
+        _matchingDictIds = new int[] { _matchingDictId };
         if (dictionary.length() == 1) {
           _alwaysTrue = true;
         }

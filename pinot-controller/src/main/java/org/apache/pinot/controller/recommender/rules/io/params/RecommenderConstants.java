@@ -73,19 +73,20 @@ public class RecommenderConstants {
     public static final double DEFAULT_DICTIONARY_COEFFICIENT = 0.3;
   }
 
-  public static class FlagQueryRuleParams{
+  public static class FlagQueryRuleParams {
     public static final long DEFAULT_THRESHOLD_MAX_LIMIT_SIZE = 100000;
     public static final String WARNING_NO_FILTERING = "Warning: No filtering in ths query";
     public static final String WARNING_NO_TIME_COL = "Warning: No time column used in ths query";
-    public static final String WARNING_TOO_LONG_LIMIT = "Warning: The size of LIMIT is longer than " + DEFAULT_THRESHOLD_MAX_LIMIT_SIZE;
+    public static final String WARNING_TOO_LONG_LIMIT =
+        "Warning: The size of LIMIT is longer than " + DEFAULT_THRESHOLD_MAX_LIMIT_SIZE;
     public static final String ERROR_INVALID_QUERY = "Error: query not able to parse, skipped";
   }
 
   public static class RealtimeProvisioningRule {
     public static final int DEFAULT_REAL_TIME_TABLE_RETENTION_HOURS = 72;
     public static final String DEFAULT_MAX_USABLE_HOST_MEMORY = "48G";
-    public static final int[] DEFAULT_NUM_HOURS = {2, 4, 6, 8, 10, 12};
-    public static final int[] DEFAULT_NUM_HOSTS = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    public static final int[] DEFAULT_NUM_HOURS = { 2, 4, 6, 8, 10, 12 };
+    public static final int[] DEFAULT_NUM_HOSTS = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
   }
 
   public static final String PQL = "pql";

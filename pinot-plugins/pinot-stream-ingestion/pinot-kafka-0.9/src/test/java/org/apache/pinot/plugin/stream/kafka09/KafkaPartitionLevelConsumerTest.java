@@ -98,7 +98,7 @@ public class KafkaPartitionLevelConsumerTest {
           throw new IllegalArgumentException();
         } else {
           // TODO Maybe generate dummy messages here?
-          return new ByteBufferMessageSet(Collections.<Message>emptyList());
+          return new ByteBufferMessageSet(Collections.<Message> emptyList());
         }
       }
 
@@ -183,9 +183,8 @@ public class KafkaPartitionLevelConsumerTest {
             for (int j = 0; j < partitionCount; j++) {
               java.util.List<BrokerEndPoint> emptyJavaList = Collections.emptyList();
               List<BrokerEndPoint> emptyScalaList = JavaConversions.asScalaBuffer(emptyJavaList).toList();
-              partitionMetadataArray[j] =
-                  new PartitionMetadata(j, Some.apply(brokerArray[partitionLeaderIndices[j]]), emptyScalaList,
-                      emptyScalaList, Errors.NONE.code());
+              partitionMetadataArray[j] = new PartitionMetadata(j, Some.apply(brokerArray[partitionLeaderIndices[j]]),
+                  emptyScalaList, emptyScalaList, Errors.NONE.code());
             }
 
             Seq<PartitionMetadata> partitionsMetadata = List.fromArray(partitionMetadataArray);
@@ -213,8 +212,7 @@ public class KafkaPartitionLevelConsumerTest {
   }
 
   @Test
-  public void testBuildConsumer()
-      throws Exception {
+  public void testBuildConsumer() throws Exception {
     String streamType = "kafka";
     String streamKafkaTopicName = "theTopic";
     String streamKafkaBrokerList = "abcd:1234,bcde:2345";
@@ -223,16 +221,16 @@ public class KafkaPartitionLevelConsumerTest {
     String tableNameWithType = "table_REALTIME";
 
     MockKafkaSimpleConsumerFactory mockKafkaSimpleConsumerFactory =
-        new MockKafkaSimpleConsumerFactory(new String[]{"abcd", "bcde"}, new int[]{1234, 2345},
-            new long[]{12345L, 23456L}, new long[]{23456L, 34567L}, new int[]{0, 1}, streamKafkaTopicName);
+        new MockKafkaSimpleConsumerFactory(new String[] { "abcd", "bcde" }, new int[] { 1234, 2345 },
+            new long[] { 12345L, 23456L }, new long[] { 23456L, 34567L }, new int[] { 0, 1 }, streamKafkaTopicName);
 
     Map<String, String> streamConfigMap = new HashMap<>();
     streamConfigMap.put("streamType", streamType);
     streamConfigMap.put("stream.kafka.topic.name", streamKafkaTopicName);
     streamConfigMap.put("stream.kafka.broker.list", streamKafkaBrokerList);
     streamConfigMap.put("stream.kafka.consumer.type", streamKafkaConsumerType);
-    streamConfigMap
-        .put("stream.kafka.consumer.factory.class.name", mockKafkaSimpleConsumerFactory.getClass().getName());
+    streamConfigMap.put("stream.kafka.consumer.factory.class.name",
+        mockKafkaSimpleConsumerFactory.getClass().getName());
     streamConfigMap.put("stream.kafka.decoder.class.name", "decoderClass");
     streamConfigMap.put("stream.kafka.fetcher.size", "10000");
     streamConfigMap.put("stream.kafka.fetcher.minBytes", "20000");
@@ -276,16 +274,16 @@ public class KafkaPartitionLevelConsumerTest {
     String tableNameWithType = "table_REALTIME";
 
     MockKafkaSimpleConsumerFactory mockKafkaSimpleConsumerFactory =
-        new MockKafkaSimpleConsumerFactory(new String[]{"abcd", "bcde"}, new int[]{1234, 2345},
-            new long[]{12345L, 23456L}, new long[]{23456L, 34567L}, new int[]{0, 1}, streamKafkaTopicName);
+        new MockKafkaSimpleConsumerFactory(new String[] { "abcd", "bcde" }, new int[] { 1234, 2345 },
+            new long[] { 12345L, 23456L }, new long[] { 23456L, 34567L }, new int[] { 0, 1 }, streamKafkaTopicName);
 
     Map<String, String> streamConfigMap = new HashMap<>();
     streamConfigMap.put("streamType", streamType);
     streamConfigMap.put("stream.kafka.topic.name", streamKafkaTopicName);
     streamConfigMap.put("stream.kafka.broker.list", streamKafkaBrokerList);
     streamConfigMap.put("stream.kafka.consumer.type", streamKafkaConsumerType);
-    streamConfigMap
-        .put("stream.kafka.consumer.factory.class.name", mockKafkaSimpleConsumerFactory.getClass().getName());
+    streamConfigMap.put("stream.kafka.consumer.factory.class.name",
+        mockKafkaSimpleConsumerFactory.getClass().getName());
     streamConfigMap.put("stream.kafka.decoder.class.name", "decoderClass");
     StreamConfig streamConfig = new StreamConfig(tableNameWithType, streamConfigMap);
 
@@ -295,8 +293,7 @@ public class KafkaPartitionLevelConsumerTest {
   }
 
   @Test
-  public void testFetchMessages()
-      throws Exception {
+  public void testFetchMessages() throws Exception {
     String streamType = "kafka";
     String streamKafkaTopicName = "theTopic";
     String streamKafkaBrokerList = "abcd:1234,bcde:2345";
@@ -305,16 +302,16 @@ public class KafkaPartitionLevelConsumerTest {
     String tableNameWithType = "table_REALTIME";
 
     MockKafkaSimpleConsumerFactory mockKafkaSimpleConsumerFactory =
-        new MockKafkaSimpleConsumerFactory(new String[]{"abcd", "bcde"}, new int[]{1234, 2345},
-            new long[]{12345L, 23456L}, new long[]{23456L, 34567L}, new int[]{0, 1}, streamKafkaTopicName);
+        new MockKafkaSimpleConsumerFactory(new String[] { "abcd", "bcde" }, new int[] { 1234, 2345 },
+            new long[] { 12345L, 23456L }, new long[] { 23456L, 34567L }, new int[] { 0, 1 }, streamKafkaTopicName);
 
     Map<String, String> streamConfigMap = new HashMap<>();
     streamConfigMap.put("streamType", streamType);
     streamConfigMap.put("stream.kafka.topic.name", streamKafkaTopicName);
     streamConfigMap.put("stream.kafka.broker.list", streamKafkaBrokerList);
     streamConfigMap.put("stream.kafka.consumer.type", streamKafkaConsumerType);
-    streamConfigMap
-        .put("stream.kafka.consumer.factory.class.name", mockKafkaSimpleConsumerFactory.getClass().getName());
+    streamConfigMap.put("stream.kafka.consumer.factory.class.name",
+        mockKafkaSimpleConsumerFactory.getClass().getName());
     streamConfigMap.put("stream.kafka.decoder.class.name", "decoderClass");
     StreamConfig streamConfig = new StreamConfig(tableNameWithType, streamConfigMap);
 
@@ -325,8 +322,7 @@ public class KafkaPartitionLevelConsumerTest {
   }
 
   @Test(enabled = false)
-  public void testFetchOffsets()
-      throws Exception {
+  public void testFetchOffsets() throws Exception {
     String streamType = "kafka";
     String streamKafkaTopicName = "theTopic";
     String streamKafkaBrokerList = "abcd:1234,bcde:2345";
@@ -335,16 +331,16 @@ public class KafkaPartitionLevelConsumerTest {
     String tableNameWithType = "table_REALTIME";
 
     MockKafkaSimpleConsumerFactory mockKafkaSimpleConsumerFactory =
-        new MockKafkaSimpleConsumerFactory(new String[]{"abcd", "bcde"}, new int[]{1234, 2345},
-            new long[]{12345L, 23456L}, new long[]{23456L, 34567L}, new int[]{0, 1}, streamKafkaTopicName);
+        new MockKafkaSimpleConsumerFactory(new String[] { "abcd", "bcde" }, new int[] { 1234, 2345 },
+            new long[] { 12345L, 23456L }, new long[] { 23456L, 34567L }, new int[] { 0, 1 }, streamKafkaTopicName);
 
     Map<String, String> streamConfigMap = new HashMap<>();
     streamConfigMap.put("streamType", streamType);
     streamConfigMap.put("stream.kafka.topic.name", streamKafkaTopicName);
     streamConfigMap.put("stream.kafka.broker.list", streamKafkaBrokerList);
     streamConfigMap.put("stream.kafka.consumer.type", streamKafkaConsumerType);
-    streamConfigMap
-        .put("stream.kafka.consumer.factory.class.name", mockKafkaSimpleConsumerFactory.getClass().getName());
+    streamConfigMap.put("stream.kafka.consumer.factory.class.name",
+        mockKafkaSimpleConsumerFactory.getClass().getName());
     streamConfigMap.put("stream.kafka.decoder.class.name", "decoderClass");
     StreamConfig streamConfig = new StreamConfig(tableNameWithType, streamConfigMap);
 
