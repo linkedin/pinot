@@ -86,6 +86,8 @@ public class ControllerConf extends PinotConfiguration {
         "controller.realtime.segment.validation.frequencyInSeconds";
     public static final String REALTIME_SEGMENT_VALIDATION_INITIAL_DELAY_IN_SECONDS =
         "controller.realtime.segment.validation.initialDelayInSeconds";
+    public static final String REALTIME_SEGMENT_UPLOAD_TO_SEGMENT_STORE_IF_MISSING =
+        "controller.realtime.segment.validation.uploadToSegmentStoreIfMissing";
     public static final String BROKER_RESOURCE_VALIDATION_FREQUENCY_IN_SECONDS =
         "controller.broker.resource.validation.frequencyInSeconds";
     public static final String BROKER_RESOURCE_VALIDATION_INITIAL_DELAY_IN_SECONDS =
@@ -659,6 +661,10 @@ public class ControllerConf extends PinotConfiguration {
   public long getRealtimeSegmentValidationManagerInitialDelaySeconds() {
     return getProperty(ControllerPeriodicTasksConf.REALTIME_SEGMENT_VALIDATION_INITIAL_DELAY_IN_SECONDS,
         getPeriodicTaskInitialDelayInSeconds());
+  }
+
+  public boolean isUploadingRealtimeMissingSegmentStoreCopyEnabled() {
+    return getProperty(ControllerPeriodicTasksConf.REALTIME_SEGMENT_UPLOAD_TO_SEGMENT_STORE_IF_MISSING, false);
   }
 
   public long getPinotTaskManagerInitialDelaySeconds() {
