@@ -23,6 +23,7 @@ import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
@@ -277,13 +278,8 @@ public class ServerQueryExecutorV1Impl implements QueryExecutor {
       // Only return metadata for streaming query
       DataTable dataTable =
           enableStreaming ? DataTableBuilder.getEmptyDataTable() : DataTableUtils.buildEmptyDataTable(queryContext);
-      Map<String, String> metadata = dataTable.getMetadata();
-      metadata.put(MetadataKey.TOTAL_DOCS.getName(), String.valueOf(numTotalDocs));
-      metadata.put(MetadataKey.NUM_DOCS_SCANNED.getName(), "0");
-      metadata.put(MetadataKey.NUM_ENTRIES_SCANNED_IN_FILTER.getName(), "0");
-      metadata.put(MetadataKey.NUM_ENTRIES_SCANNED_POST_FILTER.getName(), "0");
-      metadata.put(MetadataKey.NUM_SEGMENTS_PROCESSED.getName(), "0");
-      metadata.put(MetadataKey.NUM_SEGMENTS_MATCHED.getName(), "0");
+      setDefaultValuesForEmptyDataTable(dataTable, numTotalDocs);
+      detectInvalidColumnIfExists(queryContext, dataTable);
       return dataTable;
     } else {
       TimerContext.Timer planBuildTimer = timerContext.startNewPhaseTimer(ServerQueryPhase.BUILD_QUERY_PLAN);
@@ -301,6 +297,31 @@ public class ServerQueryExecutorV1Impl implements QueryExecutor {
 
       return dataTable;
     }
+  }
+
+  /**
+   * If all the segments are pruned, check whether it's caused by invalid column name in the query.
+   * This is to keep the behavior consistent when new columns are added and not all the segments have the new columns in their metadata;
+   * old segments may contain stale schema until the table is reloaded.
+   */
+  private void detectInvalidColumnIfExists(QueryContext queryContext, DataTable dataTable) {
+    Set<String> columnNamesFromSchema = _instanceDataManager.getColumnNamesByTable(queryContext.getTableName());
+    Set<String> columnNamesFromQuery = queryContext.getColumns();
+    // Validate whether column names in the query are valid
+    if (!columnNamesFromSchema.isEmpty() && !columnNamesFromSchema.containsAll(columnNamesFromQuery)) {
+      columnNamesFromQuery.removeAll(columnNamesFromSchema);
+      dataTable.getMetadata().put(MetadataKey.INVALID_COLUMNS_IN_QUERY.getName(), columnNamesFromQuery.toString());
+    }
+  }
+
+  private void setDefaultValuesForEmptyDataTable(DataTable dataTable, long numTotalDocs) {
+    Map<String, String> metadata = dataTable.getMetadata();
+    metadata.put(MetadataKey.TOTAL_DOCS.getName(), String.valueOf(numTotalDocs));
+    metadata.put(MetadataKey.NUM_DOCS_SCANNED.getName(), "0");
+    metadata.put(MetadataKey.NUM_ENTRIES_SCANNED_IN_FILTER.getName(), "0");
+    metadata.put(MetadataKey.NUM_ENTRIES_SCANNED_POST_FILTER.getName(), "0");
+    metadata.put(MetadataKey.NUM_SEGMENTS_PROCESSED.getName(), "0");
+    metadata.put(MetadataKey.NUM_SEGMENTS_MATCHED.getName(), "0");
   }
 
   /**

@@ -1490,6 +1490,28 @@ public class OfflineClusterIntegrationTest extends BaseClusterIntegrationTestSet
   }
 
   @Test
+  public void testInvalidColumnNamesInQueries() {
+    List<String> queries =
+        Arrays.asList("SELECT invalidColumn FROM mytable", "SELECT DaysSinceEpoch, invalidColumn FROM mytable",
+            "SELECT * FROM mytable WHERE invalidColumn = '3'",
+            "SELECT MAX(timeConvert(DaysSinceEpoch,'DAYS','SECONDS')) FROM mytable ORDER BY invalidColumn",
+            "SELECT COUNT(*) FROM mytable GROUP BY dateTimeConvert(invalidColumn,'1:DAYS:EPOCH','1:HOURS:EPOCH','1:HOURS')");
+    for (String query : queries) {
+      try {
+        JsonNode response = postQuery(query);
+        assertEquals(response.get("numSegmentsProcessed").asLong(), 0L,
+            "Field 'numSegmentsProcessed' should have returned 0 for PQL: " + query);
+
+        response = postSqlQuery(query);
+        assertEquals(response.get("numSegmentsProcessed").asLong(), 0L,
+            "Field 'numSegmentsProcessed' should have returned 0 for SQL: " + query);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  @Test
   public void testQuerySourceWithDatabaseName()
       throws Exception {
     // by default 10 rows will be returned, so use high limit

@@ -99,7 +99,8 @@ public interface DataTable {
     REQUEST_ID("requestId", MetadataValueType.LONG),
     NUM_RESIZES("numResizes", MetadataValueType.INT),
     RESIZE_TIME_MS("resizeTimeMs", MetadataValueType.LONG),
-    THREAD_CPU_TIME_NS("threadCpuTimeNs", MetadataValueType.LONG);
+    THREAD_CPU_TIME_NS("threadCpuTimeNs", MetadataValueType.LONG),
+    INVALID_COLUMNS_IN_QUERY("invalidColumnsInQuery", MetadataValueType.STRING);
 
     private static final Map<String, MetadataKey> _nameToEnumKeyMap = new HashMap<>();
     private final String _name;

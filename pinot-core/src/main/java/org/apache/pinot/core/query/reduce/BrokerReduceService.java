@@ -132,6 +132,7 @@ public class BrokerReduceService {
     long offlineThreadCpuTimeNs = 0L;
     long realtimeThreadCpuTimeNs = 0L;
     boolean numGroupsLimitReached = false;
+    String invalidColumnNames = null;
 
     PinotQuery pinotQuery = brokerRequest.getPinotQuery();
     Map<String, String> queryOptions =
@@ -214,6 +215,11 @@ public class BrokerReduceService {
       }
       numGroupsLimitReached |= Boolean.parseBoolean(metadata.get(MetadataKey.NUM_GROUPS_LIMIT_REACHED.getName()));
 
+      String invalidColumnNamesString = metadata.get(MetadataKey.INVALID_COLUMNS_IN_QUERY.getName());
+      if (invalidColumnNames == null && invalidColumnNamesString != null) {
+        invalidColumnNames =  invalidColumnNamesString;
+      }
+
       // After processing the metadata, remove data tables without data rows inside.
       DataSchema dataSchema = dataTable.getDataSchema();
       if (dataSchema == null) {
@@ -262,6 +268,11 @@ public class BrokerReduceService {
       if (numConsumingSegmentsProcessed > 0 && minConsumingFreshnessTimeMs > 0) {
         brokerMetrics.addTimedTableValue(rawTableName, BrokerTimer.FRESHNESS_LAG_MS,
             System.currentTimeMillis() - minConsumingFreshnessTimeMs, TimeUnit.MILLISECONDS);
+      }
+
+      if (invalidColumnNames != null) {
+        brokerResponseNative.setInvalidColumnsInQuery(invalidColumnNames);
+        brokerMetrics.addMeteredTableValue(rawTableName, BrokerMeter.INVALID_COLUMN_NAMES_IN_QUERY, 1L);
       }
     }
 

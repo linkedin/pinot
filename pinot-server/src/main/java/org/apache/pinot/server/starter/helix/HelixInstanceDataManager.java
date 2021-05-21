@@ -67,6 +67,7 @@ public class HelixInstanceDataManager implements InstanceDataManager {
   private static final Logger LOGGER = LoggerFactory.getLogger(HelixInstanceDataManager.class);
 
   private final ConcurrentHashMap<String, TableDataManager> _tableDataManagerMap = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, Set<String>> _tableColumnNamesMap = new ConcurrentHashMap<>();
 
   private HelixInstanceDataManagerConfig _instanceDataManagerConfig;
   private String _instanceId;
@@ -130,6 +131,7 @@ public class HelixInstanceDataManager implements InstanceDataManager {
     Preconditions.checkNotNull(tableConfig);
     _tableDataManagerMap.computeIfAbsent(offlineTableName, k -> createTableDataManager(k, tableConfig))
         .addSegment(indexDir, new IndexLoadingConfig(_instanceDataManagerConfig, tableConfig));
+    _tableColumnNamesMap.computeIfAbsent(offlineTableName, this::getTableColumnNames);
     LOGGER.info("Added segment: {} to table: {}", segmentName, offlineTableName);
   }
 
@@ -141,6 +143,7 @@ public class HelixInstanceDataManager implements InstanceDataManager {
     Preconditions.checkNotNull(tableConfig);
     _tableDataManagerMap.computeIfAbsent(realtimeTableName, k -> createTableDataManager(k, tableConfig))
         .addSegment(segmentName, tableConfig, new IndexLoadingConfig(_instanceDataManagerConfig, tableConfig));
+    _tableColumnNamesMap.computeIfAbsent(realtimeTableName, this::getTableColumnNames);
     LOGGER.info("Added segment: {} to table: {}", segmentName, realtimeTableName);
   }
 
@@ -154,6 +157,11 @@ public class HelixInstanceDataManager implements InstanceDataManager {
     tableDataManager.start();
     LOGGER.info("Created table data manager for table: {}", tableNameWithType);
     return tableDataManager;
+  }
+
+  private Set<String> getTableColumnNames(String tableNameWithType) {
+    Schema schema = ZKMetadataProvider.getTableSchema(_propertyStore, tableNameWithType);
+    return schema != null ? schema.getColumnNames() : Collections.emptySet();
   }
 
   @Override
@@ -217,6 +225,11 @@ public class HelixInstanceDataManager implements InstanceDataManager {
     if (tableDataManager == null) {
       LOGGER.warn("Failed to find table data manager for table: {}, skipping reloading segment", tableNameWithType);
       return;
+    }
+
+    // Update column names
+    if (schema != null) {
+      _tableColumnNamesMap.put(tableNameWithType, schema.getColumnNames());
     }
 
     File indexDir = segmentMetadata.getIndexDir();
@@ -339,6 +352,11 @@ public class HelixInstanceDataManager implements InstanceDataManager {
         }
       }
     }
+  }
+
+  @Override
+  public Set<String> getColumnNamesByTable(String tableNameWithType) {
+    return _tableColumnNamesMap.computeIfAbsent(tableNameWithType, k -> Collections.emptySet());
   }
 
   @Override
