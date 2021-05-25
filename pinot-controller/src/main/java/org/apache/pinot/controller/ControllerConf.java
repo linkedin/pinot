@@ -86,8 +86,6 @@ public class ControllerConf extends PinotConfiguration {
         "controller.realtime.segment.validation.frequencyInSeconds";
     public static final String REALTIME_SEGMENT_VALIDATION_INITIAL_DELAY_IN_SECONDS =
         "controller.realtime.segment.validation.initialDelayInSeconds";
-    public static final String REALTIME_SEGMENT_UPLOAD_TO_SEGMENT_STORE_IF_MISSING =
-        "controller.realtime.segment.validation.uploadToSegmentStoreIfMissing";
     public static final String BROKER_RESOURCE_VALIDATION_FREQUENCY_IN_SECONDS =
         "controller.broker.resource.validation.frequencyInSeconds";
     public static final String BROKER_RESOURCE_VALIDATION_INITIAL_DELAY_IN_SECONDS =
@@ -128,6 +126,12 @@ public class ControllerConf extends PinotConfiguration {
     public static final String SEGMENT_RELOCATOR_INITIAL_DELAY_IN_SECONDS =
         "controller.segmentRelocator.initialDelayInSeconds";
 
+    // configs for uploading missing LLC segments copy to segment store
+    public static final String ENABLE_UPLOAD_MISSING_LLC_SEGMENT_TO_SEGMENT_STORE =
+        "controller.realtime.segment.uploadToSegmentStoreIfMissing";
+    public static final String VALIDATION_RANGE_IN_DAYS_TO_CHECK_MISSING_SEGMENT_STORE_COPY =
+        "controller.realtime.segment.validationRangeInDaysToCheckMissingSegmentStoreCopy";
+
     public static final int MIN_INITIAL_DELAY_IN_SECONDS = 120;
     public static final int MAX_INITIAL_DELAY_IN_SECONDS = 300;
 
@@ -150,6 +154,8 @@ public class ControllerConf extends PinotConfiguration {
 
     private static final int DEFAULT_SEGMENT_LEVEL_VALIDATION_INTERVAL_IN_SECONDS = 24 * 60 * 60;
     private static final int DEFAULT_SEGMENT_RELOCATOR_FREQUENCY_IN_SECONDS = 60 * 60;
+
+    private static final int DEFAULT_VALIDATION_RANGE_IN_DAYS_TO_CHECK_MISSING_SEGMENT_STORE_COPY = 3;
   }
 
   private static final String SERVER_ADMIN_REQUEST_TIMEOUT_SECONDS = "server.request.timeoutSeconds";
@@ -664,7 +670,12 @@ public class ControllerConf extends PinotConfiguration {
   }
 
   public boolean isUploadingRealtimeMissingSegmentStoreCopyEnabled() {
-    return getProperty(ControllerPeriodicTasksConf.REALTIME_SEGMENT_UPLOAD_TO_SEGMENT_STORE_IF_MISSING, false);
+    return getProperty(ControllerPeriodicTasksConf.ENABLE_UPLOAD_MISSING_LLC_SEGMENT_TO_SEGMENT_STORE, false);
+  }
+
+  public int getValidationRangeInDaysToCheckMissingSegmentStoreCopy() {
+    return getProperty(ControllerPeriodicTasksConf.VALIDATION_RANGE_IN_DAYS_TO_CHECK_MISSING_SEGMENT_STORE_COPY,
+        ControllerPeriodicTasksConf.DEFAULT_VALIDATION_RANGE_IN_DAYS_TO_CHECK_MISSING_SEGMENT_STORE_COPY);
   }
 
   public long getPinotTaskManagerInitialDelaySeconds() {
