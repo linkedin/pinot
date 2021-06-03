@@ -21,6 +21,8 @@ package org.apache.pinot.core.segment.processing.framework;
 import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -205,7 +207,7 @@ public class SegmentProcessingFrameworkTest {
     // non-existent input dir
     File nonExistent = new File(_baseDir, "non_existent");
     try {
-      new SegmentProcessorFramework(nonExistent, config, outputSegmentDir);
+      new SegmentProcessorFramework(Collections.singletonList(nonExistent), config, outputSegmentDir);
       fail("Should fail for non existent input dir");
     } catch (IllegalStateException e) {
       // expected
@@ -214,16 +216,10 @@ public class SegmentProcessingFrameworkTest {
     // file used as input dir
     File fileInput = new File(_baseDir, "file.txt");
     assertTrue(fileInput.createNewFile());
-    try {
-      new SegmentProcessorFramework(fileInput, config, outputSegmentDir);
-      fail("Should fail for file used as input dir");
-    } catch (IllegalStateException e) {
-      // expected
-    }
 
     // non existent output dir
     try {
-      new SegmentProcessorFramework(_singleDaySingleSegment, config, nonExistent);
+      new SegmentProcessorFramework(Arrays.asList(_singleDaySingleSegment.listFiles()), config, nonExistent);
       fail("Should fail for non existent output dir");
     } catch (IllegalStateException e) {
       // expected
@@ -231,7 +227,7 @@ public class SegmentProcessingFrameworkTest {
 
     // file used as output dir
     try {
-      new SegmentProcessorFramework(_singleDaySingleSegment, config, fileInput);
+      new SegmentProcessorFramework(Arrays.asList(_singleDaySingleSegment.listFiles()), config, fileInput);
       fail("Should fail for file used as output dir");
     } catch (IllegalStateException e) {
       // expected
@@ -239,19 +235,18 @@ public class SegmentProcessingFrameworkTest {
 
     // output dir not empty
     try {
-      new SegmentProcessorFramework(fileInput, config, _singleDaySingleSegment);
+      new SegmentProcessorFramework(Collections.singletonList(fileInput), config, _singleDaySingleSegment);
       fail("Should fail for output dir not empty");
     } catch (IllegalStateException e) {
       // expected
     }
 
     // empty input dir
-    SegmentProcessorFramework framework = new SegmentProcessorFramework(_emptyInputDir, config, outputSegmentDir);
     try {
-      framework.processSegments();
+       new SegmentProcessorFramework(Arrays.asList(_emptyInputDir.listFiles()), config, outputSegmentDir);
       fail("Should fail for empty input");
     } catch (Exception e) {
-      framework.cleanup();
+      // expected
     }
   }
 
@@ -268,7 +263,7 @@ public class SegmentProcessingFrameworkTest {
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
     SegmentProcessorFramework framework =
-        new SegmentProcessorFramework(_singleDaySingleSegment, config, outputSegmentDir);
+        new SegmentProcessorFramework(Arrays.asList(_singleDaySingleSegment.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 1);
@@ -282,7 +277,7 @@ public class SegmentProcessingFrameworkTest {
                 .setNumPartitions(3).build())).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    framework = new SegmentProcessorFramework(_singleDaySingleSegment, config, outputSegmentDir);
+    framework = new SegmentProcessorFramework(Arrays.asList(_singleDaySingleSegment.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 3);
@@ -301,7 +296,7 @@ public class SegmentProcessingFrameworkTest {
                 .setFilterFunction("Groovy({campaign == \"abc\"}, campaign)").build()).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    framework = new SegmentProcessorFramework(_singleDaySingleSegment, config, outputSegmentDir);
+    framework = new SegmentProcessorFramework(Arrays.asList(_singleDaySingleSegment.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 1);
@@ -315,7 +310,7 @@ public class SegmentProcessingFrameworkTest {
                 .setFilterFunction("Groovy({clicks > 0}, clicks)").build()).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    framework = new SegmentProcessorFramework(_singleDaySingleSegment, config, outputSegmentDir);
+    framework = new SegmentProcessorFramework(Arrays.asList(_singleDaySingleSegment.listFiles()), config, outputSegmentDir);
     try {
       framework.processSegments();
       fail("Should fail for empty map output");
@@ -331,7 +326,7 @@ public class SegmentProcessingFrameworkTest {
             new RecordTransformerConfig.Builder().setTransformFunctionsMap(recordTransformationMap).build()).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    framework = new SegmentProcessorFramework(_singleDaySingleSegment, config, outputSegmentDir);
+    framework = new SegmentProcessorFramework(Arrays.asList(_singleDaySingleSegment.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 1);
@@ -345,7 +340,7 @@ public class SegmentProcessingFrameworkTest {
             new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP).build()).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    framework = new SegmentProcessorFramework(_singleDaySingleSegment, config, outputSegmentDir);
+    framework = new SegmentProcessorFramework(Arrays.asList(_singleDaySingleSegment.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 1);
@@ -358,7 +353,7 @@ public class SegmentProcessingFrameworkTest {
         .setSegmentConfig(new SegmentConfig.Builder().setMaxNumRecordsPerSegment(4).build()).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    framework = new SegmentProcessorFramework(_singleDaySingleSegment, config, outputSegmentDir);
+    framework = new SegmentProcessorFramework(Arrays.asList(_singleDaySingleSegment.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 3);
@@ -384,7 +379,7 @@ public class SegmentProcessingFrameworkTest {
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
     SegmentProcessorFramework framework =
-        new SegmentProcessorFramework(_multipleDaysSingleSegment, config, outputSegmentDir);
+        new SegmentProcessorFramework(Arrays.asList(_multipleDaysSingleSegment.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 1);
@@ -398,7 +393,7 @@ public class SegmentProcessingFrameworkTest {
                 .setColumnName("timeValue").build())).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    framework = new SegmentProcessorFramework(_multipleDaysSingleSegment, config, outputSegmentDir);
+    framework = new SegmentProcessorFramework(Arrays.asList(_multipleDaysSingleSegment.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 10);
@@ -421,7 +416,7 @@ public class SegmentProcessingFrameworkTest {
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
     SegmentProcessorFramework framework =
-        new SegmentProcessorFramework(_singleDayMultipleSegments, config, outputSegmentDir);
+        new SegmentProcessorFramework(Arrays.asList(_singleDayMultipleSegments.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 1);
@@ -434,7 +429,7 @@ public class SegmentProcessingFrameworkTest {
             new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP).build()).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    framework = new SegmentProcessorFramework(_singleDayMultipleSegments, config, outputSegmentDir);
+    framework = new SegmentProcessorFramework(Arrays.asList(_singleDayMultipleSegments.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 1);
@@ -456,7 +451,7 @@ public class SegmentProcessingFrameworkTest {
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
     SegmentProcessorFramework framework =
-        new SegmentProcessorFramework(_multipleDaysMultipleSegments, config, outputSegmentDir);
+        new SegmentProcessorFramework(Arrays.asList(_multipleDaysMultipleSegments.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 1);
@@ -470,7 +465,7 @@ public class SegmentProcessingFrameworkTest {
                 .setTransformFunction("round(timeValue, 86400000)").build())).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    framework = new SegmentProcessorFramework(_multipleDaysSingleSegment, config, outputSegmentDir);
+    framework = new SegmentProcessorFramework(Arrays.asList(_multipleDaysSingleSegment.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 3);
@@ -493,7 +488,7 @@ public class SegmentProcessingFrameworkTest {
             new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP).build()).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    framework = new SegmentProcessorFramework(_multipleDaysSingleSegment, config, outputSegmentDir);
+    framework = new SegmentProcessorFramework(Arrays.asList(_multipleDaysSingleSegment.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 3);
@@ -518,7 +513,7 @@ public class SegmentProcessingFrameworkTest {
             new CollectorConfig.Builder().setCollectorType(CollectorFactory.CollectorType.ROLLUP).build()).build();
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    SegmentProcessorFramework framework = new SegmentProcessorFramework(_multiValueSegments, config, outputSegmentDir);
+    SegmentProcessorFramework framework = new SegmentProcessorFramework(Arrays.asList(_multiValueSegments.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 1);
@@ -536,7 +531,7 @@ public class SegmentProcessingFrameworkTest {
     // default configs
     FileUtils.deleteQuietly(outputSegmentDir);
     assertTrue(outputSegmentDir.mkdirs());
-    SegmentProcessorFramework framework = new SegmentProcessorFramework(_tarredSegments, config, outputSegmentDir);
+    SegmentProcessorFramework framework = new SegmentProcessorFramework(Arrays.asList(_tarredSegments.listFiles()), config, outputSegmentDir);
     framework.processSegments();
     framework.cleanup();
     assertEquals(outputSegmentDir.listFiles().length, 1);
