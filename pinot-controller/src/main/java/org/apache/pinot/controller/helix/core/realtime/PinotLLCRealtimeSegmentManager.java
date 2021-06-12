@@ -544,6 +544,21 @@ public class PinotLLCRealtimeSegmentManager {
     //  then create metadata/idealstate entries for D, E along with the committing partition's entries.
     //  Ensure that multiple committing segments don't create multiple new segment metadata and ideal state entries for the same partitionGroup
 
+    Map<Integer, LLCRealtimeSegmentZKMetadata> latestSegmentZKMetadataMap =
+        getLatestSegmentZKMetadataMap(realtimeTableName);
+
+    Map<String, Map<String, String>> instanceStatesMap = idealState.getRecord().getMapFields();
+    for (PartitionGroupMetadata partitionGroupMetadata : newPartitionGroupMetadataList) {
+      int partitionGroupId = partitionGroupMetadata.getPartitionGroupId();
+      if (!latestSegmentZKMetadataMap.containsKey(partitionGroupId)) {
+        String newSegmentName =
+            setupNewPartitionGroup(tableConfig, streamConfig, partitionGroupMetadata, getCurrentTimeMs(), instancePartitions, numPartitionGroups,
+                numReplicas);
+        updateInstanceStatesForNewConsumingSegment(instanceStatesMap, null, newSegmentName, segmentAssignment,
+            instancePartitionsMap);
+      }
+    }
+
     // Trigger the metadata event notifier
     _metadataEventNotifierFactory.create().notifyOnSegmentFlush(tableConfig);
   }
@@ -1192,6 +1207,7 @@ public class PinotLLCRealtimeSegmentManager {
 
   private int getMaxNumPartitionsPerInstance(InstancePartitions instancePartitions, int numPartitions,
       int numReplicas) {
+    int numInstances = instancePartitions.getInstances(0, 0).size();
     if (instancePartitions.getNumReplicaGroups() == 1) {
       // Non-replica-group based assignment:
       // Uniformly spray the partitions and replicas across the instances.
@@ -1200,7 +1216,6 @@ public class PinotLLCRealtimeSegmentManager {
       //         p0r0 p0r1 p0r2 p0r3 p1r0 p1r1
       //         p1r2 p1r3 p2r0 p2r1 p2r2 p2r3
 
-      int numInstances = instancePartitions.getInstances(0, 0).size();
       return (numPartitions * numReplicas + numInstances - 1) / numInstances;
     } else {
       // Replica-group based assignment:
@@ -1210,8 +1225,7 @@ public class PinotLLCRealtimeSegmentManager {
       //         p0  p1  p2
       //         p3  p4  p5
 
-      int numInstancesPerReplicaGroup = instancePartitions.getInstances(0, 0).size();
-      return (numPartitions + numInstancesPerReplicaGroup - 1) / numInstancesPerReplicaGroup;
+      return (numPartitions + numInstances - 1) / numInstances;
     }
   }
 }
