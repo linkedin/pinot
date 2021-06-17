@@ -189,7 +189,7 @@ public class TableConfigSerDeTest {
     }
     {
       // With query config
-      QueryConfig queryConfig = new QueryConfig(1000L);
+      QueryConfig queryConfig = new QueryConfig(1000L,2);
       TableConfig tableConfig = tableConfigBuilder.setQueryConfig(queryConfig).build();
 
       checkQueryConfig(tableConfig);
@@ -424,6 +424,7 @@ public class TableConfigSerDeTest {
     QueryConfig queryConfig = tableConfig.getQueryConfig();
     assertNotNull(queryConfig);
     assertEquals(queryConfig.getTimeoutMs(), Long.valueOf(1000L));
+    assertEquals(queryConfig.getMaxThreadsPerQuery(), Integer.valueOf(2));
   }
 
   private void checkIngestionConfig(TableConfig tableConfig) {
