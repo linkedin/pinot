@@ -43,7 +43,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Validates realtime ideal states and segment metadata, fixing any partitions which have stopped consuming
+ * Validates realtime ideal states and segment metadata, fixing any partitions which have stopped consuming,
+ * and uploading segments to segment store if segment download url is missing in the metadata.
  */
 public class RealtimeSegmentValidationManager extends ControllerPeriodicTask<RealtimeSegmentValidationManager.Context> {
   private static final Logger LOGGER = LoggerFactory.getLogger(RealtimeSegmentValidationManager.class);
@@ -65,6 +66,23 @@ public class RealtimeSegmentValidationManager extends ControllerPeriodicTask<Rea
 
     _segmentLevelValidationIntervalInSeconds = config.getSegmentLevelValidationIntervalInSeconds();
     Preconditions.checkState(_segmentLevelValidationIntervalInSeconds > 0);
+  }
+
+  // TODO: Fix the race condition when controller leadership may not be decided by the time the method is called
+  @Override
+  protected void setUpTask() {
+    // Prefetch the LLC segment without segment store copy from ZK, which helps to alleviate ZK access.
+    if (_llcRealtimeSegmentManager.isUploadingRealtimeMissingSegmentStoreCopyEnabled()) {
+      for (String tableNameWithType : _pinotHelixResourceManager.getAllTables()) {
+        try {
+          if (_leadControllerManager.isLeaderForTable(tableNameWithType)) {
+            _llcRealtimeSegmentManager.prefetchLLCSegmentsWithoutDeepStoreCopy(tableNameWithType);
+          }
+        } catch (Exception e) {
+          LOGGER.error("Failed to pre fetch LLC segment for table {}", tableNameWithType);
+        }
+      }
+    }
   }
 
   @Override
@@ -100,6 +118,9 @@ public class RealtimeSegmentValidationManager extends ControllerPeriodicTask<Rea
           IngestionConfigUtils.getStreamConfigMap(tableConfig));
       if (streamConfig.hasLowLevelConsumerType()) {
         _llcRealtimeSegmentManager.ensureAllPartitionsConsuming(tableConfig, streamConfig);
+        if (_llcRealtimeSegmentManager.isUploadingRealtimeMissingSegmentStoreCopyEnabled()) {
+          _llcRealtimeSegmentManager.uploadToSegmentStoreIfMissing(tableConfig);
+        }
       }
     }
   }
