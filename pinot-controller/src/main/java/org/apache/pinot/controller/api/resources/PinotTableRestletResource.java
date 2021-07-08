@@ -50,7 +50,6 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.httpclient.HttpConnectionManager;
-import org.apache.helix.ZNRecord;
 import org.apache.pinot.common.exception.SchemaNotFoundException;
 import org.apache.pinot.common.exception.TableNotFoundException;
 import org.apache.pinot.common.metrics.ControllerMeter;
@@ -203,7 +202,8 @@ public class PinotTableRestletResource {
   @Path("/tables")
   @ApiOperation(value = "Lists all tables in cluster", notes = "Lists all tables in cluster")
   public String listTableData(@ApiParam(value = "realtime|offline") @QueryParam("type") String tableTypeStr,
-      @ApiParam(value = "asc|desc") @QueryParam("sortByTime") @DefaultValue("none") String sortOrderByTime) {
+      @ApiParam(value = "name|time") @QueryParam("sortType") @DefaultValue("name") String sortType,
+      @ApiParam(value = "true|false") @QueryParam("sortAsc") @DefaultValue("true") boolean sortAsc) {
     try {
       List<String> tableNames;
       TableType tableType = null;
@@ -219,28 +219,23 @@ public class PinotTableRestletResource {
         tableNames = _pinotHelixResourceManager.getAllOfflineTables();
       }
 
-      if (sortOrderByTime == "none") {
+      if (sortType == "name") {
         // Sort table names alphabetically
-        Collections.sort(tableNames);
+        Collections.sort(tableNames, sortAsc ? null : Collections.reverseOrder());
       } else {
-        // Sort table names based on (1) Create Time (2) Last Modified Time
+        // Sort table names based on (1) Create Time
         TableType finalTableType = tableType;
         Collections.sort(tableNames, (Comparator<String>) (o1, o2) -> {
-          TableConfig t1, t2;
-          if (finalTableType == TableType.REALTIME) {
-            t1 = _pinotHelixResourceManager.getRealtimeTableConfig(o1);
-            t2 = _pinotHelixResourceManager.getRealtimeTableConfig(o2);
-          } else {
-            t1 = _pinotHelixResourceManager.getOfflineTableConfig(o1);
-            t2 = _pinotHelixResourceManager.getOfflineTableConfig(o2);
-          }
+          TableStats s1, s2;
+          s1 = _pinotHelixResourceManager.getTableStats(o1);
+          s2 = _pinotHelixResourceManager.getTableStats(o2);
 
-          ZNRecord z1 = TableConfigUtils.toZNRecord(t1);
-          ZNRecord z2 = TableConfigUtils.toZNRecord(t2);
-          if (z1.getCreationTime() != z2.getCreationTime()) {
-            return (int) (z1.getCreationTime() - z2.getCreationTime());
-          }
-          return (int) (z1.getModifiedTime() - z2.getModifiedTime());
+          String d1, d2;
+          d1 = s1.getCreationTime();
+          d2 = s2.getCreationTime();
+
+          Integer delta = d1.compareTo(d2);
+          return sortAsc ? delta : -delta;
         });
       }
       return JsonUtils.newObjectNode().set("tables", JsonUtils.objectToJsonNode(tableNames)).toString();
@@ -281,8 +276,8 @@ public class PinotTableRestletResource {
   public String alterTableStateOrListTableConfig(
       @ApiParam(value = "Name of the table", required = true) @PathParam("tableName") String tableName,
       @ApiParam(value = "enable|disable|drop") @QueryParam("state") String stateStr,
-      @ApiParam(value = "realtime|offline") @QueryParam("type") String tableTypeStr,
-      @Context HttpHeaders httpHeaders, @Context Request request) {
+      @ApiParam(value = "realtime|offline") @QueryParam("type") String tableTypeStr, @Context HttpHeaders httpHeaders,
+      @Context Request request) {
     try {
       if (stateStr == null) {
         return listTableConfigs(tableName, tableTypeStr);
