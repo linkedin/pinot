@@ -26,7 +26,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -105,6 +107,8 @@ public class PinotTableRestletResource {
    *   Type here is type of the table, one of 'offline|realtime'.
    * {@inheritDoc}
    */
+
+  private static final String SORT_TYPE_INVALID = "sortType expects={name|creationTime|lastModifiedTime}, got %s";
 
   public static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(PinotTableRestletResource.class);
 
@@ -208,7 +212,9 @@ public class PinotTableRestletResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/tables")
   @ApiOperation(value = "Lists all tables in cluster", notes = "Lists all tables in cluster")
-  public String listTableConfigs(@ApiParam(value = "realtime|offline") @QueryParam("type") String tableTypeStr) {
+  public String listTables(@ApiParam(value = "realtime|offline") @QueryParam("type") String tableTypeStr,
+      @ApiParam(value = "name|creationTime|lastModifiedTime") @QueryParam("sortType") String sortType,
+      @ApiParam(value = "true|false") @QueryParam("sortAsc") @DefaultValue("true") boolean sortAsc) {
     try {
       List<String> tableNames;
       TableType tableType = null;
@@ -216,17 +222,42 @@ public class PinotTableRestletResource {
         tableType = TableType.valueOf(tableTypeStr.toUpperCase());
       }
 
+      Boolean sortTypeValid =
+          sortType == null || sortType.equalsIgnoreCase("name") || sortType.equalsIgnoreCase("creationTime") || sortType
+              .equalsIgnoreCase("lastModifiedTime");
+      Preconditions.checkState(sortTypeValid, SORT_TYPE_INVALID, sortType);
+
       if (tableType == null) {
         tableNames = _pinotHelixResourceManager.getAllRawTables();
+      } else if (tableType == TableType.REALTIME) {
+        tableNames = _pinotHelixResourceManager.getAllRealtimeTables();
       } else {
-        if (tableType == TableType.REALTIME) {
-          tableNames = _pinotHelixResourceManager.getAllRealtimeTables();
-        } else {
-          tableNames = _pinotHelixResourceManager.getAllOfflineTables();
+        tableNames = _pinotHelixResourceManager.getAllOfflineTables();
+      }
+
+      if (sortType == null || sortType.equalsIgnoreCase("name")) {
+        tableNames.sort(sortAsc ? null : Comparator.reverseOrder());
+      } else {
+        Integer sortFactor = sortAsc ? 1 : -1;
+        List<TableStats> tableStatsList = new ArrayList<TableStats>(tableNames.size());
+        for (String tableName : tableNames) {
+          tableStatsList.add(_pinotHelixResourceManager.getTableStats(tableName));
+        }
+
+        // Sort table names based on (1) Create Time or (2) Last Modified Time
+        Collections.sort(tableStatsList, (Comparator<TableStats>) (o1, o2) -> {
+          if (sortType.equalsIgnoreCase("creationTime")) {
+            return o1.getCreationTime().compareTo(o2.getCreationTime()) * sortFactor;
+          }
+          return o1.getLastModifiedTime().compareTo(o2.getLastModifiedTime()) * sortFactor;
+        });
+
+        // Reuse space allocated, copy the sorted order
+        for (int idx = 0; idx < tableStatsList.size(); idx++) {
+          tableNames.set(idx, tableStatsList.get(idx).getTableName());
         }
       }
 
-      Collections.sort(tableNames);
       return JsonUtils.newObjectNode().set("tables", JsonUtils.objectToJsonNode(tableNames)).toString();
     } catch (Exception e) {
       throw new ControllerApplicationException(LOGGER, e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR, e);
