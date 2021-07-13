@@ -61,7 +61,11 @@ public class BatchConfig {
   private final String _pushControllerURI;
   private final String _outputSegmentDirURI;
 
-  public BatchConfig(String tableNameWithType, Map<String, String> batchConfigsMap) {
+  public BatchConfig(String tableNameWithType, Map<String, String> batchConfigsMap){
+    this(tableNameWithType, batchConfigsMap, false);
+  }
+
+  public BatchConfig(String tableNameWithType, Map<String, String> batchConfigsMap, boolean obfuscateConfig) {
     _batchConfigMap = batchConfigsMap;
     _tableNameWithType = tableNameWithType;
 
@@ -71,15 +75,27 @@ public class BatchConfig {
     } else {
       _inputFormat = null;
     }
+
     _inputDirURI = batchConfigsMap.get(BatchConfigProperties.INPUT_DIR_URI);
     _inputFsClassName = batchConfigsMap.get(BatchConfigProperties.INPUT_FS_CLASS);
-    _inputFsProps =
-        IngestionConfigUtils.extractPropsMatchingPrefix(batchConfigsMap, BatchConfigProperties.INPUT_FS_PROP_PREFIX);
 
     _outputDirURI = batchConfigsMap.get(BatchConfigProperties.OUTPUT_DIR_URI);
     _outputFsClassName = batchConfigsMap.get(BatchConfigProperties.OUTPUT_FS_CLASS);
+
+    _inputFsProps =
+        IngestionConfigUtils.extractPropsMatchingPrefix(batchConfigsMap, BatchConfigProperties.INPUT_FS_PROP_PREFIX);
     _outputFsProps =
         IngestionConfigUtils.extractPropsMatchingPrefix(batchConfigsMap, BatchConfigProperties.OUTPUT_FS_PROP_PREFIX);
+
+    if (obfuscateConfig){
+      for (Map.Entry<String, String> entry : _inputFsProps.entrySet()) {
+        batchConfigsMap.put(entry.getKey(), "*****");
+      }
+      for (Map.Entry<String, String> entry : _outputFsProps.entrySet()) {
+        batchConfigsMap.put(entry.getKey(), "*****");
+      }
+    }
+
     _overwriteOutput = Boolean.parseBoolean(batchConfigsMap.get(BatchConfigProperties.OVERWRITE_OUTPUT));
 
     _recordReaderClassName = batchConfigsMap.get(BatchConfigProperties.RECORD_READER_CLASS);
